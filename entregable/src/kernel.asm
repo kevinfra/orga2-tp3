@@ -7,6 +7,7 @@
 
 global start
 
+extern GDT_DESC
 
 ;; Saltear seccion de datos
 jmp start
@@ -42,15 +43,26 @@ start:
     
 
     ; Habilitar A20
-    
+    call habilitar_A20
     ; Cargar la GDT
+    lgdt [GDT_DESC]
 
+    xchg bx , bx
     ; Setear el bit PE del registro CR0
-    
+    cli
+    mov eax , cr0
+    or eax , 1
+    mov cr0 , eax
+
     ; Saltar a modo protegido
+    jmp 0x20:mp
+        ;0x20 Selector
 
+ BITS 32
     ; Establecer selectores de segmentos
-
+    mp:
+    mov eax , 1
+    mov ds , 0x30 ; 48 en Hexa 
     ; Establecer la base de la pila
     
     ; Imprimir mensaje de bienvenida
