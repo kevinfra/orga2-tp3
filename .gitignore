@@ -1,0 +1,9 @@
+*.out
+*.o
+codigo/build/
+codigo/tests/
+.vscode/
+*torreStark*
+informe.aux
+informe.log
+informe.toc
