@@ -47,7 +47,7 @@ start:
     ; Cargar la GDT
     lgdt [GDT_DESC]
 
-    xchg bx , bx
+    ;xchg bx , bx ; Magic Breakpoints
     ; Setear el bit PE del registro CR0
     cli
     mov eax , cr0
@@ -61,10 +61,16 @@ start:
  BITS 32
     ; Establecer selectores de segmentos
     mp:
-    mov eax , 1
-    mov ds , 0x30 ; 48 en Hexa 
+    xor eax , eax
+    mov ax , 0x30 ; 48 en Hexa
+    mov ds , ax
+    mov es , ax
+    mov gs , ax
+    mov ax , 0xB800
+    mov fs , ax
     ; Establecer la base de la pila
-    
+    mov ax , 0x27000
+    mov ss , ax
     ; Imprimir mensaje de bienvenida
 
     ; Inicializar pantalla
