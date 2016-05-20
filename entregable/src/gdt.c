@@ -33,37 +33,50 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned short)    0x6DFF,         /* limit[0:15]  */
         (unsigned short)    0x0000,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
-        (unsigned char)     8,           /* type         */
-        (unsigned char)     1,           /* s            */
-        (unsigned char)     0,           /* dpl          */
+        (unsigned char)     8,              /* type         */
+        (unsigned char)     1,              /* s            */
+        (unsigned char)     0,              /* dpl          */
         (unsigned char)     1,              /* p            */
-        (unsigned char)     3,           /* limit[16:19] */
+        (unsigned char)     3,              /* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
-        (unsigned char)     1,           /* db           */
-        (unsigned char)     1,           /* g            */
+        (unsigned char)     1,              /* db           */
+        (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
-//36DFF
+
         
 
     },
+/* Para calcular el limite:
 
-//  878 se pasa a MB , multiplicando 2**20 , a eso lo divido por 4k y luego le resto 1
+La cuenta para calcular el limite es la siguiente           (**=Elevado a )              (2**12)
+Calculamos cuanto es 878 MB , para eso multiplicamos 878 * (2**20) y a eso lo dividimos por 4k
+Creo que se dividia debido a la grannularidad , luego  al resultado luego se le resta 1
+Eso da 224767 , en hexa es 36DFF
+
+Para completar este archivo , se utilizo las paginas 11 y 12 del pdf "A modo protegido y mas alla"
+Ademas, se modifico el archivo defines.h
+
+
+*/
+
+
+
 
     [GDT_IDX_DESC_CODE3] = (gdt_entry) {
         (unsigned short)    0x6DFF,         /* limit[0:15]  */
         (unsigned short)    0x0000,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
-        (unsigned char)     8,           /* type         */
-        (unsigned char)     1,           /* s            */
-        (unsigned char)     3,           /* dpl          */
-        (unsigned char)     1,           /* p            */
+        (unsigned char)     8,              /* type         */
+        (unsigned char)     1,              /* s            */
+        (unsigned char)     3,              /* dpl          */
+        (unsigned char)     1,              /* p            */
         (unsigned char)     0x01,           /* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
-        (unsigned char)     1,           /* db           */
-        (unsigned char)     1,           /* g            */
+        (unsigned char)     1,              /* db           */
+        (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
         
@@ -75,15 +88,15 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned short)    0x6DFF,         /* limit[0:15]  */
         (unsigned short)    0x0000,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
-        (unsigned char)     2,           /* type         */
-        (unsigned char)     1,           /* s            */
-        (unsigned char)     0,           /* dpl          */
-        (unsigned char)     1,           /* p            */
-        (unsigned char)     0x1,           /* limit[16:19] */
+        (unsigned char)     2,              /* type         */
+        (unsigned char)     1,              /* s            */
+        (unsigned char)     0,              /* dpl          */
+        (unsigned char)     1,              /* p            */
+        (unsigned char)     0x1,            /* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
-        (unsigned char)     1,           /* db           */
-        (unsigned char)     1,           /* g            */
+        (unsigned char)     1,              /* db           */
+        (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
         
@@ -95,15 +108,15 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned short)    0x6DFF,         /* limit[0:15]  */
         (unsigned short)    0x0000,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
-        (unsigned char)     2,           /* type         */
-        (unsigned char)     1,           /* s            */
-        (unsigned char)     3,           /* dpl          */
-        (unsigned char)     1,           /* p            */
-        (unsigned char)     0x1,           /* limit[16:19] */
+        (unsigned char)     2,              /* type         */
+        (unsigned char)     1,              /* s            */
+        (unsigned char)     3,              /* dpl          */
+        (unsigned char)     1,              /* p            */
+        (unsigned char)     0x1,            /* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
-        (unsigned char)     1,           /* db           */
-        (unsigned char)     1,           /* g            */
+        (unsigned char)     1,              /* db           */
+        (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
         

@@ -49,31 +49,34 @@ start:
 
     ;xchg bx , bx ; Magic Breakpoints
     ; Setear el bit PE del registro CR0
-    cli
+    ; cli Desahibilita interrupciones , esta hecho al inicio del start
     mov eax , cr0
     or eax , 1
-    mov cr0 , eax
+    mov cr0 , eax ; Luego de esta instruccion el bit de PE de CR0 esta prendido
 
     ; Saltar a modo protegido
     jmp 0x20:mp
-        ;0x20 Selector
+    ;0x20 Selector , para calcular el selector se busco el indice de datos de nivel 0 de la GDT 
+    ;Y se lo shifteo 3 lugares a la izquierda (osea se lo multiplico por 8)
 
- BITS 32
+ BITS 32 ; Esto es para decirle al ensamblador que a partir de ahora las instrucciones son de 32 bits
     ; Establecer selectores de segmentos
     mp:
     xor eax , eax
+    ; xchg bx , xchang en la realidad es un swap pero para bochs es un Magic Breakpoint 
     mov ax , 0x30 ; 48 en Hexa
     mov ds , ax
     mov es , ax
     mov gs , ax
     mov ax , 0xB800
-    mov fs , ax
+    mov fs , ax ; Segmento de Video
     ; Establecer la base de la pila
     mov ax , 0x27000
-    mov ss , ax
+    mov ss , ax ; Segmento de pila
     ; Imprimir mensaje de bienvenida
-
+    
     ; Inicializar pantalla
+    
     
     ; Inicializar el manejador de memoria
  
