@@ -41,15 +41,14 @@ start:
     ; Imprimir mensaje de bienvenida
     imprimir_texto_mr iniciando_mr_msg, iniciando_mr_len, 0x07, 0, 0
     
-
+    ;De Aca en Adelante se fue modificando el codigo
     ; Habilitar A20
+    xchg bx , bx
     call habilitar_A20
     ; Cargar la GDT
     lgdt [GDT_DESC]
 
-    ;xchg bx , bx ; Magic Breakpoints
     ; Setear el bit PE del registro CR0
-    ; cli Desahibilita interrupciones , esta hecho al inicio del start
     mov eax , cr0
     or eax , 1
     mov cr0 , eax ; Luego de esta instruccion el bit de PE de CR0 esta prendido
@@ -61,20 +60,37 @@ start:
 
  BITS 32 ; Esto es para decirle al ensamblador que a partir de ahora las instrucciones son de 32 bits
     ; Establecer selectores de segmentos
-    mp:
-    xor eax , eax
     ; xchg bx , xchang en la realidad es un swap pero para bochs es un Magic Breakpoint 
+    mp:
+    xchg bx , bx
+    xor eax , eax
     mov ax , 0x30 ; 48 en Hexa
-    mov ds , ax
-    mov es , ax
-    mov gs , ax
-    mov ax , 0xB800
-    mov fs , ax ; Segmento de Video
-    ; Establecer la base de la pila
-    mov ax , 0x27000
+    mov ds , ax ; AX tiene el indice de datos de nivel 0 shifteado 3 indices a la izquierda
+    mov es , ax ;   MIAMII
+    mov gs , ax ;
+    mov fs , ax ; Segmento de Video ; C
+    xchg bx , bx ; Magic Breakpoints
+    ; Establecer la base y tope de la pila de la pila
+    mov esp , 0x27000 ;  MIAMIII
+    mov ebp , 0x27000 ; MIAMIII
     mov ss , ax ; Segmento de pila
     ; Imprimir mensaje de bienvenida
+    ;SLIDE FURFI - 1° Clase . PP 74 
+    xor ebx , ebx
+    col:
+    xor edi , edi
+    mov ecx , 50
+    row:
+    mov byte [ebx + edi*2 + 0x000B8000] , 0x22; MIRAR Colors.h y Consultar 
+    inc edi
+    loop row
+    add ebx , 160
+    cmp ebx , 0x1000
+    jle col
+    ;FIN SLIDE FURFI
+    xchg bx , bx
     
+
     ; Inicializar pantalla
     
     
@@ -105,6 +121,8 @@ start:
     ; Saltar a la primera tarea: Idle
 
     ; Ciclar infinitamente (por si algo sale mal...)
+    xchg bx , bx
+    nop
     mov eax, 0xFFFF
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF

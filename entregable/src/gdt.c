@@ -72,7 +72,7 @@ Ademas, se modifico el archivo defines.h
         (unsigned char)     1,              /* s            */
         (unsigned char)     3,              /* dpl          */
         (unsigned char)     1,              /* p            */
-        (unsigned char)     0x01,           /* limit[16:19] */
+        (unsigned char)     3,           	/* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
         (unsigned char)     1,              /* db           */
@@ -92,7 +92,7 @@ Ademas, se modifico el archivo defines.h
         (unsigned char)     1,              /* s            */
         (unsigned char)     0,              /* dpl          */
         (unsigned char)     1,              /* p            */
-        (unsigned char)     0x1,            /* limit[16:19] */
+        (unsigned char)     3,            	/* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
         (unsigned char)     1,              /* db           */
@@ -112,7 +112,7 @@ Ademas, se modifico el archivo defines.h
         (unsigned char)     1,              /* s            */
         (unsigned char)     3,              /* dpl          */
         (unsigned char)     1,              /* p            */
-        (unsigned char)     0x1,            /* limit[16:19] */
+        (unsigned char)     3,            	/* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
         (unsigned char)     1,              /* db           */
