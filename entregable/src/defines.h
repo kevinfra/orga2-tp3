@@ -37,12 +37,12 @@
 /* Offsets en la gdt */
 /* -------------------------------------------------------------------------- */
 #define GDT_OFF_NULL_DESC           (GDT_IDX_NULL_DESC      << 3)
-    /* Hace falta esto ? MIAMIIII
+     // Hace falta esto ? MIAMIIII
 #define GDT_OFF_IDX_DESC_CODE0		(GDT_IDX_DESC_CODE0     << 3)
 #define GDT_OFF_IDX_DESC_CODE3		(GDT_IDX_DESC_CODE3     << 3)
 #define GDT_OFF_IDX_DESC_DATA0		(GDT_IDX_DESC_DATA0     << 3)
 #define GDT_OFF_IDX_DESC_DATA3    	(GDT_IDX_DESC_DATA3     << 3)
-*/
+
 /* Direcciones de memoria */
 /* -------------------------------------------------------------------------- */
 #define VIDEO_SCREEN            0x000B8000 /* direccion fisica del buffer de video */

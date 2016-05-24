@@ -7,7 +7,9 @@
 
 global start
 
+extern IDT_DESC
 extern GDT_DESC
+extern idt_inicializar
 
 ;; Saltear seccion de datos
 jmp start
@@ -74,14 +76,24 @@ start:
     mov esp , 0x27000 ;  MIAMIII
     mov ebp , 0x27000 ; MIAMIII
     mov ss , ax ; Segmento de pila
+    call idt_inicializar
+    lidt [IDT_DESC]
+    ; sti
     ; Imprimir mensaje de bienvenida
-    ;SLIDE FURFI - 1° Clase . PP 74 
+    imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 2, 0
+    ; nop
+    ; nop
+    ; xchg bx , bx
+
+    ; Inicializar pantalla
+    
+    ; ;SLIDE FURFI - 1° Clase . PP 80 
     xor ebx , ebx
     col:
     xor edi , edi
     mov ecx , 50
-    row:
-    mov byte [ebx + edi*2 + 0x000B8000] , 0x22; MIRAR Colors.h y Consultar 
+    row:                                      
+    mov word [ebx + edi*2 + 0x000B8000] , 0x7700  ; MIRAR Colors.h y Consultar 
     inc edi
     loop row
     add ebx , 160
@@ -89,9 +101,12 @@ start:
     jle col
     ;FIN SLIDE FURFI
     xchg bx , bx
+    xchg bx , bx
+    xor ebx , ebx
+    xor eax , eax
+    div eax
     
 
-    ; Inicializar pantalla
     
     
     ; Inicializar el manejador de memoria

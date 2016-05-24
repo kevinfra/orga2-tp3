@@ -6,6 +6,67 @@
 
 %include "imprimir.mac"
 
+msj0: db'Divide Error!'
+msj0_len equ $ - msj0
+
+msj1: db'RESERVED'
+msj1_len equ $ - msj1
+
+msj2: db'NMI interrupt'
+msj2_len equ $ - msj2
+
+msj3: db'Breakpoint'
+msj3_len equ $ - msj3
+
+msj4: db'Overflow'
+msj4_len equ $ - msj4
+
+msj5: db'BOUND Range Exceeded'
+msj5_len equ $ - msj5
+
+msj6: db'Invalid Opcode(Undefined Opcode)'
+msj6_len equ $ - msj6
+
+msj7: db'Device Not Available(No Math Coprocessor)'
+msj7_len equ $ - msj7
+
+msj8: db'Double Fault'
+msj8_len equ $ - msj8
+
+msj9: db'Coprocessor Segment Overrun(reserved)'
+msj9_len equ $ - msj9
+
+msj10: db'Invalid TSS'
+msj10_len equ $ - msj10
+
+msj11: db'Segment Not Present'
+msj11_len equ $ - msj11
+
+msj12: db'Stack-Segment Fault'
+msj12_len equ $ - msj12
+
+msj13: db'General Protection'
+msj13_len equ $ - msj13
+
+msj14: db'Page Fault'
+msj14_len equ $ - msj14
+
+msj15: db'Intel Reserved. Do not use'
+msj15_len equ $ - msj15
+
+msj16: db'x87 FPU Floating-Point Error(Math Fault)'
+msj16_len equ $ - msj16
+
+msj17: db'Alignment Check'
+msj17_len equ $ - msj17
+
+msj18: db'Machine Check'
+msj18_len equ $ - msj18
+
+msj19: db'SIMD Floating-Point Exception'
+msj19_len equ $ - msj19
+
+
 BITS 32
 
 sched_tarea_offset:     dd 0x00
@@ -26,9 +87,12 @@ global _isr%1
 
 _isr%1:
     mov eax, %1
+    imprimir_texto_mp msj%1, msj%1_len, 0x0f, 0, 0
     jmp $
 
 %endmacro
+
+
 
 ;;
 ;; Datos
@@ -41,6 +105,25 @@ isrClock:            db '|/-\'
 ;; Rutina de atención de las EXCEPCIONES
 ;; -------------------------------------------------------------------------- ;;
 ISR 0
+ISR 1
+ISR 2
+ISR 3
+ISR 4
+ISR 5
+ISR 6
+ISR 7
+ISR 8
+ISR 9
+ISR 10
+ISR 11
+ISR 12
+ISR 13
+ISR 14
+ISR 15
+ISR 16
+ISR 17
+ISR 18
+ISR 19
 
 ;;
 ;; Rutina de atención del RELOJ
