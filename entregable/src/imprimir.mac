@@ -165,14 +165,49 @@
     
     pintarPantalla
 
-    mov ebx , 7200
-
-    mov ecx , 400
     xor edi , edi
+    mov ecx, 80
+    %%pintarPrimeraLinea
+        mov word [edi*2 + 0x000B8000], 0x0000
+        inc edi
+        loop %%pintarPrimeraLinea
+
+    xor edi , edi
+    mov ebx , 7200
+    mov ecx , 400
+
     %%cicloNegro:                                      
         mov word [ebx + edi*2 + 0x000B8000] , 0x0000  ; MIRAR Colors.h y Consultar 
         inc edi
         loop %%cicloNegro
+
+
+    %%agregarVidas
+        ;41 empieza primer V I D A S
+        ;62 empieza segundo V I D A S
+        ;Ambos en 46
+        mov edi , 7444
+        mov word [edi + 0x000B8000] , 0x0756  ; MIRAR Colors.h y Consultar
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0749 ; I
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0744 ; D
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0741 ; A
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0753 ; S
+        
+        mov edi , 7506
+        mov word [edi + 0x000B8000] , 0x0756  ; MIRAR Colors.h y Consultar
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0749 ; I
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0744 ; D
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0741 ; A
+        add edi, 2
+        mov word [edi + 0x000B8000] , 0x0753 ; S
+        
     
     pop edi
     pop ecx
