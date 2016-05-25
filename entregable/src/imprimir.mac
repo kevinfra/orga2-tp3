@@ -140,4 +140,44 @@
     popa
 %endmacro
 
+%macro pintarPantalla 0
+
+    push ecx
+    push edi
+
+    mov ecx , 4000
+    xor edi , edi
+    %%cicloGris:                                      
+        mov word [edi*2 + 0x000B8000] , 0x7700  ; MIRAR Colors.h y Consultar 
+        inc edi
+        loop %%cicloGris
+    
+    pop edi
+    pop ecx
+
+%endmacro
+
+%macro pintarPantallaBaja 0
+
+    push ebx
+    push ecx
+    push edi
+    
+    pintarPantalla
+
+    mov ebx , 7200
+
+    mov ecx , 400
+    xor edi , edi
+    %%cicloNegro:                                      
+        mov word [ebx + edi*2 + 0x000B8000] , 0x0000  ; MIRAR Colors.h y Consultar 
+        inc edi
+        loop %%cicloNegro
+    
+    pop edi
+    pop ecx
+    pop ebx
+
+%endmacro
+
 %endif  ;; !__IMPRIMIR_MAC__ ;;

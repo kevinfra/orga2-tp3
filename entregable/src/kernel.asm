@@ -80,6 +80,7 @@ start:
     lidt [IDT_DESC]
     ; sti
     ; Imprimir mensaje de bienvenida
+    xchg bx , bx
     imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 2, 0
     ; nop
     ; nop
@@ -88,23 +89,12 @@ start:
     ; Inicializar pantalla
     
     ; ;SLIDE FURFI - 1° Clase . PP 80 
-    xor ebx , ebx
-    col:
-    xor edi , edi
-    mov ecx , 50
-    row:                                      
-    mov word [ebx + edi*2 + 0x000B8000] , 0x7700  ; MIRAR Colors.h y Consultar 
-    inc edi
-    loop row
-    add ebx , 160
-    cmp ebx , 0x1000
-    jle col
-    ;FIN SLIDE FURFI
-    xchg bx , bx
-    xchg bx , bx
-    xor ebx , ebx
-    xor eax , eax
-    div eax
+    pintarPantalla
+    pintarPantallaBaja
+
+    ; xor ebx , ebx
+    ; xor eax , eax
+    ; div eax
     
 
     
