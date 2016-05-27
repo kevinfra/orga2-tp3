@@ -10,7 +10,7 @@ global start
 extern IDT_DESC
 extern GDT_DESC
 extern idt_inicializar
-
+extern mmu_inicializar_dir_kernel
 ;; Saltear seccion de datos
 jmp start
 
@@ -42,10 +42,10 @@ start:
 
     ; Imprimir mensaje de bienvenida
     imprimir_texto_mr iniciando_mr_msg, iniciando_mr_len, 0x07, 0, 0
-    
+
     ;De Aca en Adelante se fue modificando el codigo
     ; Habilitar A20
-    xchg bx , bx
+  ;  xchg bx , bx
     call habilitar_A20
     ; Cargar la GDT
     lgdt [GDT_DESC]
@@ -57,21 +57,21 @@ start:
 
     ; Saltar a modo protegido
     jmp 0x20:mp
-    ;0x20 Selector , para calcular el selector se busco el indice de datos de nivel 0 de la GDT 
+    ;0x20 Selector , para calcular el selector se busco el indice de datos de nivel 0 de la GDT
     ;Y se lo shifteo 3 lugares a la izquierda (osea se lo multiplico por 8)
 
  BITS 32 ; Esto es para decirle al ensamblador que a partir de ahora las instrucciones son de 32 bits
     ; Establecer selectores de segmentos
-    ; xchg bx , xchang en la realidad es un swap pero para bochs es un Magic Breakpoint 
+    ; xchg bx , xchang en la realidad es un swap pero para bochs es un Magic Breakpoint
     mp:
-    xchg bx , bx
+  ;  xchg bx , bx
     xor eax , eax
     mov ax , 0x30 ; 48 en Hexa
     mov ds , ax ; AX tiene el indice de datos de nivel 0 shifteado 3 indices a la izquierda
     mov es , ax ;   MIAMII
     mov gs , ax ;
     mov fs , ax ; Segmento de Video ; C
-    xchg bx , bx ; Magic Breakpoints
+  ;  xchg bx , bx ; Magic Breakpoints
     ; Establecer la base y tope de la pila de la pila
     mov esp , 0x27000 ;  MIAMIII
     mov ebp , 0x27000 ; MIAMIII
@@ -80,33 +80,41 @@ start:
     lidt [IDT_DESC]
     ; sti
     ; Imprimir mensaje de bienvenida
-    xchg bx , bx
+    ;xchg bx , bx
     imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 2, 0
     ; nop
     ; nop
     ; xchg bx , bx
 
     ; Inicializar pantalla
-    
-    ; ;SLIDE FURFI - 1° Clase . PP 80 
+
+    ; ;SLIDE FURFI - 1° Clase . PP 80
     pintarPantalla
     pintarPantallaBaja
 
     ; xor ebx , ebx
     ; xor eax , eax
     ; div eax
-    
 
-    
-    
+
     ; Inicializar el manejador de memoria
- 
-    ; Inicializar el directorio de paginas
-    
-    ; Cargar directorio de paginas
 
-    ; Habilitar paginacion
-    
+
+
+
+    ; Inicializar el directorio de paginas
+    xchg bx, bx
+    ; Cargar directorio de paginas Ejercicio 3 B
+    call mmu_inicializar_dir_kernel
+    xchg bx, bx
+    ; Habilitar paginacion Ejercicio 3 C
+    mov eax, 0x27000
+    mov cr3 , eax
+    mov eax, cr0
+    or eax, 0x80000000
+    mov cr0, eax
+
+
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
@@ -114,9 +122,9 @@ start:
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
-    
+
     ; Cargar IDT
- 
+
     ; Configurar controlador de interrupciones
 
     ; Cargar tarea inicial

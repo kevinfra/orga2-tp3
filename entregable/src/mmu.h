@@ -14,10 +14,6 @@
 #include "game.h"
 
 void mmu_inicializar();
-
-
+unsigned int mmu_proxima_pagina_fisica_libre();
+void mmu_inicializar_dir_kernel();
 #endif	/* !__MMU_H__ */
-
-
-
-

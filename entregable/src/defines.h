@@ -28,7 +28,7 @@
 /* -------------------------------------------------------------------------- */
 #define GDT_COUNT 8						/*Determina el tamano de la GDT */
 
-#define GDT_IDX_NULL_DESC           0	
+#define GDT_IDX_NULL_DESC           0
 #define GDT_IDX_DESC_CODE0			4
 #define GDT_IDX_DESC_CODE3			5
 #define GDT_IDX_DESC_DATA0			6
@@ -46,5 +46,12 @@
 /* Direcciones de memoria */
 /* -------------------------------------------------------------------------- */
 #define VIDEO_SCREEN            0x000B8000 /* direccion fisica del buffer de video */
+
+
+/* inicializar paginacion */
+#define INICIO_PAGINAS_LIBRES    0x100000
+#define PAGE_SIZE                4096
+
+
 
 #endif  /* !__DEFINES_H__ */
