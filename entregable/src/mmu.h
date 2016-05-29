@@ -15,5 +15,6 @@
 
 void mmu_inicializar();
 unsigned int mmu_proxima_pagina_fisica_libre();
+void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica);
 void mmu_inicializar_dir_kernel();
 #endif	/* !__MMU_H__ */

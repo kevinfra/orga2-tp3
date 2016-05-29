@@ -6,6 +6,12 @@
 */
 
 #include "mmu.h"
+#define PDE_INDEX(virtual) (virtual >> 22)
+#define PTE_INDEX(virtual) ((virtual & 0x003FF000) >> 12)
+#define ALIGN(dir) ???
+#define PG_READ_WRITE ???
+#define PG_USER ???
+#define PG_PRESENT 0x00000001
 
 unsigned int proxima_pagina_libre;
 
@@ -20,7 +26,31 @@ unsigned int mmu_proxima_pagina_fisica_libre() {
 }
 
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica){
-  
+//    1 Descomponer la direcci´on virtual en Indice de
+//          Directorio e Indice de Tabla.
+    unsigned int directoryIndex = virtual; //PdE
+    unsigned int tableIndex = virtual; //PtE
+    unsigned int directoryOffset = PDE_INDEX(directoryIndex);
+    unsigned int tableOffset = PTE_INDEX(tableIndex);
+//    2 Obtener el PDE correspondiente al esquema de
+//          paginaci´on cr3 y el Indice de Directorio, si no es valido,
+//          inicializar una nueva tabla de paginas.
+    unsigned int direccion_directorio_paginas = cr3 >> 12;
+    directoryIndex = directoryOffset + direccion_directorio_paginas * 4;
+    if(!( *directoryIndex) & 1){
+      *directoryIndex = mmu_proxima_pagina_fisica_libre() & 0xFFFFF003;
+    }
+    unsigned int pde = (*directoryIndex) & 0xFFFFF000;
+
+//    3 Obtener el PTE correspondiente al esquema de paginaci´on
+//          cr3 y el Indice de Tabla.
+//    4 Completar la PTE seg´un corresponda para mapear la
+//          direccion fisica.
+    unsigned int pte = (*(pde + tableOffset * 4)) & 0xFFFFF003;
+
+//    5 Ejecutar tlbflush() para invalidar la cache de
+//          traducciones.
+    tlbflush();
 }
 
 
