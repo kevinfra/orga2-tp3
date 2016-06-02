@@ -4,13 +4,15 @@
 ; ==============================================================================
 
 %include "imprimir.mac"
-
 global start
 
 extern IDT_DESC
 extern GDT_DESC
 extern idt_inicializar
 extern mmu_inicializar_dir_kernel
+extern mmu_inicializar
+extern mmu_mapear_pagina
+extern mmu_unmapear_pagina
 ;; Saltear seccion de datos
 jmp start
 
@@ -103,10 +105,8 @@ start:
 
 
     ; Inicializar el directorio de paginas
-    xchg bx, bx
     ; Cargar directorio de paginas Ejercicio 3 B
     call mmu_inicializar_dir_kernel
-    xchg bx, bx
     ; Habilitar paginacion Ejercicio 3 C
     mov eax, 0x27000
     mov cr3 , eax
@@ -114,6 +114,19 @@ start:
     or eax, 0x80000000
     mov cr0, eax
 
+    xchg bx, bx
+    call mmu_inicializar
+    mov eax, cr3
+    push 0x22212000
+    push eax
+    push 0x400000
+    xchg bx, bx
+    call mmu_mapear_pagina
+
+    push eax
+    push 0x400000
+    xchg bx, bx
+    call mmu_unmapear_pagina
 
     ; Inicializar tss
 
