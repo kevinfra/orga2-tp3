@@ -25,7 +25,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x00,           /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
-        
+
 
     },
 
@@ -45,7 +45,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x00,           /* base[31:24]  */
 
 
-        
+
 
     },
 /* Para calcular el limite:
@@ -79,9 +79,10 @@ Ademas, se modifico el archivo defines.h
         (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
-        
+
 
     },
+
 
 
     [GDT_IDX_DESC_DATA0] = (gdt_entry) {
@@ -99,7 +100,7 @@ Ademas, se modifico el archivo defines.h
         (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
-        
+
 
     },
 
@@ -119,19 +120,52 @@ Ademas, se modifico el archivo defines.h
         (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
-        
+
 
     },
 
+    [GDT_IDX_DESC_TAREA1] = (gdt_entry) {
+        (unsigned short)    0x6DFF,         /* limit[0:15]  */
+        (unsigned short)    0x0000,         /* base[0:15]   */
+        (unsigned char)     0x00,           /* base[23:16]  */
+        (unsigned char)     9,              /* type         */
+        (unsigned char)     1,              /* s            */
+        (unsigned char)     3,              /* dpl          */
+        (unsigned char)     1,              /* p            */
+        (unsigned char)     3,           	/* limit[16:19] */
+        (unsigned char)     0x00,           /* avl          */
+        (unsigned char)     0x00,           /* l            */
+        (unsigned char)     1,              /* db           */
+        (unsigned char)     1,              /* g            */
+        (unsigned char)     0x00,           /* base[31:24]  */
 
-  
-    
+
+
+    },
+
+    [GDT_IDX_DESC_TAREA2] = (gdt_entry) {
+        (unsigned short)    0x6DFF,         /* limit[0:15]  */
+        (unsigned short)    0x0000,         /* base[0:15]   */
+        (unsigned char)     0x00,           /* base[23:16]  */
+        (unsigned char)     8,              /* type         */
+        (unsigned char)     1,              /* s            */
+        (unsigned char)     3,              /* dpl          */
+        (unsigned char)     1,              /* p            */
+        (unsigned char)     3,           	/* limit[16:19] */
+        (unsigned char)     0x00,           /* avl          */
+        (unsigned char)     0x00,           /* l            */
+        (unsigned char)     1,              /* db           */
+        (unsigned char)     1,              /* g            */
+        (unsigned char)     0x00,           /* base[31:24]  */
+
+
+
+    }
+
+
 };
 
 gdt_descriptor GDT_DESC = {
     sizeof(gdt) - 1,
     (unsigned int) &gdt
 };
-
-
-

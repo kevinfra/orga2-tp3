@@ -143,7 +143,10 @@ start:
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
-
+    call resetear_pic
+    call habilitar_pic
+    call deshabilitar_pic
+    sti
     ; Saltar a la primera tarea: Idle
 
     ; Ciclar infinitamente (por si algo sale mal...)

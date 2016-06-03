@@ -92,6 +92,10 @@ _isr%1:
 
 %endmacro
 
+%macro convertir_scanCode_Letra 1
+;;;;;;;;;;;;COMPLETAAAAAAAAAAAAAAAAAAAAAARRRRRRRR MAIAME
+    imprimir_texto_mp eax 1 0x0f 0 79
+
 
 
 ;;
@@ -128,14 +132,34 @@ ISR 19
 ;;
 ;; Rutina de atención del RELOJ
 ;; -------------------------------------------------------------------------- ;;
-
+_isr32:
+    pushfd
+    call fin_intr_pic1
+    call proximo_reloj
+    popfd
+    iret
 ;;
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
-
+_isr33:
+    pushfd
+    call fin_intr_pic1
+    push eax
+    in al, 0x60
+    convertir_scanCode_Letra_Imprimir al
+    pop eax
+    popfd
+    iret
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
+_isr66:
+    mov eax, 0x42
+    iret
+
+
+
+
 
 %define DONDE  0x124
 %define SOY    0xA6A
@@ -160,5 +184,3 @@ proximo_reloj:
                 imprimir_texto_mp ebx, 1, 0x0f, 49, 79
                 popad
         ret
-        
-        
