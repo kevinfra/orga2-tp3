@@ -13,6 +13,9 @@ extern mmu_inicializar_dir_kernel
 extern mmu_inicializar
 extern mmu_mapear_pagina
 extern mmu_unmapear_pagina
+extern resetear_pic
+extern habilitar_pic
+extern deshabilitar_pic
 ;; Saltear seccion de datos
 jmp start
 

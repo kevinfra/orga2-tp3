@@ -81,7 +81,9 @@ extern sched_proximo_indice
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
-
+global _isr32
+global _isr33
+global _isr66
 %macro ISR 1
 global _isr%1
 
@@ -94,9 +96,9 @@ _isr%1:
 
 %macro convertir_scanCode_Letra 1
 ;;;;;;;;;;;;COMPLETAAAAAAAAAAAAAAAAAAAAAARRRRRRRR MAIAME
-    imprimir_texto_mp eax 1 0x0f 0 79
+    imprimir_texto_mp eax, 1, 0x0f, 0, 79
 
-
+%endmacro
 
 ;;
 ;; Datos
@@ -145,8 +147,9 @@ _isr33:
     pushfd
     call fin_intr_pic1
     push eax
+    xor eax, eax
     in al, 0x60
-    convertir_scanCode_Letra_Imprimir al
+  ;  convertir_scanCode_Letra_Imprimir eax
     pop eax
     popfd
     iret

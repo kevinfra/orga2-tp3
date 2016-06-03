@@ -9,8 +9,8 @@
 
 tss tss_inicial;
 tss tss_idle;
-
-void tss_inicializar() {
-  (tss *) punteroATssInicial = &(tss_inicial);
-  *punteroATssInicial = 0;
-}
+// MAIAME DE NICO
+// void tss_inicializar() {
+//   (tss *) punteroATssInicial = &(tss_inicial);
+//   *punteroATssInicial = 0;
+// }
