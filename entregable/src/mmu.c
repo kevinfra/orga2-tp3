@@ -82,12 +82,13 @@ void mmu_inicializar_dir_kernel(){
   unsigned int * tableDeDirecciones = (unsigned int *) 0x27000;
   *tableDeDirecciones = (unsigned int) pageTable | 3;
   tableDeDirecciones++;
-  for(int i = 1; i < 1024; i++){
+  int i = 1 ;
+  for(i = 1; i < 1024; i++){
     *tableDeDirecciones = 0;
     tableDeDirecciones++;
   }
-
-  for(int j = 0; j < 1024; j++){
+  int j = 0 ;
+  for(j = 0; j < 1024; j++){
     *pageTable = j*4096 | 3;
     pageTable++;
   }
@@ -100,12 +101,14 @@ void mmu_inicializar_dir_tarea( unsigned int cr3,  unsigned int tipoDeTarea, int
   unsigned int* pageTable = (unsigned int*) mmu_proxima_pagina_fisica_libre();
   *pageDirectory = ((unsigned int)(pageTable) | 3);
   pageDirectory++;
-  for(int i = 1; i < 1024; i++){
+  int i = 1 ;
+  for(i = 1; i < 1024; i++){
     *pageDirectory = 0;
     pageDirectory++;
   }
 
-  for(int j = 0; j < 1024; j++){
+  int j = 0 ;
+  for(j = 0; j < 1024; j++){
     *pageTable =  0;
     pageTable++;
   }
