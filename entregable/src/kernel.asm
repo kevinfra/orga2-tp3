@@ -130,20 +130,6 @@ start:
 ;    push 0x400000
 ;    xchg bx, bx
 ;    call mmu_unmapear_pagina       //TODO ESTO ES PARA TESTEAR
-xchg bx, bx
-    push 40
-    push 30
-    push 'A'
-    mov eax, 0x8000
-    push eax
-    xchg bx, bx
-    nop
-    nop
-    nop
-    call mmu_inicializar_dir_tarea
-    mov eax, 0x8000
-    mov cr3, eax
-    xchg bx, bx
 
 
     ; Inicializar tss
