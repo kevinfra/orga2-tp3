@@ -18,5 +18,6 @@ unsigned int mmu_proxima_pagina_fisica_libre();
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica);
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
 void mmu_inicializar_dir_kernel();
-void mmu_inicializar_dir_tarea();
+void mmu_inicializar_dir_tarea( unsigned int cr3,  unsigned int tipoDeTarea, int x, int y);
+  //TODO: TESTEAR mmu_inicializar_dir_tarea
 #endif	/* !__MMU_H__ */
