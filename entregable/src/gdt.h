@@ -10,6 +10,9 @@
 
 #include "defines.h"
 
+void inicializar_proximoSlotLibre();
+unsigned int proximoSlotLibre();
+
 typedef struct str_gdt_descriptor {
     unsigned short  gdt_length;
     unsigned int    gdt_addr;

@@ -6,6 +6,7 @@
 */
 
 #include "mmu.h"
+#include "i386.h"
 //extern tlbflush();
 #define PDE_INDEX(virtual) (virtual >> 22)
 #define PTE_INDEX(virtual) ((virtual & 0x003FF000) >> 12)
@@ -42,7 +43,7 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
     unsigned int nuevaPagina;
     if(!((*PDE) & PG_PRESENT)){
       nuevaPagina = mmu_proxima_pagina_fisica_libre();
-      *PDE = (nuevaPagina | PG_SET_READ_WRITE_AND_PRESENT) & PG_SET_ATTRIB_0;
+      *PDE = (nuevaPagina | PG_SET_READ_WRITE_AND_PRESENT);
       //Seteamos en 0 la nueva pagina
       int i;
       for(i = 0; i < 1024; i++){
@@ -62,7 +63,7 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 //    4 Completar la PTE seg´un corresponda para mapear la
 //          direccion fisica.
 
-    *PTE = ((fisica >> 12) | PG_SET_READ_WRITE_AND_PRESENT) & PG_SET_ATTRIB_0;
+    *PTE = fisica | PG_SET_READ_WRITE_AND_PRESENT;
 
 //    5 Ejecutar tlbflush() para invalidar la cache de
 //          traducciones.
@@ -71,8 +72,12 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
     int PDEindex = PDE_INDEX(virtual);
+    int PTEindex = PTE_INDEX(virtual);
     int* PDE = &((int *)cr3)[PDEindex];
-    *PDE = (*PDE) & PG_DELETE_PRESENT;
+    int dir_page_table = (unsigned int) *PDE & 0xFFFFF800; //MIAMEEE
+    int* PTE = &(((int*)(dir_page_table))[PTEindex]);
+
+    *PTE = (*PTE) & PG_DELETE_PRESENT;
 }
 
 
@@ -95,7 +100,8 @@ void mmu_inicializar_dir_kernel(){
 }
 
 
-void mmu_inicializar_dir_tarea( unsigned int cr3,  unsigned int tipoDeTarea, int x, int y){
+unsigned int mmu_inicializar_dir_tarea( unsigned int cr3,  char tipoDeTarea, int x, int y){
+//  breakpoint();
   unsigned int* pageDirectory = (unsigned int*) mmu_proxima_pagina_fisica_libre();
   unsigned int* paginacionTareas = pageDirectory;
   unsigned int* pageTable = (unsigned int*) mmu_proxima_pagina_fisica_libre();
@@ -139,5 +145,7 @@ void mmu_inicializar_dir_tarea( unsigned int cr3,  unsigned int tipoDeTarea, int
     dirEnMapa++;
   }
   mmu_unmapear_pagina(dirFisicaTarea, cr3);
+//breakpoint();
+  return (unsigned int) paginacionTareas;
 
 }

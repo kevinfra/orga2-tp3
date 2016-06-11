@@ -14,6 +14,7 @@ extern mmu_inicializar
 extern mmu_mapear_pagina
 extern mmu_unmapear_pagina
 extern mmu_inicializar_dir_tarea
+extern tss_inicializar
 extern resetear_pic
 extern habilitar_pic
 extern deshabilitar_pic
@@ -119,21 +120,21 @@ start:
     mov cr0, eax
 
     call mmu_inicializar
-;    mov eax, cr3                 //TESTEO
-;    push 0x22212000
+;//TESTEO
+;    push 5
+;    push 5
+;    push 'A'
+;    mov eax, cr3
 ;    push eax
-;    push 0x400000
 ;    xchg bx, bx
-;    call mmu_mapear_pagina
-
-;    push eax
-;    push 0x400000
+;    call mmu_inicializar_dir_tarea
+;    mov cr3, eax
 ;    xchg bx, bx
-;    call mmu_unmapear_pagina       //TODO ESTO ES PARA TESTEAR
+;//FIN TEST INICIALIZAR DIR TAREA
 
 
     ; Inicializar tss
-
+    call tss_inicializar
     ; Inicializar tss de la tarea Idle
 
     ; Inicializar el scheduler
