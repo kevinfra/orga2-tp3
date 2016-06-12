@@ -78,6 +78,20 @@ extern fin_intr_pic1
 ;; Sched
 extern sched_proximo_indice
 
+;Definicion para la interupcion de teclado
+%define W 0x11
+%define A 0x1E
+%define S 0x1F
+%define D 0x20
+%define lShift 0x2A
+%define rShift 0x36
+%define I 0x17
+%define K 0x25
+%define J 0x24
+%define L 0x26
+
+;Numeritos obtenidos de http://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
+
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -144,15 +158,48 @@ _isr32:
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
 _isr33:
+    ;pushfd ; Para que pusheas flag ? Eso se pushea solo creo
+    pushad
     pushfd
     call fin_intr_pic1
-    push eax
     xor eax, eax
-    in al, 0x60
+    xor ebx, ebx
+    in al, 0x60 ; en AL tengo el caracter pulsado
   ;  convertir_scanCode_Letra_Imprimir eax
-    pop eax
-    popfd
-    iret
+    mov ebx , "w"
+    cmp al , W
+    je .valida
+    mov ebx ,"a"
+    cmp al , A
+    je .valida
+    mov ebx , "s"
+    cmp al , S
+    je .valida
+    mov ebx , "d"
+    cmp al , D
+    je .valida
+    cmp al , lShift
+    mov ebx ,"i"
+    je .valida
+    cmp al , I
+    je .valida
+    cmp al , K
+    je .valida
+    cmp al , J
+    je .valida
+    cmp al, L
+    je .valida
+    cmp al, rShift
+    je .valida
+        .nada:;Si entro aca quiere decir que se apreto una tecla invalida
+        jmp .fin
+         .valida:
+         imprimir_texto_mp ebx, 1, 0xFF00, 0, 79
+   .fin:
+   popfd
+   popad
+   ;call fin_intr_pic1
+   iret
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
