@@ -96,7 +96,7 @@ start:
     ; Inicializar pantalla
 
     ; ;SLIDE FURFI - 1° Clase . PP 80
-    pintarPantalla
+    ;pintarPantalla
     pintarPantallaBaja
 
     ; xor ebx , ebx
