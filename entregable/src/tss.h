@@ -55,6 +55,6 @@ typedef struct str_tss {
 } __attribute__((__packed__, aligned (8))) tss;
 
 void tss_inicializar();
-void completar_tss(char tipoDeTarea);
+void completar_tss(char tipoDeTarea,  int * posTarea);
 
 #endif  /* !__TSS_H__ */

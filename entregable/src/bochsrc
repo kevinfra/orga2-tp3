@@ -65,7 +65,7 @@ config_interface: textconfig
 #display_library: win32, options="gui_debug" # use Win32 debugger gui
 #display_library: wx
 #display_library: x, options="hideIPS" # disable IPS output in status bar
-display_library: x, options="gui_debug" # use GTK debugger gui
+#display_library: x, options="gui_debug" # use GTK debugger gui
 
 #=======================================================================
 # ROMIMAGE:
@@ -867,4 +867,3 @@ debug_symbols: file="kernel.sym"
 # romimage: file=:bios:BIOS-bochs-latest, address=0xf0000
 # floppya: 1_44=[fd:], status=inserted
 #=======================================================================
-
