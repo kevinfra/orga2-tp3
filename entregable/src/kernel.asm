@@ -18,6 +18,7 @@ extern tss_inicializar
 extern resetear_pic
 extern habilitar_pic
 extern deshabilitar_pic
+
 ;; Saltear seccion de datos
 jmp start
 
@@ -83,6 +84,12 @@ start:
     mov esp , 0x27000 ;  MIAMIII
     mov ebp , 0x27000 ; MIAMIII
     mov ss , ax ; Segmento de pila
+
+    ; Inicializar la IDT
+
+    ; Cargar IDT
+
+    ; Configurar controlador de interrupciones
     call idt_inicializar
     lidt [IDT_DESC]
     ; sti
@@ -112,6 +119,7 @@ start:
     ; Inicializar el directorio de paginas
     ; Cargar directorio de paginas Ejercicio 3 B
     call mmu_inicializar_dir_kernel
+
     ; Habilitar paginacion Ejercicio 3 C
     mov eax, 0x27000
     mov cr3 , eax
@@ -139,19 +147,16 @@ start:
 
     ; Inicializar el scheduler
 
-    ; Inicializar la IDT
-
-    ; Cargar IDT
-
-    ; Configurar controlador de interrupciones
-
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
+
     call resetear_pic
     call habilitar_pic
     call deshabilitar_pic
+    xchg bx, bx
     sti
+    int 66
     ; Saltar a la primera tarea: Idle
 
     ; Ciclar infinitamente (por si algo sale mal...)
