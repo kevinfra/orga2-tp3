@@ -5,7 +5,7 @@
 
 %ifndef __IMPRIMIR_MAC__
 %define __IMPRIMIR_MAC__
-
+%define ROW_SIZE 160
 ;; imprimir_texto_mp:
 ;;  Description:
 ;;      Imprime un string en la seccion especificada de la memoria de Video.
@@ -147,11 +147,11 @@
 
     mov ecx , 4000
     xor edi , edi
-    %%cicloGris:                                      
-        mov word [edi*2 + 0x000B8000] , 0x7700  ; MIRAR Colors.h y Consultar 
+    %%cicloGris:
+        mov word [edi*2 + 0x000B8000] , 0x7700  ; MIRAR Colors.h y Consultar
         inc edi
         loop %%cicloGris
-    
+
     pop edi
     pop ecx
 
@@ -162,7 +162,7 @@
     push ebx
     push ecx
     push edi
-    
+
     pintarPantalla
 
     xor edi , edi
@@ -176,8 +176,8 @@
     mov ebx , 7200
     mov ecx , 400
 
-    %%cicloNegro:                                      
-        mov word [ebx + edi*2 + 0x000B8000] , 0x0000  ; MIRAR Colors.h y Consultar 
+    %%cicloNegro:
+        mov word [ebx + edi*2 + 0x000B8000] , 0x0000  ; MIRAR Colors.h y Consultar
         inc edi
         loop %%cicloNegro
 
@@ -196,7 +196,7 @@
         mov word [edi + 0x000B8000] , 0x0741 ; A
         add edi, 2
         mov word [edi + 0x000B8000] , 0x0753 ; S
-        
+
         mov edi , 7506
         mov word [edi + 0x000B8000] , 0x0756  ; MIRAR Colors.h y Consultar
         add edi, 2
@@ -207,8 +207,38 @@
         mov word [edi + 0x000B8000] , 0x0741 ; A
         add edi, 2
         mov word [edi + 0x000B8000] , 0x0753 ; S
-        
-    
+
+    %%agregarPuntos
+    ;48 empieza puntos del jugador rojo
+    ;54 empieza puntos del jugador azul
+
+    xor edi , edi
+    mov ebx , 7296
+    mov ecx , 30
+    %%cicloRojo:
+        mov word [ebx + edi*2 + 0x000B8000] , 0x4000  ; MIRAR Colors.h y Consultar
+        inc edi
+        cmp edi,6
+        jne .sigoPintandoMismaFilaRojo
+        xor edi,edi
+        add ebx,ROW_SIZE
+        .sigoPintandoMismaFilaRojo:
+        loop %%cicloRojo
+
+    xor edi , edi
+    mov ebx , 7308
+    mov ecx , 30
+    %%cicloAzul:
+        mov word [ebx + edi*2 + 0x000B8000] , 0x1000  ; MIRAR Colors.h y Consultar
+        inc edi
+        cmp edi,6
+        jne .sigoPintandoMismaFilaAzul
+        xor edi,edi
+        add ebx,ROW_SIZE
+        .sigoPintandoMismaFilaAzul:
+        loop %%cicloAzul
+
+
     pop edi
     pop ecx
     pop ebx
