@@ -159,6 +159,8 @@ start:
     int 66
     ; Saltar a la primera tarea: Idle
 
+    jmp 0x10000 ;dir_tarea_idle
+
     ; Ciclar infinitamente (por si algo sale mal...)
     xchg bx , bx
     nop

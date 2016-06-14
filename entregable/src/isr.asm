@@ -194,7 +194,7 @@ _isr33:
         .nada:;Si entro aca quiere decir que se apreto una tecla invalida
         jmp .fin
          .valida:
-         imprimir_texto_mp ebx, 1, 0xFF00, 0, 79
+         imprimir_texto_mp ebx, 1, 0x0F, 0, 79
    .fin:
    popfd
    popad
