@@ -127,7 +127,6 @@ start:
     mov eax, cr0
     or eax, 0x80000000
     mov cr0, eax
-
     call mmu_inicializar
 ;//TESTEO
 ;    push 5
@@ -144,22 +143,29 @@ start:
 
     ; Inicializar tss
     call tss_inicializar_idle
-    call tss_inicializar_tareas_h
     ; Inicializar tss de la tarea Idle
+    xchg bx, bx
     ltr ax
     add eax, 8
     push eax
+    xchg bx, bx
+    call tss_inicializar_tareas_h
+    xchg bx, bx
 
     ; Inicializar el scheduler
 
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
+    xchg bx, bx
     call resetear_pic
+    xchg bx, bx
     call deshabilitar_pic
+    xchg bx, bx
     call habilitar_pic
+    xchg bx, bx
     sti
-    int 66
+  ;  int 0x66
 
 
     ; Saltar a la primera tarea: Idle

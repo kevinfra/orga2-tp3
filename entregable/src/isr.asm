@@ -99,7 +99,7 @@ extern sched_proximo_indice
 ;; -------------------------------------------------------------------------- ;;
 global _isr32
 global _isr33
-global _isr66
+global _isr42
 %macro ISR 1
 global _isr%1
 
@@ -207,28 +207,28 @@ _isr33:
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
-_isr66:
-    pushad
-    cmp eax, 0x124
-    call .donde
-    cmp eax, 0xA6A
-    call .soy
-    cmp eax, 0xFF3
-    call .mapear
-    jmp .fin
+_isr42:
+    ;pushad
+;    cmp eax, 0x124
+;    call .donde
+;    cmp eax, 0xA6A
+;    call .soy
+;    cmp eax, 0xFF3
+;    call .mapear
+;    jmp .fin
 
-    .donde:
-      call dameTarea
-      push eax
-      call tareaActual
+  ;  .donde:
+;      call dameTarea
+;      push eax
+;      call tareaActual
       ;;FALTA TERMINAR
-    .soy:
-    .mapear:
+  ;  .soy:
+  ;  .mapear:
 
       ;(x + y*80)*4096 + 400000
 
-    .fin:
-    popad
+  ;  .fin:
+  ;  popad
     iret
 
 
