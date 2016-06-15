@@ -54,7 +54,7 @@ typedef struct str_tss {
     unsigned short  iomap;
 } __attribute__((__packed__, aligned (8))) tss;
 
-void tss_inicializar();
-void completar_tss(char tipoDeTarea,  int * posTarea);
+unsigned int tss_inicializar_idle();
+unsigned int tss_inicializar(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y);
 
 #endif  /* !__TSS_H__ */

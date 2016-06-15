@@ -5,6 +5,8 @@
 ; definicion de rutinas de atencion de interrupciones
 
 %include "imprimir.mac"
+extern dameTarea
+extern tareaActual
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -149,10 +151,12 @@ ISR 19
 ;; Rutina de atención del RELOJ
 ;; -------------------------------------------------------------------------- ;;
 _isr32:
+    pushad
     pushfd
     call fin_intr_pic1
     call proximo_reloj
     popfd
+    popad
     iret
 ;;
 ;; Rutina de atención del TECLADO
@@ -204,7 +208,32 @@ _isr33:
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
 _isr66:
-    mov eax, 0x42
+    pushad
+    cmp eax, 0x124
+    call .donde
+    cmp eax, 0xA6A
+    call .soy
+    cmp eax, 0xFF3
+    call .mapear
+    jmp .maiameee
+
+    .donde:
+      call dameTarea
+      push eax
+      call tareaActual
+      ;;FALTA TERMINAR
+
+      ;(x + y*80)*4096 + 400000
+
+
+
+
+
+    .maiameee:
+    mov ebx, "te fuiste a miameee"
+    imprimir_texto_mp ebx, 19, 0x0F, 0, 20
+    .fin:
+    popad
     iret
 
 

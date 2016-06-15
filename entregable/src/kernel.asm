@@ -144,27 +144,33 @@ start:
     ; Inicializar tss
     call tss_inicializar
     ; Inicializar tss de la tarea Idle
+    ltr ax
+    add eax, 8
+    push eax
 
     ; Inicializar el scheduler
 
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
-
     call resetear_pic
-    call habilitar_pic
     call deshabilitar_pic
-    xchg bx, bx
+    call habilitar_pic
     sti
     int 66
-    ; Saltar a la primera tarea: Idle
 
-    jmp 0x10000 ;dir_tarea_idle
+
+    ; Saltar a la primera tarea: Idle
+    xchg bx, bx
+    pop eax
+    mov [selector], ax
+    jmp far [offset] ;dir_tarea_idle
 
     ; Ciclar infinitamente (por si algo sale mal...)
     xchg bx , bx
     nop
     mov eax, 0xFFFF
+    ;LALALALALA BRASIL QUEDO ELIMINADO MUAJAJAJA
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF
     mov edx, 0xFFFF
@@ -174,3 +180,5 @@ start:
 ;; -------------------------------------------------------------------------- ;;
 
 %include "a20.asm"
+offset: dd 0
+selector: dw 0

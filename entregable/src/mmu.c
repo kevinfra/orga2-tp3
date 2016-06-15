@@ -100,7 +100,7 @@ void mmu_inicializar_dir_kernel(){
 }
 
 
-unsigned int mmu_inicializar_dir_tarea( unsigned int cr3,  char tipoDeTarea, int x, int y){
+unsigned int mmu_inicializar_dir_tarea( unsigned int cr3, unsigned int dirFisicaTarea, int x, int y){
 //  breakpoint();
   unsigned int* pageDirectory = (unsigned int*) mmu_proxima_pagina_fisica_libre();
   unsigned int* paginacionTareas = pageDirectory;
@@ -118,24 +118,6 @@ unsigned int mmu_inicializar_dir_tarea( unsigned int cr3,  char tipoDeTarea, int
     *pageTable =  0;
     pageTable++;
   }
-  unsigned int dirFisicaTarea;
-  switch(tipoDeTarea) {
-      case 'I' :
-          dirFisicaTarea = 0x10000;
-          break;
-      case 'A' :
-          dirFisicaTarea = 0x11000;
-          break;
-      case 'B' :
-         dirFisicaTarea = 0x12000;
-         break;
-      case 'H' :
-         dirFisicaTarea = 0x13000;
-         break;
-      default :
-         dirFisicaTarea = 0xFFFFFFFF;
-   }
-
   mmu_mapear_pagina(0x08000000, (unsigned int) paginacionTareas, dirFisicaTarea);
   mmu_mapear_pagina(dirFisicaTarea, cr3, dirFisicaTarea);
   int * dirEnMapa = (int*) ((x + y*80)*4096 + 400000); //transforma de (x,y) a direccion de memoria
