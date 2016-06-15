@@ -1,0 +1,171 @@
+% ******************************************************** %
+%              TEMPLATE DE INFORME ORGA2 v0.1              %
+% ******************************************************** %
+% ******************************************************** %
+%                                                          %
+% ALGUNOS PAQUETES REQUERIDOS (EN UBUNTU):                 %
+% ========================================
+%                                                          %
+% texlive-latex-base                                       %
+% texlive-latex-recommended                                %
+% texlive-fonts-recommended                                %
+% texlive-latex-extra?                                     %
+% texlive-lang-spanish (en ubuntu 13.10)                   %
+% ******************************************************** %
+
+
+\documentclass[a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}   % tipografia
+\usepackage{graphicx}
+%\usepackage{makeidx}
+\usepackage{paralist} %itemize inline
+
+%\usepackage{float}
+%\usepackage{amsmath, amsthm, amssymb}
+%\usepackage{amsfonts}
+%\usepackage{sectsty}
+%\usepackage{charter}
+%\usepackage{wrapfig}
+%\usepackage{listings}
+%\lstset{language=C}
+\usepackage{caption}
+
+% \setcounter{secnumdepth}{2}
+\usepackage{underscore}
+\usepackage{caratula}
+\usepackage{url}
+\usepackage[document]{ragged2e}
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
+\usepackage{floatrow}
+
+
+% ********************************************************* %
+% ~~~~~~~~              Code snippets             ~~~~~~~~~ %
+% ********************************************************* %
+
+\usepackage{color} % para snipets de codigo coloreados
+\usepackage{fancybox}  % para el sbox de los snipets de codigo
+
+\definecolor{litegrey}{gray}{0.94}
+
+\newenvironment{codesnippet}{%
+	\begin{Sbox}\begin{minipage}{\textwidth}\sffamily\small}%
+	{\end{minipage}\end{Sbox}%
+		\begin{center}%
+		\vspace{-0.4cm}\colorbox{litegrey}{\TheSbox}\end{center}\vspace{0.3cm}}
+
+
+
+% ********************************************************* %
+% ~~~~~~~~         Formato de las páginas         ~~~~~~~~~ %
+% ********************************************************* %
+
+\usepackage{fancyhdr}
+\usepackage{parskip}
+\pagestyle{fancy}
+
+%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ - #1}}
+
+\fancyhf{}
+
+\fancyhead[LO]{Sección \rightmark} % \thesection\ 
+\fancyfoot[LO]{\small{Luis Enrique Badell Porto, Nicolas Bukovits, Kevin Frachtenberg}}
+\fancyfoot[RO]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\setlength{\hoffset}{-0.8in}
+\setlength{\textwidth}{16cm}
+%\setlength{\hoffset}{-1.1cm}
+%\setlength{\textwidth}{16cm}
+\setlength{\headsep}{0.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\voffset}{-0.7in}
+\setlength{\headwidth}{\textwidth}
+\setlength{\headheight}{13.1pt}
+\setlength{\parindent}{4em}
+\setlength{\parskip}{\baselineskip}
+
+\renewcommand{\baselinestretch}{1.1}  % line spacing
+
+% ******************************************************** %
+
+
+\begin{document}
+
+
+\thispagestyle{empty}
+\materia{Organización del Computador II}
+\submateria{Primer Cuatrimestre de 2016}
+\titulo{Trabajo Práctico 3}
+\subtitulo{System Programming}
+\integrante{Luis Enrique Badell Porto}{246/13}{luisbadell@gmail.com}
+\integrante{Nicolas Bukovits}{546/14}{nicko_buk@hotmail.com}
+\integrante{Kevin Frachtenberg}{247/14}{kevinfra94@gmail.com}
+\grupo{Grupo: Yo no manejo el raiting, yo manejo un Rolls-Royce}
+\maketitle
+
+%{\small\textbf{\flushleft{Resumen}}\\
+\abstract {En el siguiente trabajo pr\'actico, se busca hacer una implementacion de un sistema operativo basico para correr en el programa Bochs. Las decisiones tomadas por los integrantes, se encuentran plasmadas en este informe.}
+
+%\newpage
+
+%\thispagestyle{empty}
+%\vfill
+
+
+\thispagestyle{empty}
+\vspace{3cm}
+\tableofcontents
+\newpage
+
+
+%\normalsize
+\newpage
+
+
+
+\section{Resolucion}
+\subsection{GDT Parte 1 }
+%Nota al margen, soy un boludo, deberian ser 5, me falta agregar el segmento de video
+En este ejercicicio, se completa la GDT con 4 segmentos, dos para datos y codigo para el kernel y otros dos para usuario. Por restricciones del TP, el primer indice a utilizar en la GDT es el 4, contando desde 0 y los segmentos deben direccionar los primeros 878 MB de memoria.
+Para pasar a modo protegido, lo que hicimos fue, cargar el registro GDTR mediante la instruccion LGDT, habilitar el bit de PE de CR0 y hacer un far jump usando el segmentos de codigo de nivel 0 de la GDT, posteriormente se cargan los registros CS , DS , GS , FS y SS y se establece el ESP y EBP del kernel.
+Para este ejercicio, se modificaron los archivos gdt.c, gdt.c, defines.h y kernel.asm
+
+
+\subsection{Excepciones}
+En esta parte del TP, se nos pidio completar la IDT con las excepciones del procesador, dados que las excepciones las definio intel en 1978, no hay mucho que comentar. Para habilitarlas, agregamos en kernel.asm agregamos un idt [IDT_DESC] y para probarla se hizo una division por 0.(Lineas 108-110 del kernel.asm, se encuentra comentada)
+
+\subsection{Video y MMU}
+%Paginacion y sarasa
+
+\subsection{Interrupciones}
+En esta parte, se completaron las interrupciones del reloj , la del teclado y la 0x66 que posteriomente sera usada en el juego
+%(En el mundo de Star Wars, la orden 66 es la que usa el canciller Palpatine para iniciar la purga de los Jedi, creo deberiamos tener algun easter egg de SW en el tp) 
+dado que la interrupcion del reloj la genera la CPU cada cierta cantidad tiempo, recien en este momento se habilitan las interrupciones mediante la instruccion STI.
+El codigo de las interrupciones se encuentra en isr.asm 
+
+\subsection{El retorno de la GDT y la aparicion de la TSS}
+
+\subsection{El Scheduler}
+
+\section{Conclusiones y trabajo futuro}
+
+
+%\begin{codesnippet}
+%\begin{verbatim}
+
+%struct Pepe {
+
+ %   ...
+
+%};
+
+%\end{verbatim}
+%\end{codesnippet}
+
+\end{document}
+
