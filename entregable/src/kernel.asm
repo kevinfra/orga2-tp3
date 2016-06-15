@@ -14,7 +14,8 @@ extern mmu_inicializar
 extern mmu_mapear_pagina
 extern mmu_unmapear_pagina
 extern mmu_inicializar_dir_tarea
-extern tss_inicializar
+extern tss_inicializar_idle
+extern tss_inicializar_tareas_h
 extern resetear_pic
 extern habilitar_pic
 extern deshabilitar_pic
@@ -142,7 +143,8 @@ start:
 
 
     ; Inicializar tss
-    call tss_inicializar
+    call tss_inicializar_idle
+    call tss_inicializar_tareas_h
     ; Inicializar tss de la tarea Idle
     ltr ax
     add eax, 8

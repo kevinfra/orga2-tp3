@@ -56,5 +56,6 @@ typedef struct str_tss {
 
 unsigned int tss_inicializar_idle();
 unsigned int tss_inicializar(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y);
+void tss_inicializar_tareas_h();
 
 #endif  /* !__TSS_H__ */

@@ -8,8 +8,27 @@
 #include "sched.h"
 #define idle 0x48 //pos en gdt de idle. Esto sale de inicializar tss
 
+
+int quantum;
+unsigned short colaJugadorA[5];
+unsigned short colaJugadorB[5];
+unsigned short colaNadie[15];
+int proximoColaA;
+int finColaA;
+int proximoColaB;
+int finColaB;
+int proximoColaNadie;
+int finColaNadie;
+short colaActual;
+int tareaActual;
+
+typedef struct str_tupla{
+  unsigned short x;
+  unsigned short y;
+} tupla;
+
 unsigned short sched_proximo_indice() {
-  int res = 0;
+  unsigned short res = 0;
   switch (colaActual) {
     case 0:
       res = colaNadie[proximoColaNadie];
@@ -30,26 +49,9 @@ unsigned short sched_proximo_indice() {
   return res;
 }
 
-int quantum;
-unsigned short[5] colaJugadorA;
-unsigned short[5] colaJugadorB;
-unsigned short[15] colaNadie;
-int proximoColaA;
-int finColaA;
-int proximoColaB;
-int finColaB;
-int proximoColaNadie;
-int finColaNadie;
-short colaActual;
-int tareaActual;
-
-typedef struct str_tupla{
-  unsigned short x;
-  unsigned short y;
-} tupla;
 
 tupla posicionesTareas[25];
-unsigned short tareaActual(posTarea){
+tupla nuevaTareaActual(int posTarea){
   return posicionesTareas[posTarea-10];
 }
 

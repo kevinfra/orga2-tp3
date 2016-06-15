@@ -215,23 +215,18 @@ _isr66:
     call .soy
     cmp eax, 0xFF3
     call .mapear
-    jmp .maiameee
+    jmp .fin
 
     .donde:
       call dameTarea
       push eax
       call tareaActual
       ;;FALTA TERMINAR
+    .soy:
+    .mapear:
 
       ;(x + y*80)*4096 + 400000
 
-
-
-
-
-    .maiameee:
-    mov ebx, "te fuiste a miameee"
-    imprimir_texto_mp ebx, 19, 0x0F, 0, 20
     .fin:
     popad
     iret
