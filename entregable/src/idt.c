@@ -66,5 +66,5 @@ void idt_inicializar() {
     IDT_ENTRY(19);
     IDT_ENTRY(32); //interrupcion de Reloj
     IDT_ENTRY(33); // interrupción de Teclado
-    IDT_ENTRY(42); //Interrupcion de software 0x66
+    IDT_ENTRY(102); //Interrupcion de software 0x66
 }

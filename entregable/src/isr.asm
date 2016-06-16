@@ -99,7 +99,7 @@ extern sched_proximo_indice
 ;; -------------------------------------------------------------------------- ;;
 global _isr32
 global _isr33
-global _isr42
+global _isr102
 %macro ISR 1
 global _isr%1
 
@@ -207,7 +207,7 @@ _isr33:
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
-_isr42:
+_isr102:
     ;pushad
 ;    cmp eax, 0x124
 ;    call .donde

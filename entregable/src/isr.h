@@ -30,6 +30,6 @@ void _isr18();
 void _isr19();
 void _isr32(); //reloj
 void _isr33();  //Teclado
-void _isr42(); //software 0x66
+void _isr102(); //software 0x66
 
 #endif  /* !__ISR_H__ */

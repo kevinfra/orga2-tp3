@@ -165,7 +165,7 @@ start:
     call habilitar_pic
     xchg bx, bx
     sti
-  ;  int 0x66
+    int 0x66
 
 
     ; Saltar a la primera tarea: Idle
