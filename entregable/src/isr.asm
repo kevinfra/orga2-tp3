@@ -7,6 +7,8 @@
 %include "imprimir.mac"
 extern dameTarea
 extern tareaActual
+extern game_mover_cursor
+extern game_lanzar
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -162,7 +164,6 @@ _isr32:
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
 _isr33:
-    ;pushfd ; Para que pusheas flag ? Eso se pushea solo creo
     pushad
     pushfd
     call fin_intr_pic1
@@ -170,40 +171,127 @@ _isr33:
     xor ebx, ebx
     in al, 0x60 ; en AL tengo el caracter pulsado
   ;  convertir_scanCode_Letra_Imprimir eax
-    mov ebx , "w"
-    cmp al , W
-    je .valida
-    mov ebx ,"a"
-    cmp al , A
-    je .valida
-    mov ebx , "s"
-    cmp al , S
-    je .valida
-    mov ebx , "d"
-    cmp al , D
-    je .valida
+    ;ACA EMPIEZA EL PLAYER A
+    mov ebx, "w"
+    cmp al,   W
+    je .ArbA
+              .ArbA:
+              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+              push 0xA33 ; 0xA33 = ARB del game.h
+              push 1d  ; El 1 D es fruta por ahora, quiero que sea el jugador A
+              call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
+              pop ebx
+              pop ebx
+              jmp .fin
+    
+    mov ebx,"a"
+    cmp al, A
+    je .IzqA
+            .IzqA:
+            imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+            push 0xAAA ; 0xAAA = IZQ del game.h
+            push 1d
+            call game_mover_cursor
+            pop ebx
+            pop ebx
+            jmp .fin
+
+    mov ebx, "s"
+    cmp al, S
+    je .AbaA
+              .AbaA:
+              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+              push 0x883 ; 0x883 = ABA del game.h
+              push 1d
+              call game_mover_cursor
+              pop ebx
+              pop ebx
+              jmp .fin
+    mov ebx, "d"
+    cmp al, D
+    je .DerA
+              .DerA:
+              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+              push 0x441 ; 0x441 = DER del game.h
+              push 1d
+              call game_mover_cursor
+              pop ebx
+              pop ebx
+              jmp .fin
+
     cmp al , lShift
-    mov ebx ,"i"
-    je .valida
+    mov ebx ,"L"
+    je .LanzarA
+                .LanzarA:
+                imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+                push 1d
+                call game_lanzar
+                pop ebx
+                jmp .fin
+
+    ;A PARTIR DE AHORA ES EL PLAYER B            
     cmp al , I
-    je .valida
+    mov ebx, "i"
+    je .ArbB
+                .ArbB:
+                imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+                push 0xA33 ; 0xA33 = ARB del game.h
+                push 1d  ; El 1 D es fruta por ahora, quiero que sea el jugador A
+                call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
+                pop ebx
+                pop ebx
+                jmp .fin
+
     cmp al , K
-    je .valida
+    mov ebx, "k"
+    je .AbaB
+                .AbaB:
+                imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+                push 0x883 ; 0x883 = ABA del game.h
+                push 1d
+                call game_mover_cursor
+                pop ebx
+                pop ebx
+                jmp .fin
+
     cmp al , J
-    je .valida
+    mov ebx, "j"
+    je .IzqB
+              .IzqB:
+              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+              push 0xAAA ; 0xAAA = IZQ del game.h
+              push 1d
+              call game_mover_cursor
+              pop ebx
+              pop ebx
+              jmp .fin
     cmp al, L
-    je .valida
+    mov ebx, "l"
+    je .DerB
+              .DerB:
+              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+              push 0x441 ; 0x441 = DER del game.h
+              push 1d
+              call game_mover_cursor
+              pop ebx
+              pop ebx
+              jmp .fin
+
     cmp al, rShift
-    je .valida
-        .nada:;Si entro aca quiere decir que se apreto una tecla invalida
-        jmp .fin
-         .valida:
-         imprimir_texto_mp ebx, 1, 0x0F, 0, 79
-   .fin:
-   popfd
-   popad
-   ;call fin_intr_pic1
-   iret
+    mov ebx ,"R"
+    je .LanzarB
+              .LanzarB:
+              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+              push 1d
+              call game_lanzar 
+              pop ebx
+              jmp .fin
+    ;Me queda hacer la interrupcion de la y, el modo debug mencionado en la sec 3.4                
+    jmp .fin ; Si llego aca es que se apreto alguna tecla no valida
+    .fin:
+    popfd
+    popad
+    iret
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
