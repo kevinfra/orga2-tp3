@@ -15,6 +15,11 @@ typedef enum direccion_e { IZQ = 0xAAA, DER = 0x441, ARB = 0xA33, ABA = 0x883  }
 
 unsigned short dameTarea();
 
+// unsigned int X_A
+// unsigned int Y_A
+// unsigned int X_B
+// unsigned int Y_B
+
 void game_lanzar(unsigned int jugador);
 
 void game_soy(unsigned int soy);
