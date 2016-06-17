@@ -178,7 +178,7 @@ _isr33:
               .ArbA:
               imprimir_texto_mp ebx, 1, 0x0F, 0, 79
               push 0xA33 ; 0xA33 = ARB del game.h
-              push 1d  ; El 1 D es fruta por ahora, quiero que sea el jugador A
+              push 0  ; El 1 D es fruta por ahora, quiero que sea el jugador A
               call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
               pop ebx
               pop ebx
@@ -190,7 +190,7 @@ _isr33:
             .IzqA:
             imprimir_texto_mp ebx, 1, 0x0F, 0, 79
             push 0xAAA ; 0xAAA = IZQ del game.h
-            push 1d
+            push 0
             call game_mover_cursor
             pop ebx
             pop ebx
@@ -202,7 +202,7 @@ _isr33:
               .AbaA:
               imprimir_texto_mp ebx, 1, 0x0F, 0, 79
               push 0x883 ; 0x883 = ABA del game.h
-              push 1d
+              push 0
               call game_mover_cursor
               pop ebx
               pop ebx
@@ -213,7 +213,7 @@ _isr33:
               .DerA:
               imprimir_texto_mp ebx, 1, 0x0F, 0, 79
               push 0x441 ; 0x441 = DER del game.h
-              push 1d
+              push 0
               call game_mover_cursor
               pop ebx
               pop ebx
@@ -224,7 +224,7 @@ _isr33:
     je .LanzarA
                 .LanzarA:
                 imprimir_texto_mp ebx, 1, 0x0F, 0, 79
-                push 1d
+                push 0
                 call game_lanzar
                 pop ebx
                 jmp .fin
@@ -236,7 +236,7 @@ _isr33:
                 .ArbB:
                 imprimir_texto_mp ebx, 1, 0x0F, 0, 79
                 push 0xA33 ; 0xA33 = ARB del game.h
-                push 1d  ; El 1 D es fruta por ahora, quiero que sea el jugador A
+                push 1  ; El 1 D es fruta por ahora, quiero que sea el jugador A
                 call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
                 pop ebx
                 pop ebx
@@ -248,7 +248,7 @@ _isr33:
                 .AbaB:
                 imprimir_texto_mp ebx, 1, 0x0F, 0, 79
                 push 0x883 ; 0x883 = ABA del game.h
-                push 1d
+                push 1
                 call game_mover_cursor
                 pop ebx
                 pop ebx
@@ -260,7 +260,7 @@ _isr33:
               .IzqB:
               imprimir_texto_mp ebx, 1, 0x0F, 0, 79
               push 0xAAA ; 0xAAA = IZQ del game.h
-              push 1d
+              push 1
               call game_mover_cursor
               pop ebx
               pop ebx
@@ -271,7 +271,7 @@ _isr33:
               .DerB:
               imprimir_texto_mp ebx, 1, 0x0F, 0, 79
               push 0x441 ; 0x441 = DER del game.h
-              push 1d
+              push 1
               call game_mover_cursor
               pop ebx
               pop ebx
@@ -282,7 +282,7 @@ _isr33:
     je .LanzarB
               .LanzarB:
               imprimir_texto_mp ebx, 1, 0x0F, 0, 79
-              push 1d
+              push 1
               call game_lanzar 
               pop ebx
               jmp .fin
@@ -345,4 +345,4 @@ proximo_reloj:
                 add ebx, isrClock
                 imprimir_texto_mp ebx, 1, 0x0f, 49, 79
                 popad
-        ret
+        iret

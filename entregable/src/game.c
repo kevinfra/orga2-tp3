@@ -18,37 +18,40 @@ unsigned short dameTarea(){
 
 
 void game_mover_cursor(int jugador, direccion dir) {
+	/*Definicion Cursores
+	A es Fondo ROJO con Caracter Nulo
 
+	*/
 	if (jugador==0) // Jugador A
 	{
 		switch(dir)
 		{
 			case IZQ:
-			//print(,X_A,Y_A,);
+			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
 			X_A--;
 			X_A=X_A % 80;
-			// print(,X_A,Y_A,);
+			print(0,X_A,Y_A+1,C_BG_RED);
 			break;
 
 			case DER:
-			//print(,X_A,Y_A,);
+			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
 			X_A++;
 			X_A=X_A % 80;
-			// print(,X_A,Y_A,);
+			print(0,X_A,Y_A+1,C_BG_RED);
 
 			break;
 			case ARB:
-			//print(,X_A,Y_A,);
+			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
 			Y_A++;
 			Y_A=Y_A % 44;
-			// print(,X_A,Y_A,);
+			print(0,X_A,Y_A+1,C_BG_RED);
 
 			break;
 			case ABA:
-			//print(,X_A,Y_A,);
+			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
 			Y_A--;
 			Y_A=Y_A % 44;
-			// print(,X_A,Y_A,);
+			print(0,X_A,Y_A,C_BG_RED);
 			
 			break;
 		}
@@ -56,22 +59,35 @@ void game_mover_cursor(int jugador, direccion dir) {
 	}
 
 	else // Jugador B
-	{
-			switch(dir)
+	{		switch(dir)
 		{
 			case IZQ:
-
-
+			print(0,X_B,Y_B,C_BG_LIGHT_GREY);
+			X_B--;
+			X_B=X_B % 80;
+			print(0,X_A,Y_A,C_BG_BLUE);
 			break;
 
 			case DER:
+			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
+			X_B++;
+			X_B=X_B % 80;
+			print(0,X_A,Y_A,C_BG_BLUE);
 
 			break;
 			case ARB:
+			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
+			Y_B++;
+			Y_B=Y_B % 44;
+			print(0,X_A,Y_A+1,C_BG_BLUE);
 
 			break;
 			case ABA:
-
+			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
+			Y_B--;
+			Y_B=Y_B % 44;
+			print(0,X_A,Y_A,C_BG_BLUE);
+			
 			break;
 		}
 	}
