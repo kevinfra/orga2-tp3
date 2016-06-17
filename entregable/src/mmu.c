@@ -32,7 +32,6 @@ unsigned int mmu_proxima_pagina_fisica_libre() {
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica){
 //    1 Descomponer la direcci´on virtual en Indice de
 //          Directorio e Indice de Tabla.
-
     int PDEindex = PDE_INDEX(virtual);
     int PTEindex = PTE_INDEX(virtual);
 
@@ -56,7 +55,7 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 //    3 Obtener el PTE correspondiente al esquema de paginaci´on
 //          cr3 y el Indice de Tabla.
 
-    int dir_page_table = (unsigned int) *PDE & 0xFFFFF800; //MIAMEEE
+    int dir_page_table = (unsigned int) *PDE & 0xFFFFF000;
     int* PTE = &(((int*)(dir_page_table))[PTEindex]);
 
 
@@ -65,20 +64,18 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 
     *PTE = fisica | PG_SET_READ_WRITE_AND_PRESENT;
 
-//    5 Ejecutar tlbflush() para invalidar la cache de
-//          traducciones.
-    tlbflush();
 }
 
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
     int PDEindex = PDE_INDEX(virtual);
     int PTEindex = PTE_INDEX(virtual);
     int* PDE = &((int *)cr3)[PDEindex];
-    int dir_page_table = (unsigned int) *PDE & 0xFFFFF800; //MIAMEEE
+    int dir_page_table = (unsigned int) *PDE & 0xFFFFF000;
     int* PTE = &(((int*)(dir_page_table))[PTEindex]);
-
     *PTE = (*PTE) & PG_DELETE_PRESENT;
+    tlbflush();
 }
+
 
 
 
@@ -112,22 +109,28 @@ unsigned int mmu_inicializar_dir_tarea( unsigned int cr3, unsigned int dirFisica
     *pageDirectory = 0;
     pageDirectory++;
   }
-
+  
   int j = 0 ;
   for(j = 0; j < 1024; j++){
-    *pageTable =  0;
+    *pageTable = j*4096 | 3;
     pageTable++;
   }
-  mmu_mapear_pagina(0x08000000, (unsigned int) paginacionTareas, dirFisicaTarea);
-  mmu_mapear_pagina(dirFisicaTarea, cr3, dirFisicaTarea);
-  int * dirEnMapa = (int*) ((x + y*80)*4096 + 400000); //transforma de (x,y) a direccion de memoria
+
+
+  int * dirEnMapa = (int*) ((x + y*80)*4096 + 0x400000); //transforma de (x,y) a direccion de memoria
+  mmu_mapear_pagina(0x08000000, (unsigned int) paginacionTareas, (unsigned int) dirEnMapa);
+  mmu_mapear_pagina((unsigned int) dirEnMapa, cr3, (unsigned int) dirEnMapa);
+
+
   int k = 0;
   for(k = 0; k < 1024; k++){
-    dirEnMapa = (int *) dirFisicaTarea + k;
-    dirEnMapa++;
+    *(dirEnMapa + k) = *((int *) dirFisicaTarea + k);
   }
-  mmu_unmapear_pagina(dirFisicaTarea, cr3);
-//breakpoint();
+
+
+
+  mmu_unmapear_pagina((unsigned int) dirEnMapa, cr3);
+
   return (unsigned int) paginacionTareas;
 
 }

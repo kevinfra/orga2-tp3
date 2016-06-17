@@ -19,6 +19,7 @@ extern tss_inicializar_tareas_h
 extern resetear_pic
 extern habilitar_pic
 extern deshabilitar_pic
+extern inicializar_scheduler
 
 ;; Saltear seccion de datos
 jmp start
@@ -144,31 +145,25 @@ start:
     ; Inicializar tss
     call tss_inicializar_idle
     ; Inicializar tss de la tarea Idle
-    xchg bx, bx
     ltr ax
     add eax, 8
     push eax
-    xchg bx, bx
     call tss_inicializar_tareas_h
-    xchg bx, bx
 
     ; Inicializar el scheduler
-
+    call inicializar_scheduler
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
-    xchg bx, bx
     call resetear_pic
-    xchg bx, bx
     call deshabilitar_pic
-    xchg bx, bx
     call habilitar_pic
-    xchg bx, bx
     sti
     int 0x66
 
 
     ; Saltar a la primera tarea: Idle
+
     xchg bx, bx
     pop eax
     mov [selector], ax

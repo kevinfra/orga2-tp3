@@ -7,6 +7,9 @@
 %include "imprimir.mac"
 extern dameTarea
 extern tareaActual
+extern sched_proximo_indice
+extern posTareaActual
+extern game_mapear
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -155,6 +158,12 @@ _isr32:
     pushfd
     call fin_intr_pic1
     call proximo_reloj
+    call sched_proximo_indice
+    xchg bx, bx
+    mov dword [offset], 0
+    mov [selector], ax
+    jmp far [offset]
+
     popfd
     popad
     iret
@@ -208,27 +217,49 @@ _isr33:
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
 _isr102:
-    ;pushad
-;    cmp eax, 0x124
-;    call .donde
-;    cmp eax, 0xA6A
-;    call .soy
-;    cmp eax, 0xFF3
-;    call .mapear
-;    jmp .fin
+    pushad
+    cmp eax, 0x124
+    je .donde
+    cmp eax, 0xA6A
+    je .soy
+    cmp eax, 0xFF3
+    je .mapear
+    jmp .fin
 
-  ;  .donde:
-;      call dameTarea
-;      push eax
-;      call tareaActual
-      ;;FALTA TERMINAR
-  ;  .soy:
-  ;  .mapear:
+    .donde:
+      push ebx
+      call posTareaActual
+      pop ebx
+      mov edx, [eax] ;accedo a tupla.x
+      mov ecx, [eax + 2] ;son 2 unsigned short, así que accedo a la variable .y
+      mov [ebx], edx
+      mov [ebx + 2], ecx
+      jmp .fin
 
-      ;(x + y*80)*4096 + 400000
+    .soy:
+      cmp ebx, 0x841
+      je .rojo
+      cmp ebx, 0x325
+      je .azul
+      mov eax, 0
+      jmp .fin
+      .rojo:
+        mov eax, 1
+        jmp .fin
+      .azul:
+        mov eax, 2
+        jmp .fin
 
-  ;  .fin:
-  ;  popad
+    .mapear:
+      push ecx
+      push ebx
+      call game_mapear
+
+    .fin:
+    mov eax, 0x48 ;0x48 es la dir a tarea IDLE. Believme, i'm Fort. Ricky Fort.
+    mov [selector], ax
+    jmp far [offset]
+    popad
     iret
 
 
@@ -258,3 +289,7 @@ proximo_reloj:
                 imprimir_texto_mp ebx, 1, 0x0f, 49, 79
                 popad
         ret
+
+
+offset: dd 0
+selector: dw 0

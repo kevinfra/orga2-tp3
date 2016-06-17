@@ -12,7 +12,21 @@
 #include "tss.h"
 #include "gdt.h"
 
+typedef struct str_tupla{
+  unsigned short x;
+  unsigned short y;
+} tupla;
+
+typedef struct str_tarea{
+  tupla posicion;
+  unsigned short indiceGdt;
+} tarea;
+
 unsigned short sched_proximo_indice();
+void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss);
+tupla* posTareaActual();
+
+
 
 
 #endif	/* !__SCHED_H__ */

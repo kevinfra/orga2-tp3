@@ -8,11 +8,9 @@
 #include "sched.h"
 #define idle 0x48 //pos en gdt de idle. Esto sale de inicializar tss
 
-
-int quantum;
-unsigned short colaJugadorA[5];
-unsigned short colaJugadorB[5];
-unsigned short colaNadie[15];
+tarea colaJugadorA[5];
+tarea colaJugadorB[5];
+tarea colaNadie[15];
 int proximoColaA;
 int finColaA;
 int proximoColaB;
@@ -20,41 +18,56 @@ int finColaB;
 int proximoColaNadie;
 int finColaNadie;
 short colaActual;
-int tareaActual;
-
-typedef struct str_tupla{
-  unsigned short x;
-  unsigned short y;
-} tupla;
+tarea tareaActual;
 
 unsigned short sched_proximo_indice() {
   unsigned short res = 0;
   switch (colaActual) {
     case 0:
-      res = colaNadie[proximoColaNadie];
+      res = colaNadie[proximoColaNadie].indiceGdt;
       colaActual++;
+      tareaActual = colaNadie[proximoColaNadie];
       break;
     case 1:
-      res = colaJugadorA[proximoColaA];
+      res = colaJugadorA[proximoColaA].indiceGdt;
       colaActual++;
+      tareaActual = colaNadie[proximoColaNadie];
       break;
     case 2:
-      res = colaJugadorB[proximoColaB];
+      res = colaJugadorB[proximoColaB].indiceGdt;
       colaActual = 0;
+      tareaActual = colaNadie[proximoColaNadie];
       break;
   }
   if (res == 0) {
     res = idle;
   }
-  return res;
+  return (res << 3);
 }
 
-
-tupla posicionesTareas[25];
-tupla nuevaTareaActual(int posTarea){
-  return posicionesTareas[posTarea-10];
+tupla* posTareaActual(){
+  return &(tareaActual.posicion);
 }
 
+void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss){
+  switch (dirTareaFisicaTareaOriginal) {
+    case 0x11000:
+      colaJugadorA[proximoColaA].posicion.x = x;
+      colaJugadorA[proximoColaA].posicion.y = y;
+      colaJugadorA[proximoColaA].indiceGdt = posTss;
+      break;
+    case 0x12000:
+      colaJugadorB[proximoColaB].posicion.x = x;
+      colaJugadorB[proximoColaB].posicion.y = y;
+      colaJugadorB[proximoColaB].indiceGdt = posTss;
+      break;
+    case 0x13000:
+      colaNadie[proximoColaNadie].posicion.x = x;
+      colaNadie[proximoColaNadie].posicion.y = y;
+      colaNadie[proximoColaNadie].indiceGdt = posTss;
+      break;
+    }
+}
 
 void inicializar_scheduler(){
   proximoColaA = 0;
@@ -63,5 +76,13 @@ void inicializar_scheduler(){
   finColaB = 0;
   proximoColaNadie = 0;
   colaActual = 0;
-  tareaActual= 0x48; //idle
+  short x = 0;
+  short y = 0;
+  unsigned short posGdtIdle = 0x48;
+  tarea tareaIdle;
+  tareaIdle.posicion.x = x;
+  tareaIdle.posicion.y = y;
+  tareaIdle.indiceGdt = posGdtIdle;
+
+  tareaActual= tareaIdle; //idle
 }

@@ -9,6 +9,7 @@
 #include "gdt.h"
 #include "i386.h"
 #include "mmu.h"
+#include "sched.h"
 
 tss tss_inicial;
 tss tss_idle;
@@ -124,8 +125,8 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
     gdt[posTss].base_0_15 = (unsigned short) ((unsigned int) (nueva_tss) & 0x0000ffff);
     gdt[posTss].base_23_16 = (unsigned short) ((unsigned int) (nueva_tss)) >> 16;
     gdt[posTss].type = 9; // 1001 en binario --not busy
-    gdt[posTss].s = 1;
-    gdt[posTss].dpl = 0;
+    gdt[posTss].s = 0;
+    gdt[posTss].dpl = 3;
     gdt[posTss].p = 1;
     gdt[posTss].limit_16_19 = (unsigned char) ((unsigned int) (sizeof(tss_h1)-1) >> 16);
     gdt[posTss].avl = 0;
@@ -134,12 +135,12 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
     gdt[posTss].g = 0;
     gdt[posTss].base_31_24 = (unsigned char) ((unsigned int) (nueva_tss)) >> 24;
 
-    nueva_tss->cs = GDT_OFF_IDX_DESC_CODE3;
-    nueva_tss->es = GDT_OFF_IDX_DESC_DATA3;
-    nueva_tss->ss = GDT_OFF_IDX_DESC_DATA3;
-    nueva_tss->ds = GDT_OFF_IDX_DESC_DATA3;
-    nueva_tss->fs = GDT_OFF_IDX_DESC_DATA3;
-    nueva_tss->gs = GDT_OFF_IDX_DESC_DATA3;
+    nueva_tss->cs = GDT_OFF_IDX_DESC_CODE3 + 3;
+    nueva_tss->es = GDT_OFF_IDX_DESC_DATA3 + 3;
+    nueva_tss->ss = GDT_OFF_IDX_DESC_DATA3 + 3;
+    nueva_tss->ds = GDT_OFF_IDX_DESC_DATA3 + 3;
+    nueva_tss->fs = GDT_OFF_IDX_DESC_DATA3 + 3;
+    nueva_tss->gs = GDT_OFF_IDX_DESC_DATA3 + 3;
     nueva_tss->esp = 0x08000000 + 0xfff;
     nueva_tss->ebp = 0x08000000 + 0xfff;
     nueva_tss->eflags = 0x202;
@@ -148,6 +149,8 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
     nueva_tss->esp0 = mmu_proxima_pagina_fisica_libre();
     nueva_tss->ss0 = GDT_OFF_IDX_DESC_DATA0;
     nueva_tss->iomap = 0xFFFF;
+
+    cargarTareaEnCola(dirFisicaTareaOriginal, x, y, posTss);
 
     return res;
 }

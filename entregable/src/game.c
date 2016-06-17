@@ -26,4 +26,9 @@ void game_donde(unsigned int* pos) {
 }
 
 void game_mapear(int x, int y) {
+  unsigned int tareaAMapear = (unsigned int) dameTarea();
+  unsigned int cr3 = rcr3();
+  unsigned int dirAMapear = (x + y*80)*4096 + 400000;
+  mmu_mapear_pagina(tareaAMapear, cr3, dirAMapear);
+  
 }
