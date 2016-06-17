@@ -7,14 +7,11 @@
 %include "imprimir.mac"
 extern dameTarea
 extern tareaActual
-<<<<<<< HEAD
 extern sched_proximo_indice
 extern posTareaActual
 extern game_mapear
-=======
 extern game_mover_cursor
 extern game_lanzar
->>>>>>> 92f924aaa4eb8f1c44716b04655470209daca75a
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
