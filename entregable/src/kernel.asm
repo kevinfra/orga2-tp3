@@ -129,17 +129,7 @@ start:
     or eax, 0x80000000
     mov cr0, eax
     call mmu_inicializar
-;//TESTEO
-;    push 5
-;    push 5
-;    push 'A'
-;    mov eax, cr3
-;    push eax
-;    xchg bx, bx
-;    call mmu_inicializar_dir_tarea
-;    mov cr3, eax
-;    xchg bx, bx
-;//FIN TEST INICIALIZAR DIR TAREA
+
 
 
     ; Inicializar tss
@@ -159,11 +149,8 @@ start:
     call deshabilitar_pic
     call habilitar_pic
     sti
-    int 0x66
-
 
     ; Saltar a la primera tarea: Idle
-
     xchg bx, bx
     pop eax
     mov [selector], ax

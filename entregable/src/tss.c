@@ -90,7 +90,7 @@ unsigned int tss_inicializar_idle() {
     gdt[slot_libre].s = 0;
     gdt[slot_libre].dpl = 0;
     gdt[slot_libre].p = 1;
-    gdt[slot_libre].limit_16_19 = 0;
+    gdt[slot_libre].limit_16_19 = (unsigned char) ((unsigned int) (sizeof(tss_idle)-1) >> 16);
     gdt[slot_libre].avl = 0;
     gdt[slot_libre].l = 0;
     gdt[slot_libre].db = 0;
@@ -107,7 +107,6 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
 
   //  unsigned int dirFisicaACopiar = (x + y*80)*4096 + 400000;
     unsigned int posTss = proximoSlotLibre();
-    unsigned int res = posTss;
     switch (dirFisicaTareaOriginal) {
       case 0x11000:
         break;
@@ -118,6 +117,7 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
         posTss += 10;
         break;
     }
+    unsigned int res = posTss;
     unsigned int cr3 = rcr3();
 
     tss* nueva_tss = dameTss();
@@ -131,7 +131,7 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
     gdt[posTss].limit_16_19 = (unsigned char) ((unsigned int) (sizeof(tss_h1)-1) >> 16);
     gdt[posTss].avl = 0;
     gdt[posTss].l = 0;
-    gdt[posTss].db = 0;
+    gdt[posTss].db = 1;
     gdt[posTss].g = 0;
     gdt[posTss].base_31_24 = (unsigned char) ((unsigned int) (nueva_tss)) >> 24;
 

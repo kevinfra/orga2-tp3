@@ -4,7 +4,14 @@
 ; ==============================================================================
 ; definicion de rutinas de atencion de interrupciones
 
+
 %include "imprimir.mac"
+%define DONDE  0x124
+%define SOY    0xA6A
+%define MAPEAR 0xFF3
+%define VIRUS_ROJO 0x841
+%define VIRUS_AZUL 0x325
+
 extern dameTarea
 extern tareaActual
 extern sched_proximo_indice
@@ -12,6 +19,8 @@ extern posTareaActual
 extern game_mapear
 extern game_mover_cursor
 extern game_lanzar
+extern pintarPuntajeAzul
+extern pintarPuntajeRojo
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -158,11 +167,12 @@ ISR 19
 _isr32:
     pushad
     pushfd
+
     call fin_intr_pic1
     call proximo_reloj
     call sched_proximo_indice
-    xchg bx, bx
-    mov dword [offset], 0
+    shl eax, 3
+  ;  mov eax, 0xA0 ;;;;;;;ESTO ESTA PORQUE ES LA PRIMERA TAREA NO-IDLE A LA QUE HAY QUE SALTAR. TIRA PAGE FAULT (??????)
     mov [selector], ax
     jmp far [offset]
 
@@ -312,7 +322,7 @@ _isr102:
     je .soy
     cmp eax, 0xFF3
     je .mapear
-    jmp .fin
+    jmp .maiamee
 
     .donde:
       push ebx
@@ -322,7 +332,7 @@ _isr102:
       mov ecx, [eax + 2] ;son 2 unsigned short, así que accedo a la variable .y
       mov [ebx], edx
       mov [ebx + 2], ecx
-      jmp .fin
+      jmp .maiamee
 
     .soy:
       cmp ebx, 0x841
@@ -330,20 +340,22 @@ _isr102:
       cmp ebx, 0x325
       je .azul
       mov eax, 0
-      jmp .fin
+      jmp .maiamee
       .rojo:
-        mov eax, 1
-        jmp .fin
+        call pintarPuntajeRojo
+        mov eax, VIRUS_ROJO
+        jmp .maiamee
       .azul:
-        mov eax, 2
-        jmp .fin
+        call pintarPuntajeAzul
+        mov eax, VIRUS_AZUL
+        jmp .maiamee
 
     .mapear:
       push ecx
       push ebx
       call game_mapear
 
-    .fin:
+    .maiamee:
     mov eax, 0x48 ;0x48 es la dir a tarea IDLE. Believme, i'm Fort. Ricky Fort.
     mov [selector], ax
     jmp far [offset]
@@ -353,13 +365,6 @@ _isr102:
 
 
 
-
-%define DONDE  0x124
-%define SOY    0xA6A
-%define MAPEAR 0xFF3
-
-%define VIRUS_ROJO 0x841
-%define VIRUS_AZUL 0x325
 
 
 ;; Funciones Auxiliares

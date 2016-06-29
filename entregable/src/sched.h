@@ -20,11 +20,13 @@ typedef struct str_tupla{
 typedef struct str_tarea{
   tupla posicion;
   unsigned short indiceGdt;
+  char presente;
 } tarea;
 
 unsigned short sched_proximo_indice();
 void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss);
 tupla* posTareaActual();
+char esMismaTarea(tarea t1, tarea t2);
 
 
 

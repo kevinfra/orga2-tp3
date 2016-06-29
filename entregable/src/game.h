@@ -28,5 +28,8 @@ void game_donde(unsigned int* pos);
 
 void game_mover_cursor(int jugador, direccion dir);
 
+void pintarPuntajeRojo();
+void pintarPuntajeAzul();
+
 
 #endif  /* !__GAME_H__ */

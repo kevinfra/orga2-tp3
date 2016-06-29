@@ -6,14 +6,25 @@
 
 #include "game.h"
 #include "i386.h"
+#include "screen.h"
+#include "colors.h"
 
 unsigned int X_A;
 unsigned int Y_A;
 unsigned int X_B;
 unsigned int Y_B;
+unsigned int puntajeRojo;
+unsigned int puntajeAzul;
+
+void iniciarPuntaje(){
+  puntajeAzul = 0;
+  puntajeRojo = 0;
+  print_int(puntajeRojo, 48, 51, (C_BG_RED & C_FG_WHITE));
+  print_int(puntajeAzul, 48, 57, (C_BG_BLUE & C_FG_WHITE));
+}
 
 unsigned short dameTarea(){
-  return (rtr() >> 3);
+  return (rtr() << 3);
 }
 
 
@@ -52,7 +63,7 @@ void game_mover_cursor(int jugador, direccion dir) {
 			Y_A--;
 			Y_A=Y_A % 44;
 			print(0,X_A,Y_A,C_BG_RED);
-			
+
 			break;
 		}
 
@@ -87,7 +98,7 @@ void game_mover_cursor(int jugador, direccion dir) {
 			Y_B--;
 			Y_B=Y_B % 44;
 			print(0,X_A,Y_A,C_BG_BLUE);
-			
+
 			break;
 		}
 	}
@@ -109,5 +120,14 @@ void game_mapear(int x, int y) {
   unsigned int cr3 = rcr3();
   unsigned int dirAMapear = (x + y*80)*4096 + 400000;
   mmu_mapear_pagina(tareaAMapear, cr3, dirAMapear);
-  
+
+}
+
+
+void pintarPuntajeRojo(){
+
+}
+
+void pintarPuntajeAzul(){
+
 }

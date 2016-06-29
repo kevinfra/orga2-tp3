@@ -26,13 +26,14 @@
 
 /* Indices en la gdt */
 /* -------------------------------------------------------------------------- */
-#define GDT_COUNT 34						/*Determina el tamano de la GDT */
+#define GDT_COUNT 36						/*Determina el tamano de la GDT */
 
 #define GDT_IDX_NULL_DESC       0
 #define GDT_IDX_DESC_CODE0			4
 #define GDT_IDX_DESC_CODE3			5
 #define GDT_IDX_DESC_DATA0			6
 #define GDT_IDX_DESC_DATA3			7
+#define GDT_IDX_VIDEO_KERNEL    8
 
 /* Offsets en la gdt */
 /* -------------------------------------------------------------------------- */

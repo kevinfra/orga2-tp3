@@ -6,17 +6,15 @@
 */
 
 #include "sched.h"
+#include "i386.h"
 #define idle 0x48 //pos en gdt de idle. Esto sale de inicializar tss
 
 tarea colaJugadorA[5];
 tarea colaJugadorB[5];
 tarea colaNadie[15];
 int proximoColaA;
-int finColaA;
 int proximoColaB;
-int finColaB;
 int proximoColaNadie;
-int finColaNadie;
 short colaActual;
 tarea tareaActual;
 
@@ -24,25 +22,44 @@ unsigned short sched_proximo_indice() {
   unsigned short res = 0;
   switch (colaActual) {
     case 0:
-      res = colaNadie[proximoColaNadie].indiceGdt;
-      colaActual++;
-      tareaActual = colaNadie[proximoColaNadie];
+      if(colaNadie[proximoColaNadie].presente){
+        res = colaNadie[proximoColaNadie].indiceGdt;
+        colaActual++;
+        proximoColaNadie = (proximoColaNadie + 1) % 15;
+        tareaActual = colaNadie[proximoColaNadie];
+      }else{
+        colaActual++;
+        res = sched_proximo_indice();
+      }
       break;
     case 1:
-      res = colaJugadorA[proximoColaA].indiceGdt;
-      colaActual++;
-      tareaActual = colaNadie[proximoColaNadie];
+      if(colaJugadorA[proximoColaA].presente){
+        res = colaJugadorA[proximoColaA].indiceGdt;
+        colaActual++;
+        proximoColaA = (proximoColaA + 1) % 5;
+        tareaActual = colaJugadorA[proximoColaA];
+      }else{
+        colaActual++;
+        res = sched_proximo_indice();
+      }
       break;
     case 2:
-      res = colaJugadorB[proximoColaB].indiceGdt;
-      colaActual = 0;
-      tareaActual = colaNadie[proximoColaNadie];
+      if(colaJugadorB[proximoColaB].presente){
+        res = colaJugadorB[proximoColaB].indiceGdt;
+        colaActual = 0;
+        proximoColaB = (proximoColaB + 1) % 5;
+        tareaActual = colaJugadorB[proximoColaB];
+      }else{
+        colaActual = 0;
+        res = sched_proximo_indice();
+      }
       break;
   }
-  if (res == 0) {
-    res = idle;
-  }
-  return (res << 3);
+  return res;
+}
+
+char esMismaTarea(tarea t1, tarea t2){
+  return ((t1.posicion.x == t2.posicion.x) && (t1.posicion.y == t2.posicion.y) && (t1.indiceGdt == t2.indiceGdt));
 }
 
 tupla* posTareaActual(){
@@ -55,25 +72,29 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
       colaJugadorA[proximoColaA].posicion.x = x;
       colaJugadorA[proximoColaA].posicion.y = y;
       colaJugadorA[proximoColaA].indiceGdt = posTss;
+      colaJugadorA[proximoColaA].presente = 1;
+      proximoColaA++;
       break;
     case 0x12000:
       colaJugadorB[proximoColaB].posicion.x = x;
       colaJugadorB[proximoColaB].posicion.y = y;
       colaJugadorB[proximoColaB].indiceGdt = posTss;
+      colaJugadorB[proximoColaB].presente = 1;
+      proximoColaB++;
       break;
     case 0x13000:
       colaNadie[proximoColaNadie].posicion.x = x;
       colaNadie[proximoColaNadie].posicion.y = y;
       colaNadie[proximoColaNadie].indiceGdt = posTss;
+      colaNadie[proximoColaNadie].presente = 1;
+      proximoColaNadie++;
       break;
     }
 }
 
 void inicializar_scheduler(){
   proximoColaA = 0;
-  finColaA = 0;
   proximoColaB = 0;
-  finColaB = 0;
   proximoColaNadie = 0;
   colaActual = 0;
   short x = 0;
@@ -83,6 +104,6 @@ void inicializar_scheduler(){
   tareaIdle.posicion.x = x;
   tareaIdle.posicion.y = y;
   tareaIdle.indiceGdt = posGdtIdle;
-
+  tareaIdle.presente = 1;
   tareaActual= tareaIdle; //idle
 }

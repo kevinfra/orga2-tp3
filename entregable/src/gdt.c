@@ -10,7 +10,7 @@
 unsigned int proximo_Slot_Libre;
 
 void inicializar_proximoSlotLibre(){
-  proximo_Slot_Libre = 8;
+  proximo_Slot_Libre = 9;
 }
 unsigned int proximoSlotLibre(){
   unsigned int slot_libre = proximo_Slot_Libre;
@@ -131,6 +131,26 @@ Ademas, se modifico el archivo defines.h
         (unsigned char)     1,              /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
 
+
+
+    },
+
+
+
+    [GDT_IDX_VIDEO_KERNEL] = (gdt_entry) {
+        (unsigned short)    0x1F3F,         /* limit[0:15]  */
+        (unsigned short)    0x8000,         /* base[0:15]   */
+        (unsigned char)     0xB,            /* base[23:16]  */
+        (unsigned char)     2,              /* type         */
+        (unsigned char)     1,              /* s            */
+        (unsigned char)     0,              /* dpl          */
+        (unsigned char)     1,              /* p            */
+        (unsigned char)     0,              /* limit[16:19] */
+        (unsigned char)     0x00,           /* avl          */
+        (unsigned char)     0x00,           /* l            */
+        (unsigned char)     1,              /* db           */
+        (unsigned char)     0,              /* g            */
+        (unsigned char)     0x00,           /* base[31:24]  */
 
 
     }
