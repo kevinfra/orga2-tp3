@@ -12,6 +12,7 @@
 %define VIRUS_ROJO 0x841
 %define VIRUS_AZUL 0x325
 
+extern iniciarGame
 extern dameTarea
 extern tareaActual
 extern sched_proximo_indice
@@ -308,6 +309,10 @@ _isr33:
     ; Si llego aca es que se apreto alguna tecla no valida
     .Y:
     cmp al , Y   
+    .Space:
+    cmp al, 0x39
+    jne .fin
+    call iniciarGame
 
     .fin:
     popfd
