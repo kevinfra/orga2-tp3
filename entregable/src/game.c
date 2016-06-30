@@ -125,9 +125,11 @@ void game_mapear(int x, int y) {
 
 
 void pintarPuntajeRojo(){
-
+  puntajeRojo++;
+  print_int(puntajeRojo, 48, 51, (C_BG_RED & C_FG_WHITE));
 }
 
 void pintarPuntajeAzul(){
-
+  puntajeAzul++;
+  print_int(puntajeAzul, 48, 57, (C_BG_BLUE & C_FG_WHITE));
 }
