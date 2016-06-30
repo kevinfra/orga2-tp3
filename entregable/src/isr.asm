@@ -105,7 +105,7 @@ extern sched_proximo_indice
 %define K 0x25
 %define J 0x24
 %define L 0x26
-
+%define Y 0x15
 ;Numeritos obtenidos de http://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
 
 ;;
@@ -183,134 +183,137 @@ _isr32:
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
 _isr33:
-    pushad
+  pushad
     pushfd
-    call fin_intr_pic1
-    xor eax, eax
-    xor ebx, ebx
+    call fin_intr_pic1                  ; El int 0 corresponde al jugador A
+    xor eax, eax                        ; El int 1 corresponde al jugador B
+    xor ebx, ebx                        ;
     in al, 0x60 ; en AL tengo el caracter pulsado
-  ;  convertir_scanCode_Letra_Imprimir eax
+    ;Convertir_scanCode_Letra_Imprimir eax
     ;ACA EMPIEZA EL PLAYER A
-    mov ebx, "w"
-    cmp al,   W
-    je .ArbA
-              .ArbA:
-              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    .ArbA:
+    cmp al,W
+    jne .IzqA
+              mov ebx, "w"
+              Palpatine ebx, 0x4
               push 0xA33 ; 0xA33 = ARB del game.h
-              push 0  ; El 1 D es fruta por ahora, quiero que sea el jugador A
+              push 0  ; 
               call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
               pop ebx
               pop ebx
               jmp .fin
-
-    mov ebx,"a"
+    .IzqA:
     cmp al, A
-    je .IzqA
-            .IzqA:
-            imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .AbaA
+            mov ebx,"a"
+            Palpatine ebx, 0x4
             push 0xAAA ; 0xAAA = IZQ del game.h
             push 0
             call game_mover_cursor
             pop ebx
             pop ebx
             jmp .fin
-
-    mov ebx, "s"
+    .AbaA:
     cmp al, S
-    je .AbaA
-              .AbaA:
-              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .DerA
+              mov ebx, "s"
+              Palpatine ebx, 0x4
               push 0x883 ; 0x883 = ABA del game.h
               push 0
-              call game_mover_cursor
+              ;call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
-    mov ebx, "d"
+    .DerA:
     cmp al, D
-    je .DerA
-              .DerA:
-              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .LanzarA
+              mov ebx, "d"
+              Palpatine ebx, 0x4
               push 0x441 ; 0x441 = DER del game.h
               push 0
-              call game_mover_cursor
+              ;call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
-
+    .LanzarA:
     cmp al , lShift
-    mov ebx ,"L"
-    je .LanzarA
-                .LanzarA:
-                imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .PlayerB
+                mov ebx ,"L"
+                Palpatine ebx, 0x4
                 push 0
-                call game_lanzar
+                ;call game_lanzar
                 pop ebx
                 jmp .fin
 
     ;A PARTIR DE AHORA ES EL PLAYER B
+    .PlayerB:
+    .ArbB:
     cmp al , I
-    mov ebx, "i"
-    je .ArbB
-                .ArbB:
-                imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .AbaB
+                
+                mov ebx, "i"
+                Palpatine ebx, 0x9
                 push 0xA33 ; 0xA33 = ARB del game.h
-                push 1  ; El 1 D es fruta por ahora, quiero que sea el jugador A
-                call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
+                push 1  ; 
+                ;call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
                 pop ebx
                 pop ebx
                 jmp .fin
-
+    .AbaB:
     cmp al , K
-    mov ebx, "k"
-    je .AbaB
-                .AbaB:
-                imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .IzqB
+                
+                mov ebx, "k"
+                Palpatine ebx, 0x9
                 push 0x883 ; 0x883 = ABA del game.h
                 push 1
-                call game_mover_cursor
+                ;call game_mover_cursor
                 pop ebx
                 pop ebx
                 jmp .fin
 
+    .IzqB:
     cmp al , J
-    mov ebx, "j"
-    je .IzqB
-              .IzqB:
-              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .DerB
+              mov ebx, "j"
+              Palpatine ebx, 0x9
               push 0xAAA ; 0xAAA = IZQ del game.h
               push 1
-              call game_mover_cursor
+              ;call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
+    .DerB:
     cmp al, L
-    mov ebx, "l"
-    je .DerB
-              .DerB:
-              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .LanzarB          
+              mov ebx, "l"
+              Palpatine ebx, 0x9
               push 0x441 ; 0x441 = DER del game.h
               push 1
-              call game_mover_cursor
+              ;call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
 
+    .LanzarB:
     cmp al, rShift
-    mov ebx ,"R"
-    je .LanzarB
-              .LanzarB:
-              imprimir_texto_mp ebx, 1, 0x0F, 0, 79
+    jne .Y
+              mov ebx ,"R"
+              Palpatine ebx, 0x9
               push 1
-              call game_lanzar
+              ;call game_lanzar
               pop ebx
               jmp .fin
-    ;Me queda hacer la interrupcion de la y, el modo debug mencionado en la sec 3.4
-    jmp .fin ; Si llego aca es que se apreto alguna tecla no valida
+    ; Me queda hacer la interrupcion de la y, el modo debug mencionado en la sec 3.4
+    ; Si llego aca es que se apreto alguna tecla no valida
+    .Y:
+    cmp al , Y   
+
     .fin:
     popfd
     popad
     iret
+
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;

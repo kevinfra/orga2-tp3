@@ -9,18 +9,23 @@
 #include "screen.h"
 #include "colors.h"
 
-unsigned int X_A;
-unsigned int Y_A;
-unsigned int X_B;
-unsigned int Y_B;
-unsigned int puntajeRojo;
-unsigned int puntajeAzul;
+int X_A;
+int Y_A;
+int X_B;
+int Y_B;
+int puntajeRojo;
+int puntajeAzul;
 
 void iniciarPuntaje(){
+  X_A=1;
+  Y_A=0;
+  X_B=1;
+  Y_B=79;	
   puntajeAzul = 0;
   puntajeRojo = 0;
   print_int(puntajeRojo, 48, 51, (C_BG_RED & C_FG_WHITE));
   print_int(puntajeAzul, 48, 57, (C_BG_BLUE & C_FG_WHITE));
+
 }
 
 unsigned short dameTarea(){
@@ -30,7 +35,8 @@ unsigned short dameTarea(){
 
 void game_mover_cursor(int jugador, direccion dir) {
 	/*Definicion Cursores
-	A es Fondo ROJO con Caracter Nulo
+	A es Fondo ROJO con Caracter *
+	B es Fondo AZUL con Caracter *
 
 	*/
 	if (jugador==0) // Jugador A
@@ -40,28 +46,28 @@ void game_mover_cursor(int jugador, direccion dir) {
 			case IZQ:
 			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
 			X_A--;
-			X_A=X_A % 80;
+			if(X_A==-1){X_A++;}
 			print(0,X_A,Y_A+1,C_BG_RED);
 			break;
 
 			case DER:
-			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
+			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
 			X_A++;
-			X_A=X_A % 80;
-			print(0,X_A,Y_A+1,C_BG_RED);
+			if(X_A==80){X_A--;}
+			print(0,X_A,Y_A,C_BG_RED);
 
 			break;
 			case ARB:
-			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
-			Y_A++;
-			Y_A=Y_A % 44;
-			print(0,X_A,Y_A+1,C_BG_RED);
+			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
+			Y_A--;
+			if(Y_A==-1){Y_A++;};
+			print(0,X_A,Y_A,C_BG_RED);
 
 			break;
 			case ABA:
 			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
-			Y_A--;
-			Y_A=Y_A % 44;
+			Y_A++;
+			if(Y_A==45){Y_A--;};
 			print(0,X_A,Y_A,C_BG_RED);
 
 			break;
@@ -75,28 +81,28 @@ void game_mover_cursor(int jugador, direccion dir) {
 			case IZQ:
 			print(0,X_B,Y_B,C_BG_LIGHT_GREY);
 			X_B--;
-			X_B=X_B % 80;
+			if(X_B==-1){X_B++;}
 			print(0,X_A,Y_A,C_BG_BLUE);
 			break;
 
 			case DER:
 			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
 			X_B++;
-			X_B=X_B % 80;
+			if(X_B==80){X_B--;}
 			print(0,X_A,Y_A,C_BG_BLUE);
 
 			break;
 			case ARB:
-			print(0,X_A,Y_A+1,C_BG_LIGHT_GREY);
+			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
 			Y_B++;
-			Y_B=Y_B % 44;
+			if(Y_B==-1){Y_B++;};
 			print(0,X_A,Y_A+1,C_BG_BLUE);
 
 			break;
 			case ABA:
 			print(0,X_A,Y_A,C_BG_LIGHT_GREY);
-			Y_B--;
-			Y_B=Y_B % 44;
+			Y_B++;
+			if(Y_B==45){Y_B--;};
 			print(0,X_A,Y_A,C_BG_BLUE);
 
 			break;
