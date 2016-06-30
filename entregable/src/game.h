@@ -13,7 +13,7 @@
 
 typedef enum direccion_e { IZQ = 0xAAA, DER = 0x441, ARB = 0xA33, ABA = 0x883  } direccion;
 
-void iniciarPuntaje();
+void iniciarGame();
 
 unsigned short dameTarea();
 

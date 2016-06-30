@@ -6,7 +6,6 @@
 %include "imprimir.mac"
 global start
 
-extern iniciarPuntaje
 extern IDT_DESC
 extern GDT_DESC
 extern idt_inicializar
@@ -145,6 +144,7 @@ start:
     call inicializar_scheduler
     ; Cargar tarea inicial
 
+
     ; Habilitar interrupciones
     call resetear_pic
     call deshabilitar_pic
@@ -162,7 +162,6 @@ start:
     nop
     mov eax, 0xFFFF
     ;LALALALALA BRASIL QUEDO ELIMINADO MUAJAJAJA
-    call iniciarPuntaje
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF
     mov edx, 0xFFFF

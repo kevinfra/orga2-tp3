@@ -8,6 +8,7 @@
 #include "i386.h"
 #include "screen.h"
 #include "colors.h"
+#include "defines.h"
 
 int X_A;
 int Y_A;
@@ -16,16 +17,20 @@ int Y_B;
 int puntajeRojo;
 int puntajeAzul;
 
-void iniciarPuntaje(){
-  X_A=1;
-  Y_A=0;
-  X_B=1;
-  Y_B=79;	
+void iniciarGame(){
+  X_A=20;
+  Y_A=20;
+  X_B=20;
+  Y_B=50;
   puntajeAzul = 0;
   puntajeRojo = 0;
-  print_int(puntajeRojo, 48, 51, (C_BG_RED & C_FG_WHITE));
-  print_int(puntajeAzul, 48, 57, (C_BG_BLUE & C_FG_WHITE));
+  breakpoint();
+  breakpoint();
+  print_int(puntajeRojo, 51, 48, (C_BG_RED | C_FG_WHITE));
+  print_int(puntajeAzul, 57, 48, (C_BG_BLUE | C_FG_WHITE));
 
+  print_int(0, 20, 20, (C_BG_RED | C_FG_RED));
+  print_int(0, 50, 20, (C_BG_BLUE | C_FG_BLUE));
 }
 
 unsigned short dameTarea(){
