@@ -6,6 +6,26 @@
 %ifndef __IMPRIMIR_MAC__
 %define __IMPRIMIR_MAC__
 %define ROW_SIZE 160
+
+
+%macro Palpatine 2 ; Imprime 1 Caracter arriba de todo a la derecha
+pushad
+push %2 ; Los Atributos fondo y demas
+push %1 ; El Caracter a Imprimir
+xor eax,eax
+xor ebx,ebx
+pop eax ; EAX = Caracter
+pop ebx ; EBX = Atributos
+mov ecx , 0x000B8000 ; ECX = Donde Arranca Buffer Video
+add ecx , 158 ; Offset para la ultima columna de la primera fila
+mov byte [ECX] , AL
+inc ecx
+mov byte [ECX] , BL 
+popad
+%endmacro 
+
+
+
 ;; imprimir_texto_mp:
 ;;  Description:
 ;;      Imprime un string en la seccion especificada de la memoria de Video.
