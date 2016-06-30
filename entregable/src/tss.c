@@ -10,6 +10,7 @@
 #include "i386.h"
 #include "mmu.h"
 #include "sched.h"
+#include "game.h"
 
 tss tss_inicial;
 tss tss_idle;
@@ -159,5 +160,6 @@ void tss_inicializar_tareas_h(){
   unsigned int i = 0;
   for(i = 0; i < 15; i++){
     inicializar_tss(0x13000, i, i);
+    pintarTarea(i+i+1, i+1, 2);
   }
 }

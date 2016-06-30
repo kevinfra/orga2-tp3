@@ -13,6 +13,7 @@
 %define VIRUS_AZUL 0x325
 
 extern iniciarGame
+extern juegoIniciado
 extern dameTarea
 extern tareaActual
 extern sched_proximo_indice
@@ -198,7 +199,7 @@ _isr33:
               mov ebx, "w"
               Palpatine ebx, 0x4
               push 0xA33 ; 0xA33 = ARB del game.h
-              push 0  ; 
+              push 0  ;
               call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
               pop ebx
               pop ebx
@@ -251,11 +252,11 @@ _isr33:
     .ArbB:
     cmp al , I
     jne .AbaB
-                
+
                 mov ebx, "i"
                 Palpatine ebx, 0x9
                 push 0xA33 ; 0xA33 = ARB del game.h
-                push 1  ; 
+                push 1  ;
                 ;call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
                 pop ebx
                 pop ebx
@@ -263,7 +264,7 @@ _isr33:
     .AbaB:
     cmp al , K
     jne .IzqB
-                
+
                 mov ebx, "k"
                 Palpatine ebx, 0x9
                 push 0x883 ; 0x883 = ABA del game.h
@@ -286,7 +287,7 @@ _isr33:
               jmp .fin
     .DerB:
     cmp al, L
-    jne .LanzarB          
+    jne .LanzarB
               mov ebx, "l"
               Palpatine ebx, 0x9
               push 0x441 ; 0x441 = DER del game.h
@@ -308,10 +309,13 @@ _isr33:
     ; Me queda hacer la interrupcion de la y, el modo debug mencionado en la sec 3.4
     ; Si llego aca es que se apreto alguna tecla no valida
     .Y:
-    cmp al , Y   
+    cmp al , Y
     .Space:
     cmp al, 0x39
     jne .fin
+    call juegoIniciado
+    cmp eax, 1
+    je .fin
     call iniciarGame
 
     .fin:

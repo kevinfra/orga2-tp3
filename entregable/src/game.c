@@ -16,6 +16,7 @@ int X_B;
 int Y_B;
 int puntajeRojo;
 int puntajeAzul;
+int juegoEstaIniciado = 0;
 
 void iniciarGame(){
   X_A=20;
@@ -24,13 +25,30 @@ void iniciarGame(){
   Y_B=50;
   puntajeAzul = 0;
   puntajeRojo = 0;
-  breakpoint();
-  breakpoint();
-  print_int(puntajeRojo, 51, 48, (C_BG_RED | C_FG_WHITE));
-  print_int(puntajeAzul, 57, 48, (C_BG_BLUE | C_FG_WHITE));
-
+  print_int(puntajeRojo, 48, 51, (C_BG_RED | C_FG_WHITE));
+  print_int(puntajeAzul, 48, 57, (C_BG_BLUE | C_FG_WHITE));
   print_int(0, 20, 20, (C_BG_RED | C_FG_RED));
-  print_int(0, 50, 20, (C_BG_BLUE | C_FG_BLUE));
+  print_int(0, 20, 50, (C_BG_BLUE | C_FG_BLUE));
+  print("Yo no manejo el rating, yo manejo un rolls-royce", 4, 0, (C_BG_BLACK | C_FG_WHITE));
+  juegoEstaIniciado = 1;
+}
+
+int juegoIniciado(){
+  return juegoEstaIniciado;
+}
+
+void pintarTarea(int x, int y, int jugador){ //0 = A, 1=B 2=H
+  switch (jugador) {
+    case 0:
+      print_int(0, x, y, (C_BG_RED | C_FG_RED));
+      break;
+    case 1:
+      print_int(0, x, y, (C_BG_BLUE | C_FG_BLUE));
+      break;
+    case 2:
+      print_int(0, x, y, (C_BG_GREEN | C_FG_GREEN));
+      break;
+  }
 }
 
 unsigned short dameTarea(){

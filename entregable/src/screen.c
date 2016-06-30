@@ -47,11 +47,6 @@ void print_int(unsigned int n, unsigned int x, unsigned int y, unsigned short at
       n -= 10 * a;
       print_int(a,x-1,y,attr);
     }
-    p[y][x].c = '0'+n;
-    p[y][x].a = attr;
+    p[x][y].c = '0'+n;
+    p[x][y].a = attr;
 }
-
-
-
-
-
