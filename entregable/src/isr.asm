@@ -12,6 +12,7 @@
 %define VIRUS_ROJO 0x841
 %define VIRUS_AZUL 0x325
 
+extern volverDeExcepcion
 extern iniciarGame
 extern juegoIniciado
 extern dameTarea
@@ -121,7 +122,11 @@ global _isr%1
 
 _isr%1:
     mov eax, %1
-    imprimir_texto_mp msj%1, msj%1_len, 0x0f, 0, 0
+    call volverDeExcepcion
+    call sched_proximo_indice
+    shl eax, 3
+    mov [selector], ax
+    jmp far [offset]
     jmp $
 
 %endmacro
@@ -173,6 +178,7 @@ _isr32:
     call fin_intr_pic1
     call proximo_reloj
     call sched_proximo_indice
+    xchg bx, bx
     shl eax, 3
   ;  mov eax, 0xA0 ;;;;;;;ESTO ESTA PORQUE ES LA PRIMERA TAREA NO-IDLE A LA QUE HAY QUE SALTAR. TIRA PAGE FAULT (??????)
     mov [selector], ax
@@ -243,7 +249,7 @@ _isr33:
                 mov ebx ,"L"
                 Palpatine ebx, 0x4
                 push 0
-                ;call game_lanzar
+                call game_lanzar
                 pop ebx
                 jmp .fin
 
@@ -303,7 +309,7 @@ _isr33:
               mov ebx ,"R"
               Palpatine ebx, 0x9
               push 1
-              ;call game_lanzar
+              call game_lanzar
               pop ebx
               jmp .fin
     ; Me queda hacer la interrupcion de la y, el modo debug mencionado en la sec 3.4

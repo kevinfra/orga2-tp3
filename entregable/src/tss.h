@@ -55,7 +55,7 @@ typedef struct str_tss {
 } __attribute__((__packed__, aligned (8))) tss;
 
 unsigned int tss_inicializar_idle();
-unsigned int tss_inicializar(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y);
+unsigned int inicializar_tss(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y);
 void tss_inicializar_tareas_h();
 
 #endif  /* !__TSS_H__ */

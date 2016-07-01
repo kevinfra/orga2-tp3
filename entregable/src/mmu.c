@@ -114,10 +114,9 @@ unsigned int mmu_inicializar_dir_tarea( unsigned int cr3, unsigned int dirFisica
 
   int j = 0 ;
   for(j = 0; j < 1024; j++){
-    *pageTable = j*4096 | 7;
+    *pageTable = j*4096 | 3;
     pageTable++;
   }
-
 
   int * dirEnMapa = (int*) ((x + y*80)*4096 + 0x400000); //transforma de (x,y) a direccion de memoria
   mmu_mapear_pagina_tarea(0x08000000, (unsigned int) nuevoCR3, (unsigned int) dirEnMapa);

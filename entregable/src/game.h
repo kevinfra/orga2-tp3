@@ -10,6 +10,10 @@
 #include "defines.h"
 #include "screen.h"
 #include "mmu.h"
+#include "colors.h"
+#include "i386.h"
+#include "gdt.h"
+#include "sched.h"
 
 typedef enum direccion_e { IZQ = 0xAAA, DER = 0x441, ARB = 0xA33, ABA = 0x883  } direccion;
 
@@ -33,6 +37,7 @@ void game_mover_cursor(int jugador, direccion dir);
 
 void pintarPuntajeRojo();
 void pintarPuntajeAzul();
+void volverDeExcepcion();
 
 
 #endif  /* !__GAME_H__ */

@@ -34,13 +34,52 @@ tss tss_a2;
 tss tss_a3;
 tss tss_a4;
 tss tss_a5;
+tss tss_a6;
+tss tss_a7;
+tss tss_a8;
+tss tss_a9;
+tss tss_a10;
+tss tss_a11;
+tss tss_a12;
+tss tss_a13;
+tss tss_a14;
+tss tss_a15;
+tss tss_a16;
+tss tss_a17;
+tss tss_a18;
+tss tss_a19;
+tss tss_a20;
 tss tss_b1;
 tss tss_b2;
 tss tss_b3;
 tss tss_b4;
 tss tss_b5;
+tss tss_b6;
+tss tss_b7;
+tss tss_b8;
+tss tss_b9;
+tss tss_b10;
+tss tss_b11;
+tss tss_b12;
+tss tss_b13;
+tss tss_b14;
+tss tss_b15;
+tss tss_b16;
+tss tss_b17;
+tss tss_b18;
+tss tss_b19;
+tss tss_b20;
 
-tss* todasLasTss[25] = { &tss_a1, &tss_a2, &tss_a3, &tss_a4, &tss_a5, &tss_b1, &tss_b2, &tss_b3, &tss_b4, &tss_b5, &tss_h1, &tss_h2, &tss_h3, &tss_h4, &tss_h5, &tss_h6, &tss_h7, &tss_h8, &tss_h9, &tss_h10, &tss_h11, &tss_h12, &tss_h13, &tss_h14, &tss_h15};
+tss* todasLasTss[55] = { &tss_a1, &tss_a2, &tss_a3, &tss_a4, &tss_a5,
+   &tss_a6, &tss_a7, &tss_a8, &tss_a9, &tss_a10,
+   &tss_a11, &tss_a12, &tss_a13, &tss_a14, &tss_a15,
+   &tss_a16, &tss_a17, &tss_a18, &tss_a19, &tss_a20,
+   &tss_b1, &tss_b2, &tss_b3, &tss_b4, &tss_b5,
+   &tss_b6, &tss_b7, &tss_b8, &tss_b9, &tss_b10,
+   &tss_b11, &tss_b12, &tss_b13, &tss_b14, &tss_b15,
+   &tss_b16, &tss_b17, &tss_b18, &tss_b19, &tss_b20,
+   &tss_h1, &tss_h2, &tss_h3, &tss_h4, &tss_h5, &tss_h6, &tss_h7, &tss_h8, &tss_h9,
+   &tss_h10, &tss_h11, &tss_h12, &tss_h13, &tss_h14, &tss_h15};
 unsigned short proximaTss;
 tss* dameTss(){
   tss* res = todasLasTss[proximaTss];
@@ -108,16 +147,16 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
 
   //  unsigned int dirFisicaACopiar = (x + y*80)*4096 + 400000;
     unsigned int posTss = proximoSlotLibre();
-    switch (dirFisicaTareaOriginal) {
-      case 0x11000:
-        break;
-      case 0x12000:
-        posTss += 5;
-        break;
-      case 0x13000:
-        posTss += 10;
-        break;
-    }
+    // switch (dirFisicaTareaOriginal) {
+    //   case 0x11000:
+    //     break;
+    //   case 0x12000:
+    //     posTss += 5;
+    //     break;
+    //   case 0x13000:
+    //     posTss += 10;
+    //     break;
+    // }
     unsigned int res = posTss;
     unsigned int cr3 = rcr3();
 
@@ -146,12 +185,13 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
     nueva_tss->ebp = 0x08000000 + 0xfff;
     nueva_tss->eflags = 0x202;
     nueva_tss->eip = 0x08000000;
-    nueva_tss->cr3 = mmu_inicializar_dir_tarea(cr3, dirFisicaTareaOriginal, x, y);
+    unsigned int nuevaCR3 = mmu_inicializar_dir_tarea(cr3, dirFisicaTareaOriginal, x, y);
+    nueva_tss->cr3 = nuevaCR3;
     nueva_tss->esp0 = mmu_proxima_pagina_fisica_libre();
     nueva_tss->ss0 = GDT_OFF_IDX_DESC_DATA0;
     nueva_tss->iomap = 0xFFFF;
 
-    cargarTareaEnCola(dirFisicaTareaOriginal, x, y, posTss);
+    cargarTareaEnCola(dirFisicaTareaOriginal, x, y, posTss, nuevaCR3);
 
     return res;
 }

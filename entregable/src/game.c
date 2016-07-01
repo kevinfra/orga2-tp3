@@ -5,10 +5,9 @@
 */
 
 #include "game.h"
-#include "i386.h"
-#include "screen.h"
-#include "colors.h"
-#include "defines.h"
+#include "tss.h"
+#include "gdt.h"
+#include "sched.h"
 
 int X_A;
 int Y_A;
@@ -17,6 +16,7 @@ int Y_B;
 int puntajeRojo;
 int puntajeAzul;
 int juegoEstaIniciado = 0;
+int tareasEnJuego[2];
 
 void iniciarGame(){
   X_A=20;
@@ -29,8 +29,10 @@ void iniciarGame(){
   print_int(puntajeAzul, 48, 57, (C_BG_BLUE | C_FG_WHITE));
   print_int(0, 20, 20, (C_BG_RED | C_FG_RED));
   print_int(0, 20, 50, (C_BG_BLUE | C_FG_BLUE));
-  print("Yo no manejo el rating, yo manejo un rolls-royce", 4, 0, (C_BG_BLACK | C_FG_WHITE));
+  print("Yo no manejo el rating, yo manejo un rolls-royce", 14, 0, (C_BG_BLACK | C_FG_WHITE));
   juegoEstaIniciado = 1;
+  tareasEnJuego[0] = 0;
+  tareasEnJuego[1] = 0;
 }
 
 int juegoIniciado(){
@@ -133,8 +135,25 @@ void game_mover_cursor(int jugador, direccion dir) {
 	}
 
 }
+int tareasLanzadas(unsigned int jugador){
+  return tareasEnJuego[jugador];
+}
+
+void sumarTareaLanzada(unsigned int jugador){
+  tareasEnJuego[jugador] += 1;
+}
 
 void game_lanzar(unsigned int jugador) {
+  if(juegoEstaIniciado && tareasLanzadas(jugador) < 5){
+    if(jugador == 1){ // azul
+      inicializar_tss(0x12000, 25, 25);
+      pintarTarea(X_B, Y_B, 1);
+    }else if(jugador == 0){
+      inicializar_tss(0x11000, 25, 25);
+      pintarTarea(X_A, Y_A, 0);
+    }
+    sumarTareaLanzada(jugador);
+  }
 }
 
 void game_soy(unsigned int yoSoy) {
@@ -162,3 +181,31 @@ void pintarPuntajeAzul(){
   puntajeAzul++;
   print_int(puntajeAzul, 48, 57, (C_BG_BLUE & C_FG_WHITE));
 }
+
+
+void volverDeExcepcion(){
+    switch (colaActual) {
+      case 0:
+        if(proximoColaB == 0){
+          colaJugadorB[4].presente = 0;
+        }else{
+          colaJugadorB[proximoColaB-1].presente = 0;
+        }
+      case 1:
+        if(proximoColaNadie == 0){
+          colaNadie[14].presente = 0;
+        }else{
+          colaNadie[proximoColaNadie-1].presente = 0;
+        }
+      case 2:
+        if(proximoColaA == 0){
+          colaJugadorA[4].presente = 0;
+        }else{
+          colaJugadorA[proximoColaA-1].presente = 0;
+        }
+    }
+    gdt[tareaActual.indiceGdt].p = 0;
+    print_int(0, tareaActual.posicion.x, tareaActual.posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
+    mmu_unmapear_pagina(0x08000000, tareaActual.cr3Actual);
+    mmu_unmapear_pagina(0x08001000, tareaActual.cr3Actual);
+  }

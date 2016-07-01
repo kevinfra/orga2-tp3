@@ -9,15 +9,6 @@
 #include "i386.h"
 #define idle 0x48 //pos en gdt de idle. Esto sale de inicializar tss
 
-tarea colaJugadorA[5];
-tarea colaJugadorB[5];
-tarea colaNadie[15];
-int proximoColaA;
-int proximoColaB;
-int proximoColaNadie;
-short colaActual;
-tarea tareaActual;
-
 unsigned short sched_proximo_indice() {
   unsigned short res = 0;
   switch (colaActual) {
@@ -25,6 +16,8 @@ unsigned short sched_proximo_indice() {
       if(colaNadie[proximoColaNadie].presente){
         res = colaNadie[proximoColaNadie].indiceGdt;
         colaActual++;
+        print_int(colaJugadorA[proximoColaA].presente, 4, 10, (C_BG_BLACK | C_FG_WHITE));
+        print_int(colaJugadorB[proximoColaB].presente, 10, 10, (C_BG_BLACK | C_FG_WHITE));
         proximoColaNadie = (proximoColaNadie + 1) % 15;
         tareaActual = colaNadie[proximoColaNadie];
       }else{
@@ -66,13 +59,14 @@ tupla* posTareaActual(){
   return &(tareaActual.posicion);
 }
 
-void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss){
+void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss, unsigned int cr3){
   switch (dirTareaFisicaTareaOriginal) {
     case 0x11000:
       colaJugadorA[proximoColaA].posicion.x = x;
       colaJugadorA[proximoColaA].posicion.y = y;
       colaJugadorA[proximoColaA].indiceGdt = posTss;
       colaJugadorA[proximoColaA].presente = 1;
+      colaJugadorA[proximoColaA].cr3Actual = cr3;
       proximoColaA++;
       break;
     case 0x12000:
@@ -80,6 +74,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
       colaJugadorB[proximoColaB].posicion.y = y;
       colaJugadorB[proximoColaB].indiceGdt = posTss;
       colaJugadorB[proximoColaB].presente = 1;
+      colaJugadorB[proximoColaB].cr3Actual = cr3;
       proximoColaB++;
       break;
     case 0x13000:
@@ -87,6 +82,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
       colaNadie[proximoColaNadie].posicion.y = y;
       colaNadie[proximoColaNadie].indiceGdt = posTss;
       colaNadie[proximoColaNadie].presente = 1;
+      colaNadie[proximoColaNadie].cr3Actual = cr3;
       proximoColaNadie++;
       break;
     }

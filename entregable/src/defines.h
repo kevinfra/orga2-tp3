@@ -26,7 +26,7 @@
 
 /* Indices en la gdt */
 /* -------------------------------------------------------------------------- */
-#define GDT_COUNT 36						/*Determina el tamano de la GDT */
+#define GDT_COUNT 66						/*Determina el tamano de la GDT */
 
 #define GDT_IDX_NULL_DESC       0
 #define GDT_IDX_DESC_CODE0			4

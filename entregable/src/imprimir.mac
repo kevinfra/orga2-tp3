@@ -20,9 +20,9 @@ mov ecx , 0x000B8000 ; ECX = Donde Arranca Buffer Video
 add ecx , 158 ; Offset para la ultima columna de la primera fila
 mov byte [ECX] , AL
 inc ecx
-mov byte [ECX] , BL 
+mov byte [ECX] , BL
 popad
-%endmacro 
+%endmacro
 
 
 
@@ -217,7 +217,7 @@ popad
         add edi, 2
         mov word [edi + 0x000B8000] , 0x0753 ; S
 
-        mov edi , 7506
+        add edi, 30
         mov word [edi + 0x000B8000] , 0x0756  ; MIRAR Colors.h y Consultar
         add edi, 2
         mov word [edi + 0x000B8000] , 0x0749 ; I
