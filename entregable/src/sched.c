@@ -11,38 +11,52 @@
 
 unsigned short sched_proximo_indice() {
   unsigned short res = 0;
+  int i;
   switch (colaActual) {
     case 0:
-      if(colaNadie[proximoColaNadie].presente){
-        res = colaNadie[proximoColaNadie].indiceGdt;
-        colaActual++;
-        print_int(colaJugadorA[proximoColaA].presente, 4, 10, (C_BG_BLACK | C_FG_WHITE));
-        print_int(colaJugadorB[proximoColaB].presente, 10, 10, (C_BG_BLACK | C_FG_WHITE));
+      for(i = 0; i < 15; i++){
+        if(colaNadie[proximoColaNadie].presente){
+          res = colaNadie[proximoColaNadie].indiceGdt;
+          colaActual++;
+          tareaActual = colaNadie[proximoColaNadie];
+          proximoColaNadie = (proximoColaNadie + 1) % 15;
+          break;
+        }
         proximoColaNadie = (proximoColaNadie + 1) % 15;
-        tareaActual = colaNadie[proximoColaNadie];
-      }else{
+      }
+      if(i == 15){
         colaActual++;
         res = sched_proximo_indice();
       }
       break;
     case 1:
-      if(colaJugadorA[proximoColaA].presente){
-        res = colaJugadorA[proximoColaA].indiceGdt;
-        colaActual++;
+      for(i = 0; i < 5; i++){
+        if(colaJugadorA[proximoColaA].presente){
+          res = colaJugadorA[proximoColaA].indiceGdt;
+          colaActual++;
+          tareaActual = colaJugadorA[proximoColaA];
+          proximoColaA = (proximoColaA + 1) % 5;
+          break;
+        }
         proximoColaA = (proximoColaA + 1) % 5;
-        tareaActual = colaJugadorA[proximoColaA];
-      }else{
+      }
+      if(i == 5){
         colaActual++;
         res = sched_proximo_indice();
       }
       break;
     case 2:
-      if(colaJugadorB[proximoColaB].presente){
-        res = colaJugadorB[proximoColaB].indiceGdt;
-        colaActual = 0;
+      for(i = 0; i < 5; i++){
+        if(colaJugadorB[proximoColaB].presente){
+          res = colaJugadorB[proximoColaB].indiceGdt;
+          colaActual = 0;
+          tareaActual = colaJugadorB[proximoColaB];
+          proximoColaB = (proximoColaB + 1) % 5;
+          break;
+        }
         proximoColaB = (proximoColaB + 1) % 5;
-        tareaActual = colaJugadorB[proximoColaB];
-      }else{
+      }
+      if(i == 5){
         colaActual = 0;
         res = sched_proximo_indice();
       }

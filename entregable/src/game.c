@@ -19,22 +19,18 @@ int juegoEstaIniciado = 0;
 int tareasEnJuego[2];
 
 void iniciarGame(){
-  X_A=0;
-  Y_A=0;
-  X_B=0;
-  Y_B=79;
+  X_A=20;
+  Y_A=20;
+  X_B=20;
+  Y_B=50;
   puntajeAzul = 0;
   puntajeRojo = 0;
-  print_int(puntajeRojo, 48, 51, (C_BG_RED | C_FG_WHITE));
-  print_int(puntajeAzul, 48, 57, (C_BG_BLUE | C_FG_WHITE));
-  print_int(0, 20, 20, (C_BG_RED | C_FG_RED));
-  print_int(0, 20, 50, (C_BG_BLUE | C_FG_BLUE));
   print("Yo no manejo el rating, yo manejo un rolls-royce", 14, 0, (C_BG_BLACK | C_FG_WHITE));
   juegoEstaIniciado = 1;
   tareasEnJuego[0] = 0;
   tareasEnJuego[1] = 0;
-  pintarTarea(X_A+1,Y_A,0); // Pinta Rojo
-  pintarTarea(X_B+1,Y_B,1); // Pinta Azul
+  pintarTarea(X_A,Y_A,0); // Pinta Rojo
+  pintarTarea(X_B,Y_B,1); // Pinta Azul
 }
 
 int juegoIniciado(){
@@ -73,38 +69,38 @@ void game_mover_cursor(int jugador, direccion dir) {
 		switch(dir)
 		{
 			case IZQ:
-			pintarGris(X_A+1,Y_A);
+			pintarGris(X_A,Y_A);
 			Y_A--;
 			if(Y_A==-1)
 				{
 					Y_A++;
 				}
-			pintarTarea(X_A+1,Y_A,0);
+			pintarTarea(X_A,Y_A,0);
 			break;
 
 			case DER:
-			pintarGris(X_A+1,Y_A);
+			pintarGris(X_A,Y_A);
 			Y_A++;
 			if(Y_A==80)
 				{
 					Y_A--;
 				}
-			pintarTarea(X_A+1,Y_A,0);
+			pintarTarea(X_A,Y_A,0);
 
 			break;
 
 			case ARB:
-			pintarGris(X_A+1,Y_A);
+			pintarGris(X_A,Y_A);
 			X_A--;
 			if(X_A==-1){X_A++;}
-			pintarTarea(X_A+1,Y_A,0);
+			pintarTarea(X_A,Y_A,0);
 
 			break;
 			case ABA:
-			pintarGris(X_A+1,Y_A);
+			pintarGris(X_A,Y_A);
 			X_A++;
-			if(X_A==44){X_A--;}
-			pintarTarea(X_A+1,Y_A,0);
+			if(X_A==45){X_A--;}
+			pintarTarea(X_A,Y_A,0);
 
 			break;
 		}
@@ -115,38 +111,38 @@ void game_mover_cursor(int jugador, direccion dir) {
 	{		switch(dir)
 		{
 			case IZQ:
-			pintarGris(X_B+1,Y_B);
+			pintarGris(X_B,Y_B);
 			Y_B--;
 			if(Y_B==-1)
 				{
 					Y_B++;
 				}
-			pintarTarea(X_B+1,Y_B,1);
+			pintarTarea(X_B,Y_B,1);
 			break;
 
 			case DER:
-			pintarGris(X_B+1,Y_B);
+			pintarGris(X_B,Y_B);
 			Y_B++;
 			if(Y_B==80)
 				{
 					Y_B--;
 				}
-			pintarTarea(X_B+1,Y_B,1);
+			pintarTarea(X_B,Y_B,1);
 
 			break;
 
 			case ARB:
-			pintarGris(X_B+1,Y_B);
+			pintarGris(X_B,Y_B);
 			X_B--;
 			if(X_B==-1){X_B++;}
-			pintarTarea(X_B+1,Y_B,1);
+			pintarTarea(X_B,Y_B,1);
 
 			break;
 			case ABA:
-			pintarGris(X_B+1,Y_B);
+			pintarGris(X_B,Y_B);
 			X_B++;
 			if(X_B==44){X_B--;}
-			pintarTarea(X_B+1,Y_B,1);
+			pintarTarea(X_B,Y_B,1);
 
 			break;
 		}
@@ -164,10 +160,10 @@ void sumarTareaLanzada(unsigned int jugador){
 void game_lanzar(unsigned int jugador) {
   if(juegoEstaIniciado && tareasLanzadas(jugador) < 5){
     if(jugador == 1){ // azul
-      inicializar_tss(0x12000, 25, 25);
+      inicializar_tss(0x12000, X_B, Y_B);
       pintarTarea(X_B, Y_B, 1);
     }else if(jugador == 0){
-      inicializar_tss(0x11000, 25, 25);
+      inicializar_tss(0x11000, X_A, Y_A);
       pintarTarea(X_A, Y_A, 0);
     }
     sumarTareaLanzada(jugador);
@@ -224,6 +220,4 @@ void volverDeExcepcion(){
     }
     gdt[tareaActual.indiceGdt].p = 0;
     print_int(0, tareaActual.posicion.x, tareaActual.posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
-    mmu_unmapear_pagina(0x08000000, tareaActual.cr3Actual);
-    mmu_unmapear_pagina(0x08001000, tareaActual.cr3Actual);
   }

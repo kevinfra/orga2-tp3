@@ -178,9 +178,8 @@ _isr32:
     call fin_intr_pic1
     call proximo_reloj
     call sched_proximo_indice
-    xchg bx, bx
+  ;  xchg bx, bx
     shl eax, 3
-  ;  mov eax, 0xA0 ;;;;;;;ESTO ESTA PORQUE ES LA PRIMERA TAREA NO-IDLE A LA QUE HAY QUE SALTAR. TIRA PAGE FAULT (??????)
     mov [selector], ax
     jmp far [offset]
 
@@ -309,6 +308,7 @@ _isr33:
               mov ebx ,"R"
               Palpatine ebx, 0x9
               push 1
+            ;  xchg bx, bx
               call game_lanzar
               pop ebx
               jmp .fin
@@ -401,6 +401,23 @@ proximo_reloj:
                 popad
         ret
 
+proximo_reloj_tarea: ;;;SIN TERMINAR
+        inc DWORD [isrnumero]
+        mov ebx, [isrnumero]
+        cmp ebx, 0x4
+        jl .ok
+                mov DWORD [isrnumero], 0x0
+                mov ebx, 0
+        .ok:
+                add ebx, isrClock
+                imprimir_texto_mp ebx, 1, 0x0f, 49, 79
+                popad
+        ret
+
 
 offset: dd 0
 selector: dw 0
+message1: db '|' ;;;ESTO ES PARA RELOJ DE TAREAS
+message2: db '/'
+message3: db '-'
+message4: db '\'
