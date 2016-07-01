@@ -222,7 +222,7 @@ _isr33:
               Palpatine ebx, 0x4
               push 0x883 ; 0x883 = ABA del game.h
               push 0
-              ;call game_mover_cursor
+              call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
@@ -233,7 +233,7 @@ _isr33:
               Palpatine ebx, 0x4
               push 0x441 ; 0x441 = DER del game.h
               push 0
-              ;call game_mover_cursor
+              call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
@@ -257,7 +257,7 @@ _isr33:
                 Palpatine ebx, 0x9
                 push 0xA33 ; 0xA33 = ARB del game.h
                 push 1  ;
-                ;call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
+                call game_mover_cursor ; En 32 bits, los parametros se pasan por la pila
                 pop ebx
                 pop ebx
                 jmp .fin
@@ -269,7 +269,7 @@ _isr33:
                 Palpatine ebx, 0x9
                 push 0x883 ; 0x883 = ABA del game.h
                 push 1
-                ;call game_mover_cursor
+                call game_mover_cursor
                 pop ebx
                 pop ebx
                 jmp .fin
@@ -281,7 +281,7 @@ _isr33:
               Palpatine ebx, 0x9
               push 0xAAA ; 0xAAA = IZQ del game.h
               push 1
-              ;call game_mover_cursor
+              call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
@@ -292,7 +292,7 @@ _isr33:
               Palpatine ebx, 0x9
               push 0x441 ; 0x441 = DER del game.h
               push 1
-              ;call game_mover_cursor
+              call game_mover_cursor
               pop ebx
               pop ebx
               jmp .fin
