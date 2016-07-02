@@ -24,6 +24,7 @@ extern game_mover_cursor
 extern game_lanzar
 extern pintarPuntajeAzul
 extern pintarPuntajeRojo
+extern print_hex
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -178,8 +179,16 @@ _isr32:
     call fin_intr_pic1
     call proximo_reloj
     call sched_proximo_indice
+    mov ebx, 0xF
+    push ebx
+    push 30
+    push 30
+    push 4
+    push eax
+    call print_hex
   ;  xchg bx, bx
     shl eax, 3
+
     mov [selector], ax
     jmp far [offset]
 

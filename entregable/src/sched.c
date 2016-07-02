@@ -15,50 +15,60 @@ unsigned short sched_proximo_indice() {
   switch (colaActual) {
     case 0:
       for(i = 0; i < 15; i++){
-        if(colaNadie[proximoColaNadie].presente){
-          res = colaNadie[proximoColaNadie].indiceGdt;
+        breakpoint();
+        if(colaNadie[siguienteTareaNadie].presente && !esMismaTarea(colaNadie[siguienteTareaNadie], tareaActual)){
+          res = colaNadie[siguienteTareaNadie].indiceGdt;
           colaActual++;
-          tareaActual = colaNadie[proximoColaNadie];
-          proximoColaNadie = (proximoColaNadie + 1) % 15;
-          break;
+          tareaActual = colaNadie[siguienteTareaNadie];
+          siguienteTareaNadie = (siguienteTareaNadie + 1) % 15;
+          i = 16;
+        }else{
+          siguienteTareaNadie = (siguienteTareaNadie + 1) % 15;
         }
-        proximoColaNadie = (proximoColaNadie + 1) % 15;
       }
       if(i == 15){
         colaActual++;
+        short colaActualVieja = colaActual;
         res = sched_proximo_indice();
+        if(colaActual != colaActualVieja){colaActual = colaActualVieja;}
       }
       break;
     case 1:
       for(i = 0; i < 5; i++){
-        if(colaJugadorA[proximoColaA].presente){
-          res = colaJugadorA[proximoColaA].indiceGdt;
+        if(colaJugadorA[siguienteTareaA].presente && !esMismaTarea(colaJugadorA[siguienteTareaA], tareaActual)){
+          res = colaJugadorA[siguienteTareaA].indiceGdt;
           colaActual++;
-          tareaActual = colaJugadorA[proximoColaA];
-          proximoColaA = (proximoColaA + 1) % 5;
-          break;
+          tareaActual = colaJugadorA[siguienteTareaA];
+          siguienteTareaA = (siguienteTareaA + 1) % 5;
+          i = 6;
+        }else{
+          siguienteTareaA = (siguienteTareaA + 1) % 5;
         }
-        proximoColaA = (proximoColaA + 1) % 5;
       }
       if(i == 5){
         colaActual++;
+        short colaActualVieja = colaActual;
         res = sched_proximo_indice();
+        if(colaActual != colaActualVieja){colaActual = colaActualVieja;}
       }
       break;
     case 2:
       for(i = 0; i < 5; i++){
-        if(colaJugadorB[proximoColaB].presente){
-          res = colaJugadorB[proximoColaB].indiceGdt;
+        if(colaJugadorB[siguienteTareaB].presente && !esMismaTarea(colaJugadorB[siguienteTareaB], tareaActual)){
+          res = colaJugadorB[siguienteTareaB].indiceGdt;
           colaActual = 0;
-          tareaActual = colaJugadorB[proximoColaB];
-          proximoColaB = (proximoColaB + 1) % 5;
-          break;
+          tareaActual = colaJugadorB[siguienteTareaB];
+          siguienteTareaB = (siguienteTareaB + 1) % 5;
+          i = 6;
+        }else{
+          siguienteTareaB = (siguienteTareaB + 1) % 5;
         }
-        proximoColaB = (proximoColaB + 1) % 5;
       }
       if(i == 5){
         colaActual = 0;
+        short colaActualVieja = colaActual;
         res = sched_proximo_indice();
+        if(colaActual != colaActualVieja){colaActual = colaActualVieja;}
       }
       break;
   }
@@ -66,7 +76,7 @@ unsigned short sched_proximo_indice() {
 }
 
 char esMismaTarea(tarea t1, tarea t2){
-  return ((t1.posicion.x == t2.posicion.x) && (t1.posicion.y == t2.posicion.y) && (t1.indiceGdt == t2.indiceGdt));
+  return ((t1.posicion.x == t2.posicion.x) && (t1.posicion.y == t2.posicion.y) && (t1.indiceGdt == t2.indiceGdt) && (t1.cr3Actual == t2.cr3Actual));
 }
 
 tupla* posTareaActual(){
@@ -74,30 +84,49 @@ tupla* posTareaActual(){
 }
 
 void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss, unsigned int cr3){
+  int i;
   switch (dirTareaFisicaTareaOriginal) {
     case 0x11000:
-      colaJugadorA[proximoColaA].posicion.x = x;
-      colaJugadorA[proximoColaA].posicion.y = y;
-      colaJugadorA[proximoColaA].indiceGdt = posTss;
-      colaJugadorA[proximoColaA].presente = 1;
-      colaJugadorA[proximoColaA].cr3Actual = cr3;
-      proximoColaA++;
+      for(i = 0; i < 5; i++){
+        if(!colaJugadorA[proximoColaA].presente){
+          colaJugadorA[proximoColaA].posicion.x = x;
+          colaJugadorA[proximoColaA].posicion.y = y;
+          colaJugadorA[proximoColaA].indiceGdt = posTss;
+          colaJugadorA[proximoColaA].presente = 1;
+          colaJugadorA[proximoColaA].cr3Actual = cr3;
+          i = 6;
+        }else{
+          proximoColaA = (proximoColaA + 1) % 5;
+        }
+      }
       break;
     case 0x12000:
-      colaJugadorB[proximoColaB].posicion.x = x;
-      colaJugadorB[proximoColaB].posicion.y = y;
-      colaJugadorB[proximoColaB].indiceGdt = posTss;
-      colaJugadorB[proximoColaB].presente = 1;
-      colaJugadorB[proximoColaB].cr3Actual = cr3;
-      proximoColaB++;
+      for(i = 0; i < 5; i++){
+        if(!colaJugadorB[proximoColaB].presente){
+          colaJugadorB[proximoColaB].posicion.x = x;
+          colaJugadorB[proximoColaB].posicion.y = y;
+          colaJugadorB[proximoColaB].indiceGdt = posTss;
+          colaJugadorB[proximoColaB].presente = 1;
+          colaJugadorB[proximoColaB].cr3Actual = cr3;
+          i = 6;
+        }else{
+          proximoColaB = (proximoColaB + 1) % 5;
+        }
+      }
       break;
     case 0x13000:
-      colaNadie[proximoColaNadie].posicion.x = x;
-      colaNadie[proximoColaNadie].posicion.y = y;
-      colaNadie[proximoColaNadie].indiceGdt = posTss;
-      colaNadie[proximoColaNadie].presente = 1;
-      colaNadie[proximoColaNadie].cr3Actual = cr3;
-      proximoColaNadie++;
+      for(i = 0; i < 15; i++){
+        if(!colaNadie[proximoColaNadie].presente){
+          colaNadie[proximoColaNadie].posicion.x = x;
+          colaNadie[proximoColaNadie].posicion.y = y;
+          colaNadie[proximoColaNadie].indiceGdt = posTss;
+          colaNadie[proximoColaNadie].presente = 1;
+          colaNadie[proximoColaNadie].cr3Actual = cr3;
+          i = 15;
+        }else{
+          proximoColaNadie = (proximoColaNadie + 1) % 15;
+        }
+      }
       break;
     }
 }
@@ -106,6 +135,9 @@ void inicializar_scheduler(){
   proximoColaA = 0;
   proximoColaB = 0;
   proximoColaNadie = 0;
+  siguienteTareaA = 0;
+  siguienteTareaB = 0;
+  siguienteTareaNadie = 0;
   colaActual = 0;
   short x = 0;
   short y = 0;
