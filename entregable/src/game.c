@@ -176,7 +176,7 @@ void game_mover_cursor(int jugador, direccion dir) {
 			case ARB:
 			pintarGris(X_A,Y_A);
 			X_A--;
-			if(X_A==-1){X_A++;}
+			if(X_A==0){X_A++;}
 			pintarTarea(X_A,Y_A,0);
 
 			break;
@@ -218,7 +218,7 @@ void game_mover_cursor(int jugador, direccion dir) {
 			case ARB:
 			pintarGris(X_B,Y_B);
 			X_B--;
-			if(X_B==-1){X_B++;}
+			if(X_B==0){X_B++;}
 			pintarTarea(X_B,Y_B,1);
 
 			break;
