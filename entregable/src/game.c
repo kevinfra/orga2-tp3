@@ -31,20 +31,20 @@ char dameflag()
 unsigned int damepila()
 {
 	return (unsigned int) &pila;
-} 
+}
 
 void atenderdebug()
 {
-	char * video = 0xB800;
+	char * video = (char*) 0xB800;
 	if (debugActivado==0) // A Activar...
 	{
 		int pos = 0 ;
 
-		//video +=1280; 
+		//video +=1280;
 		//pila[0] = *video;
 		int i = 8;
 		for (i = 8; i < 43; ++i)
-		{	
+		{
 			int j = 25;
 			for (j = 25; j < 55; ++j)
 			{
@@ -67,19 +67,19 @@ void atenderdebug()
 
 	}
 
-	
+
 	else // Hay que desactivar
-	{	
+	{
 		int pos = 0 ;
 
-		//video +=1280; 
+		//video +=1280;
 		//pila[0] = *video;
 		int i = 8;
 		for (i = 8; i < 43; ++i)
-		{	
+		{
 			int j = 25;
 			for (j = 25; j < 55; ++j)
-			{	
+			{
 				*(video+(160*i)+(2*j))=pila[pos];
 				//pila[pos]=*(video+(160*i)+(2*j));
 				pos ++;
@@ -87,14 +87,14 @@ void atenderdebug()
 				//pila[pos]=*((video+1)+(160*i)+(2*j));
 				pos++;
 			}
-			
+
 		}
 
 		debugActivado = 0 ;
 	}
 
 }
-	
+
 void iniciarGame(){
   X_A=20;
   Y_A=20;
