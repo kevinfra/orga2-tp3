@@ -24,9 +24,10 @@ typedef struct str_tarea{
   unsigned int cr3Actual;
 } tarea;
 
-tarea colaJugadorA[5];
-tarea colaJugadorB[5];
-tarea colaNadie[15];
+#define colaJugadorA 1
+#define colaJugadorB 2
+#define colaNadie 0
+tarea jugadores[3][15];
 int proximoColaA;
 int proximoColaB;
 int proximoColaNadie;
@@ -35,6 +36,7 @@ tarea tareaActual;
 int siguienteTareaA;
 int siguienteTareaB;
 int siguienteTareaNadie;
+int siguienteTareaEnCola[3];
 
 
 unsigned short sched_proximo_indice();

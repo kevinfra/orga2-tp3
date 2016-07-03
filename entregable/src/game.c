@@ -200,22 +200,22 @@ void pintarPuntajeAzul(){
 void volverDeExcepcion(){
     switch (colaActual) {
       case 0:
-        if(proximoColaB == 0){
-          colaJugadorB[4].presente = 0;
+        if(siguienteTareaB == 0){
+          jugadores[colaJugadorB][4].presente = 0;
         }else{
-          colaJugadorB[proximoColaB-1].presente = 0;
+          jugadores[colaJugadorB][proximoColaB-1].presente = 0;
         }
       case 1:
         if(proximoColaNadie == 0){
-          colaNadie[14].presente = 0;
+          jugadores[colaNadie][14].presente = 0;
         }else{
-          colaNadie[proximoColaNadie-1].presente = 0;
+          jugadores[colaNadie][proximoColaNadie-1].presente = 0;
         }
       case 2:
         if(proximoColaA == 0){
-          colaJugadorA[4].presente = 0;
+          jugadores[colaJugadorA][4].presente = 0;
         }else{
-          colaJugadorA[proximoColaA-1].presente = 0;
+          jugadores[colaJugadorA][proximoColaA-1].presente = 0;
         }
     }
     gdt[tareaActual.indiceGdt].p = 0;
