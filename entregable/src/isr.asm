@@ -125,6 +125,7 @@ _isr%1:
     mov eax, %1
     call volverDeExcepcion
     call sched_proximo_indice
+    xchg bx, bx
     shl eax, 3
     mov [selector], ax
     jmp far [offset]
@@ -179,7 +180,7 @@ _isr32:
     call fin_intr_pic1
     call proximo_reloj
     call sched_proximo_indice
-    xchg bx, bx
+    ;xchg bx, bx
     shl eax, 3
 
     mov [selector], ax
@@ -336,6 +337,7 @@ _isr33:
 ;; -------------------------------------------------------------------------- ;;
 _isr102:
     pushad
+    ;xchg bx, bx
     cmp eax, 0x124
     je .donde
     cmp eax, 0xA6A
@@ -345,6 +347,7 @@ _isr102:
     jmp .maiamee
 
     .donde:
+    ;xchg bx, bx
       push ebx
       call posTareaActual
       pop ebx
@@ -355,6 +358,7 @@ _isr102:
       jmp .maiamee
 
     .soy:
+    ;xchg bx, bx
       cmp ebx, 0x841
       je .rojo
       cmp ebx, 0x325
@@ -371,12 +375,15 @@ _isr102:
         jmp .maiamee
 
     .mapear:
+    ;xchg bx, bx
       push ecx
       push ebx
       call game_mapear
+      pop ebx
+      pop ecx
 
     .maiamee:
-    mov eax, 0x48 ;0x48 es la dir a tarea IDLE. Believme, i'm Fort. Ricky Fort.
+    mov eax, 0x50 ;0x48 es la dir a tarea IDLE. Believme, i'm Fort. Ricky Fort.
     mov [selector], ax
     jmp far [offset]
     popad

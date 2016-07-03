@@ -7,25 +7,25 @@
 
 #include "sched.h"
 #include "i386.h"
-#define idle 0x48 //pos en gdt de idle. Esto sale de inicializar tss
+#define idle 0x50 //pos en gdt de idle. Esto sale de inicializar tss
 
 unsigned short sched_proximo_indice() {
   unsigned short res = 0;
   tarea tareaVieja = tareaActual;
   int siguienteTarea;
-  int siguienteTareaOriginal = siguienteTareaEnCola[colaActual];
+  int siguienteTareaOriginal = siguienteIndiceDeTareaEnCola[colaActual];
   while (esMismaTarea(tareaVieja, tareaActual)) {
-    siguienteTarea = siguienteTareaEnCola[colaActual];
-    if(jugadores[colaActual][siguienteTarea].presente){
+    siguienteTarea = siguienteIndiceDeTareaEnCola[colaActual]; //esto da una posicon del arreglo de colaActual
+    if(jugadores[colaActual][siguienteTarea].presente){ //Me fijo si esta presente
       res = jugadores[colaActual][siguienteTarea].indiceGdt;
-      tareaActual = jugadores[colaActual][siguienteTarea];
-      siguienteTareaEnCola[colaActual] = (siguienteTareaEnCola[colaActual] + 1) % 15;
+      tareaActual = jugadores[colaActual][siguienteTarea]; //cambio la tarea actual
+      siguienteIndiceDeTareaEnCola[colaActual] = (siguienteIndiceDeTareaEnCola[colaActual] + 1) % 15; //avanzo los iteradores de arreglos
       colaActual = (colaActual + 1) % 3;
     }else{
-      siguienteTareaEnCola[colaActual] = (siguienteTareaEnCola[colaActual] + 1) % 15;
-      if(siguienteTareaOriginal == siguienteTareaEnCola[colaActual]){
+      siguienteIndiceDeTareaEnCola[colaActual] = (siguienteIndiceDeTareaEnCola[colaActual] + 1) % 15;
+      if(siguienteTareaOriginal == siguienteIndiceDeTareaEnCola[colaActual]){
         colaActual = (colaActual + 1) % 3;
-        siguienteTareaOriginal = siguienteTareaEnCola[colaActual];
+        siguienteTareaOriginal = siguienteIndiceDeTareaEnCola[colaActual];
       }
     }
   }
@@ -88,21 +88,18 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
     }
 }
 
+tarea tareaIdle;
 void inicializar_scheduler(){
   proximoColaA = 0;
   proximoColaB = 0;
   proximoColaNadie = 0;
-  siguienteTareaA = 0;
-  siguienteTareaB = 0;
-  siguienteTareaNadie = 0;
-  siguienteTareaEnCola[0] = 0;
-  siguienteTareaEnCola[1] = 0;
-  siguienteTareaEnCola[2] = 0;
+  siguienteIndiceDeTareaEnCola[0] = 0;
+  siguienteIndiceDeTareaEnCola[1] = 0;
+  siguienteIndiceDeTareaEnCola[2] = 0;
   colaActual = colaNadie;
   short x = 0;
   short y = 0;
-  unsigned short posGdtIdle = 0x48;
-  tarea tareaIdle;
+  unsigned short posGdtIdle = idle;
   tareaIdle.posicion.x = x;
   tareaIdle.posicion.y = y;
   tareaIdle.indiceGdt = posGdtIdle;

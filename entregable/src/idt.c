@@ -40,6 +40,12 @@ idt_descriptor IDT_DESC = {
     idt[numero].attr = (unsigned short) 0x8E00;                                                                  \
     idt[numero].offset_16_31 = (unsigned short) ((unsigned int)(&_isr ## numero) >> 16 & (unsigned int) 0xFFFF);
 
+#define IDT_ENTRY_USUARIO(numero)                                                                                        \
+    idt[numero].offset_0_15 = (unsigned short) ((unsigned int)(&_isr ## numero) & (unsigned int) 0xFFFF);        \
+    idt[numero].segsel = (unsigned short) GDT_OFF_IDX_DESC_CODE0;                                                                  \
+    idt[numero].attr = (unsigned short) 0xEE00;                                                                  \
+    idt[numero].offset_16_31 = (unsigned short) ((unsigned int)(&_isr ## numero) >> 16 & (unsigned int) 0xFFFF);
+
 
 
 void idt_inicializar() {
@@ -66,5 +72,5 @@ void idt_inicializar() {
     IDT_ENTRY(19);
     IDT_ENTRY(32); //interrupcion de Reloj
     IDT_ENTRY(33); // interrupción de Teclado
-    IDT_ENTRY(102); //Interrupcion de software 0x66
+    IDT_ENTRY_USUARIO(102); //Interrupcion de software 0x66
 }

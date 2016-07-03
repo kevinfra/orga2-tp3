@@ -188,36 +188,34 @@ void game_mapear(int x, int y) {
 
 void pintarPuntajeRojo(){
   puntajeRojo++;
-  print_int(puntajeRojo, 48, 51, (C_BG_RED & C_FG_WHITE));
+  print_int(puntajeRojo, 48, 51, (C_BG_RED | C_FG_WHITE));
 }
 
 void pintarPuntajeAzul(){
   puntajeAzul++;
-  print_int(puntajeAzul, 48, 57, (C_BG_BLUE & C_FG_WHITE));
+  print_int(puntajeAzul, 48, 57, (C_BG_BLUE | C_FG_WHITE));
 }
 
 
 void volverDeExcepcion(){
+    short colaDeTareaMuerta = (colaActual - 1) % 3;
+    int indiceTareaABorrar;
     switch (colaActual) {
       case 0:
-        if(siguienteTareaB == 0){
-          jugadores[colaJugadorB][4].presente = 0;
-        }else{
-          jugadores[colaJugadorB][proximoColaB-1].presente = 0;
-        }
+        indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta] -1) % 5;
+        jugadores[colaJugadorB][indiceTareaABorrar].presente = 0;
+        tareasEnJuego[1] -= 1;
+        break;
       case 1:
-        if(proximoColaNadie == 0){
-          jugadores[colaNadie][14].presente = 0;
-        }else{
-          jugadores[colaNadie][proximoColaNadie-1].presente = 0;
-        }
+        indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta] -1) % 15;
+        jugadores[colaNadie][indiceTareaABorrar].presente = 0;
+        break;
       case 2:
-        if(proximoColaA == 0){
-          jugadores[colaJugadorA][4].presente = 0;
-        }else{
-          jugadores[colaJugadorA][proximoColaA-1].presente = 0;
-        }
+        indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta] -1) % 5;
+        jugadores[colaJugadorA][indiceTareaABorrar].presente = 0;
+        tareasEnJuego[0] -= 1;
+        break;
     }
     gdt[tareaActual.indiceGdt].p = 0;
     print_int(0, tareaActual.posicion.x, tareaActual.posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
-  }
+}

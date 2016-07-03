@@ -33,10 +33,7 @@ int proximoColaB;
 int proximoColaNadie;
 short colaActual;
 tarea tareaActual;
-int siguienteTareaA;
-int siguienteTareaB;
-int siguienteTareaNadie;
-int siguienteTareaEnCola[3];
+int siguienteIndiceDeTareaEnCola[3];
 
 
 unsigned short sched_proximo_indice();

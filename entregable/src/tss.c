@@ -143,20 +143,8 @@ unsigned int tss_inicializar_idle() {
 }
 
 unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x, unsigned int y){ //PREGUNTAR SOBRE COMO SE MANEJAN LAS DISTINTAS TAREAS, ES DECIR, SI PUEDE HABER REPARTIDAS ENTRE 0X11000 Y 0X26000.
-  //ADEMAS, HAY QUE PREGUNTAR COMO SE DÓNDE VA A ESTAR CADA TAREA
 
-  //  unsigned int dirFisicaACopiar = (x + y*80)*4096 + 400000;
     unsigned int posTss = proximoSlotLibre();
-    // switch (dirFisicaTareaOriginal) {
-    //   case 0x11000:
-    //     break;
-    //   case 0x12000:
-    //     posTss += 5;
-    //     break;
-    //   case 0x13000:
-    //     posTss += 10;
-    //     break;
-    // }
     unsigned int res = posTss;
     unsigned int cr3 = rcr3();
 
