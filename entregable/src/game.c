@@ -9,6 +9,7 @@
 #include "gdt.h"
 #include "sched.h"
 
+int debugActivado;
 int X_A;
 int Y_A;
 int X_B;
@@ -17,12 +18,88 @@ int puntajeRojo;
 int puntajeAzul;
 int juegoEstaIniciado = 0;
 int tareasEnJuego[2];
+char pila[4320];
+short second[2160];
+
+char dameflag()
+{
+	return (unsigned int) debugActivado;
+}
+
+unsigned int damepila()
+{
+	return (unsigned int) &pila;
+} 
+
+void atenderdebug()
+{
+	char * video = 0xB800;
+	if (debugActivado==0) // A Activar...
+	{
+		int pos = 0 ;
+
+		//video +=1280; 
+		//pila[0] = *video;
+		int i = 8;
+		for (i = 8; i < 43; ++i)
+		{	
+			int j = 25;
+			for (j = 25; j < 55; ++j)
+			{
+				pila[pos]=*(video+(160*i)+(2*j));
+				pos ++;
+				pila[pos]=*((video+1)+(160*i)+(2*j));
+				pos++;
+			}
+			debugActivado=1;
+		}
+		//A modificar la pantalla
+		//*(base+offset)
+		print("WALLYYYYYYYYYYYYYYY",26,8,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,9,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,10,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,11,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,12,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,13,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,14,C_FG_RED);
+
+	}
+
+	
+	else // Hay que desactivar
+	{	
+		int pos = 0 ;
+
+		//video +=1280; 
+		//pila[0] = *video;
+		int i = 8;
+		for (i = 8; i < 43; ++i)
+		{	
+			int j = 25;
+			for (j = 25; j < 55; ++j)
+			{	
+				*(video+(160*i)+(2*j))=pila[pos];
+				//pila[pos]=*(video+(160*i)+(2*j));
+				pos ++;
+				*(video+(160*i)+(2*j)+1)=pila[pos];
+				//pila[pos]=*((video+1)+(160*i)+(2*j));
+				pos++;
+			}
+			
+		}
+
+		debugActivado = 0 ;
+	}
+
+}
+	
 
 void iniciarGame(){
   X_A=20;
   Y_A=20;
   X_B=20;
   Y_B=50;
+  debugActivado=0; // 0 Desactivado , 1 Activado
   puntajeAzul = 0;
   puntajeRojo = 0;
   print("Yo no manejo el rating, yo manejo un rolls-royce", 14, 0, (C_BG_BLACK | C_FG_WHITE));
