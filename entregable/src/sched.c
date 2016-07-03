@@ -29,66 +29,6 @@ unsigned short sched_proximo_indice() {
       }
     }
   }
-  // switch (colaActual) {
-  //   case 0:
-  //     for(i = 0; i < 15; i++){
-  //       breakpoint();
-  //       if(colaNadie[siguienteTareaNadie].presente && !esMismaTarea(colaNadie[siguienteTareaNadie], tareaActual)){
-  //         res = colaNadie[siguienteTareaNadie].indiceGdt;
-  //         colaActual++;
-  //         tareaActual = colaNadie[siguienteTareaNadie];
-  //         siguienteTareaNadie = (siguienteTareaNadie + 1) % 15;
-  //         i = 16;
-  //       }else{
-  //         siguienteTareaNadie = (siguienteTareaNadie + 1) % 15;
-  //       }
-  //     }
-  //     if(i == 15){
-  //       colaActual++;
-  //       short colaActualVieja = colaActual;
-  //       res = sched_proximo_indice();
-  //       if(colaActual != colaActualVieja){colaActual = colaActualVieja;}
-  //     }
-  //     break;
-  //   case 1:
-  //     for(i = 0; i < 5; i++){
-  //       if(colaJugadorA[siguienteTareaA].presente && !esMismaTarea(colaJugadorA[siguienteTareaA], tareaActual)){
-  //         res = colaJugadorA[siguienteTareaA].indiceGdt;
-  //         colaActual++;
-  //         tareaActual = colaJugadorA[siguienteTareaA];
-  //         siguienteTareaA = (siguienteTareaA + 1) % 5;
-  //         i = 6;
-  //       }else{
-  //         siguienteTareaA = (siguienteTareaA + 1) % 5;
-  //       }
-  //     }
-  //     if(i == 5){
-  //       colaActual++;
-  //       short colaActualVieja = colaActual;
-  //       res = sched_proximo_indice();
-  //       if(colaActual != colaActualVieja){colaActual = colaActualVieja;}
-  //     }
-  //     break;
-  //   case 2:
-  //     for(i = 0; i < 5; i++){
-  //       if(colaJugadorB[siguienteTareaB].presente && !esMismaTarea(colaJugadorB[siguienteTareaB], tareaActual)){
-  //         res = colaJugadorB[siguienteTareaB].indiceGdt;
-  //         colaActual = 0;
-  //         tareaActual = colaJugadorB[siguienteTareaB];
-  //         siguienteTareaB = (siguienteTareaB + 1) % 5;
-  //         i = 6;
-  //       }else{
-  //         siguienteTareaB = (siguienteTareaB + 1) % 5;
-  //       }
-  //     }
-  //     if(i == 5){
-  //       colaActual = 0;
-  //       short colaActualVieja = colaActual;
-  //       res = sched_proximo_indice();
-  //       if(colaActual != colaActualVieja){colaActual = colaActualVieja;}
-  //     }
-  //     break;
-  // }
   return res;
 }
 
