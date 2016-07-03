@@ -12,6 +12,7 @@
 %define VIRUS_ROJO 0x841
 %define VIRUS_AZUL 0x325
 
+extern atenderdebug
 extern volverDeExcepcion
 extern iniciarGame
 extern juegoIniciado
@@ -319,6 +320,9 @@ _isr33:
     ; Si llego aca es que se apreto alguna tecla no valida
     .Y:
     cmp al , Y
+    jne .Space
+    call atenderdebug
+    jmp .fin
     .Space:
     cmp al, 0x39
     jne .fin
