@@ -12,6 +12,7 @@
 %define VIRUS_ROJO 0x841
 %define VIRUS_AZUL 0x325
 
+extern dameack
 extern atenderdebug
 extern volverDeExcepcion
 extern iniciarGame
@@ -174,6 +175,63 @@ ISR 19
 ;;
 ;; Rutina de atención del RELOJ
 ;; -------------------------------------------------------------------------- ;;
+
+salvarRegs:
+push eax ; Como lo voy a pisar , primero lo guardo
+call dameack ; Ahora EAX tiene donde arranca el array ; Esta en Game.c
+;Dejo 4 para poner EAX al principio, esto lo voy a hacer al final
+mov dword [eax+4] , ebx
+add eax ,4
+mov dword [EAX],ECX
+add eax , 4
+mov dword [EAX] , EDX
+add eax , 4
+mov dword [EAX], ESI
+add eax , 4 
+mov dword [EAX] , EDI
+add eax , 4
+mov dword [EAX] , EBP
+add eax , 4
+mov dword [EAX] , ESP
+add eax , 4
+mov dword [EAX] , EBX ; Aca iria EIP pero ni idea como hacerlo 
+add eax , 4
+mov [EAX] , CS
+add eax , 4
+mov [EAX] , DS
+add eax , 4
+mov [EAX] , FS
+add eax , 4
+mov [EAX] , GS
+add eax , 4
+mov [EAX] , SS
+add eax , 4
+;pushfd ; Pusheo EFlags
+;pop ebx ; Levanto EFLAGS em EBX ; Las Flags se pushean ? 
+mov dword [EAX] , EBX ; Aca iria EFLAGS , 
+add eax , 4 ; Faltan los CR
+mov ebx , CR0
+mov dword [EAX] , EBX ; CR0
+add eax , 4
+mov ebx , CR1
+mov dword [EAX] , ebx ; CR1
+add eax ,4
+mov ebx , CR2
+mov dword [EAX] , EBX ; CR2
+add eax , 4
+mov ebx , CR3
+mov dword [EAX] , EBX ; CR3
+add eax , 4
+mov EBX , CR4
+mov [EAX] , EBX ; CR4
+add eax , 4
+mov ebx , eax ; Ahora ebx tiene el puntero
+sub ebx , 76d ; 19 * 4 ; Hice 19 add si no manquee al contar
+pop eax
+mov [EBX] , EAX 
+;Queda EIP de la tarea cuando exploto , creo que eso se pushea a la pila , sera [EBP+X]
+ret
+
 _isr32:
     pushad
     pushfd
