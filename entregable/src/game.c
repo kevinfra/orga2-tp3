@@ -138,6 +138,8 @@ void iniciarGame(){
 	print_int(0, 48, 36, (C_BG_BLACK | C_FG_WHITE));
   print_int(0, 47, 51, (C_BG_RED | C_FG_WHITE));
   print_int(0, 47, 57, (C_BG_BLUE | C_FG_WHITE));
+	print("<A", 13, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	print("B>", 20, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 }
 
 int juegoIniciado(){
@@ -320,6 +322,31 @@ void pintarPuntajeAzul(){
   puntajeAzul++;
 	tareaActual->dueno = 1;
   print_int(puntajeAzul, 47, 57, (C_BG_BLUE | C_FG_WHITE));
+}
+
+void actualizarReloj(){
+	char * rel;
+	switch (tareaActual->posReloj) {
+		case 0:
+			rel = "|";
+			break;
+		case 1:
+			rel = "/";
+			break;
+		case 2:
+			rel = "-";
+			break;
+		case 3:
+			rel = "\\";
+	}
+	if(tareaActual->dueno == 2){
+		print(rel, 2*tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	}else if(tareaActual->dueno == 1){
+		print(rel, 2*(9 + tareaActual->relojPropioX), 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	}else{
+		print(rel, 2*tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	}
+	tareaActual->posReloj = (tareaActual->posReloj + 1) % 4;
 }
 
 

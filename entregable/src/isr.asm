@@ -28,6 +28,7 @@ extern pintarPuntajeAzul
 extern pintarPuntajeRojo
 extern print_hex
 extern pintarTareaActual
+extern actualizarReloj
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -247,6 +248,8 @@ _isr32:
     jmp far [offset]
 
     call pintarTareaActual
+    call actualizarReloj
+
 
     popfd
     popad

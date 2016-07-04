@@ -39,6 +39,7 @@ void pintarTareaActual();
 
 void pintarPuntajeRojo();
 void pintarPuntajeAzul();
+void actualizarReloj();
 void volverDeExcepcion();
 
 

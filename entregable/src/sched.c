@@ -40,59 +40,86 @@ tupla* posTareaActual(){
   return &(tareaActual->posicion);
 }
 
+
+int proximoALibre(){
+  int k = 0;
+  int res = (proximoColaA + 1) % 5;
+  for(k = 0; k < 5; k++){
+    if(!jugadores[colaJugadorA][k].presente) {res = k; k = 5;}
+  }
+  return res;
+}
+
+int proximoBLibre(){
+  int k = 0;
+  int res = (proximoColaB + 1) % 5;
+  for(k=0; k < 5; k++){
+    if(!jugadores[colaJugadorB][k].presente){ res = k; k = 5;}
+  }
+  return res;
+}
+
+int proximoHLibre(){
+  int k = 0;
+  int res = (proximoColaNadie + 1) % 15;
+  for(k=0; k < 15; k++){
+    if(!jugadores[colaNadie][k].presente){ res = k; k = 16;}
+  }
+  return res;
+}
+
 void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss, unsigned int cr3){
-  int i;
   switch (dirTareaFisicaTareaOriginal) {
     case 0x11000:
-      for(i = 0; i < 5; i++){
-        if(!jugadores[colaJugadorA][proximoColaA].presente){
-          jugadores[colaJugadorA][proximoColaA].posicion.x = x;
-          jugadores[colaJugadorA][proximoColaA].posicion.y = y;
-          jugadores[colaJugadorA][proximoColaA].indiceGdt = posTss;
-          jugadores[colaJugadorA][proximoColaA].presente = 1;
-          jugadores[colaJugadorA][proximoColaA].cr3Actual = cr3;
-          jugadores[colaJugadorA][proximoColaA].dueno = 0;
-          proximoColaA = (proximoColaA + 1) % 5;
-          i = 6;
-        }else{
-          proximoColaA = (proximoColaA + 1) % 5;
-        }
+      if(!jugadores[colaJugadorA][proximoColaA].presente){
+        jugadores[colaJugadorA][proximoColaA].posicion.x = x;
+        jugadores[colaJugadorA][proximoColaA].posicion.y = y;
+        jugadores[colaJugadorA][proximoColaA].indiceGdt = posTss;
+        jugadores[colaJugadorA][proximoColaA].presente = 1;
+        jugadores[colaJugadorA][proximoColaA].cr3Actual = cr3;
+        jugadores[colaJugadorA][proximoColaA].dueno = 0;
+        jugadores[colaJugadorA][proximoColaA].posReloj = 3;
+        jugadores[colaJugadorA][proximoColaA].relojPropioX = (proximoColaA + 2);
+        proximoColaA = proximoALibre();
+      }else{
+        breakpoint();
+        proximoColaA = proximoALibre();
       }
       break;
     case 0x12000:
-      for(i = 0; i < 5; i++){
-        if(!jugadores[colaJugadorB][proximoColaB].presente){
-          jugadores[colaJugadorB][proximoColaB].posicion.x = x;
-          jugadores[colaJugadorB][proximoColaB].posicion.y = y;
-          jugadores[colaJugadorB][proximoColaB].indiceGdt = posTss;
-          jugadores[colaJugadorB][proximoColaB].presente = 1;
-          jugadores[colaJugadorB][proximoColaB].cr3Actual = cr3;
-          jugadores[colaJugadorB][proximoColaB].dueno = 1;
-          proximoColaB = (proximoColaB + 1) % 5;
-          i = 6;
-        }else{
-          proximoColaB = (proximoColaB + 1) % 5;
-        }
+      if(!jugadores[colaJugadorB][proximoColaB].presente){
+        jugadores[colaJugadorB][proximoColaB].posicion.x = x;
+        jugadores[colaJugadorB][proximoColaB].posicion.y = y;
+        jugadores[colaJugadorB][proximoColaB].indiceGdt = posTss;
+        jugadores[colaJugadorB][proximoColaB].presente = 1;
+        jugadores[colaJugadorB][proximoColaB].cr3Actual = cr3;
+        jugadores[colaJugadorB][proximoColaB].dueno = 1;
+        jugadores[colaJugadorB][proximoColaB].posReloj = 3;
+        jugadores[colaJugadorB][proximoColaB].relojPropioX = (proximoColaB + 2);
+        proximoColaB = proximoBLibre();
+      }else{
+        breakpoint();
+        proximoColaB = proximoBLibre();
       }
       break;
     case 0x13000:
-      for(i = 0; i < 15; i++){
-        if(!jugadores[colaNadie][proximoColaNadie].presente){
-          jugadores[colaNadie][proximoColaNadie].posicion.x = x;
-          jugadores[colaNadie][proximoColaNadie].posicion.y = y;
-          jugadores[colaNadie][proximoColaNadie].indiceGdt = posTss;
-          jugadores[colaNadie][proximoColaNadie].presente = 1;
-          jugadores[colaNadie][proximoColaNadie].cr3Actual = cr3;
-          jugadores[colaNadie][proximoColaNadie].dueno = 2;
-          proximoColaNadie = (proximoColaNadie + 1) % 15;
-          i = 15;
-        }else{
-          proximoColaNadie = (proximoColaNadie + 1) % 15;
-        }
+      if(!jugadores[colaNadie][proximoColaNadie].presente){
+        jugadores[colaNadie][proximoColaNadie].posicion.x = x;
+        jugadores[colaNadie][proximoColaNadie].posicion.y = y;
+        jugadores[colaNadie][proximoColaNadie].indiceGdt = posTss;
+        jugadores[colaNadie][proximoColaNadie].presente = 1;
+        jugadores[colaNadie][proximoColaNadie].cr3Actual = cr3;
+        jugadores[colaNadie][proximoColaNadie].dueno = 2;
+        jugadores[colaNadie][proximoColaNadie].posReloj = 3;
+        jugadores[colaNadie][proximoColaNadie].relojPropioX = (proximoColaNadie + 2);
+        proximoColaNadie = proximoHLibre();
+      }else{
+        proximoColaNadie = proximoHLibre();
       }
       break;
-    }
+  }
 }
+
 
 tarea tareaIdle;
 void inicializar_scheduler(){
