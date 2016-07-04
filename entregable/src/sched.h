@@ -22,6 +22,7 @@ typedef struct str_tarea{
   unsigned short indiceGdt;
   char presente;
   unsigned int cr3Actual;
+  int dueno;
 } tarea;
 
 #define colaJugadorA 1
@@ -32,14 +33,14 @@ int proximoColaA;
 int proximoColaB;
 int proximoColaNadie;
 short colaActual;
-tarea tareaActual;
+tarea * tareaActual;
 int siguienteIndiceDeTareaEnCola[3];
 
 
 unsigned short sched_proximo_indice();
 void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss, unsigned int cr3);
 tupla* posTareaActual();
-char esMismaTarea(tarea t1, tarea t2);
+char esMismaTarea(tarea* t1, tarea* t2);
 
 
 

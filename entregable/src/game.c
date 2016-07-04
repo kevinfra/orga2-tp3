@@ -113,6 +113,10 @@ void iniciarGame(){
   vidasRojas = 15;
   print_int(vidasRojas, 48, 44, (C_BG_BLACK | C_FG_WHITE));
   print_int(vidasAzul, 48, 63, (C_BG_BLACK | C_FG_WHITE));
+	print("TAREAS", 68, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	print("TAREAS", 34, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	print_int(0, 48, 72, (C_BG_BLACK | C_FG_WHITE));
+	print_int(0, 48, 36, (C_BG_BLACK | C_FG_WHITE));
   print_int(0, 47, 51, (C_BG_RED | C_FG_WHITE));
   print_int(0, 47, 57, (C_BG_BLUE | C_FG_WHITE));
 }
@@ -247,11 +251,13 @@ void game_lanzar(unsigned int jugador) {
       inicializar_tss(0x12000, X_B, Y_B);
       pintarTarea(X_B, Y_B, 1);
       vidasAzul--;
+			print_int((5 - tareasEnJuego[jugador]), 48, 72, (C_BG_BLACK | C_FG_WHITE));
       print_int(vidasAzul, 48, 63, (C_BG_BLACK | C_FG_WHITE));
     }else if(jugador == 0 && vidasRojas > 0){
       inicializar_tss(0x11000, X_A, Y_A);
       pintarTarea(X_A, Y_A, 0);
       vidasRojas--;
+			print_int((5 - tareasEnJuego[jugador]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
       print_int(vidasRojas, 48, 44, (C_BG_BLACK | C_FG_WHITE));
     }
     sumarTareaLanzada(jugador);
@@ -266,22 +272,27 @@ void game_donde(unsigned int* pos) {
 }
 
 void game_mapear(int x, int y) {
+	tareaActual->posicion.x = x;
+	tareaActual->posicion.y = y;
   unsigned int tareaAMapear = (unsigned int) dameTarea();
   //breakpoint();
   unsigned int cr3 = rcr3();
   unsigned int dirAMapear = (x + y*80)*4096 + 400000;
   mmu_mapear_pagina(tareaAMapear, cr3, dirAMapear);
-
+	int player = tareaActual->dueno;
+	pintarTarea(x, y, player); //0 = A, 1=B 2=H
 }
 
 
 void pintarPuntajeRojo(){
   puntajeRojo++;
+	tareaActual->dueno = 0;
   print_int(puntajeRojo, 47, 51, (C_BG_RED | C_FG_WHITE));
 }
 
 void pintarPuntajeAzul(){
   puntajeAzul++;
+	tareaActual->dueno = 1;
   print_int(puntajeAzul, 47, 57, (C_BG_BLUE | C_FG_WHITE));
 }
 
@@ -306,6 +317,6 @@ void volverDeExcepcion(){
         tareasEnJuego[0] -= 1;
         break;
     }
-    gdt[tareaActual.indiceGdt].p = 0;
-    print_int(0, tareaActual.posicion.x, tareaActual.posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
+    gdt[tareaActual->indiceGdt].p = 0;
+    print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
 }

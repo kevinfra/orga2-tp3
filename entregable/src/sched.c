@@ -11,14 +11,14 @@
 
 unsigned short sched_proximo_indice() {
   unsigned short res = 0;
-  tarea tareaVieja = tareaActual;
+  tarea * tareaVieja = tareaActual;
   int siguienteTarea;
   int siguienteTareaOriginal = siguienteIndiceDeTareaEnCola[colaActual];
   while (esMismaTarea(tareaVieja, tareaActual)) {
     siguienteTarea = siguienteIndiceDeTareaEnCola[colaActual]; //esto da una posicon del arreglo de colaActual
     if(jugadores[colaActual][siguienteTarea].presente){ //Me fijo si esta presente
       res = jugadores[colaActual][siguienteTarea].indiceGdt;
-      tareaActual = jugadores[colaActual][siguienteTarea]; //cambio la tarea actual
+      tareaActual = &jugadores[colaActual][siguienteTarea]; //cambio la tarea actual
       siguienteIndiceDeTareaEnCola[colaActual] = (siguienteIndiceDeTareaEnCola[colaActual] + 1) % 15; //avanzo los iteradores de arreglos
       colaActual = (colaActual + 1) % 3;
     }else{
@@ -32,12 +32,12 @@ unsigned short sched_proximo_indice() {
   return res;
 }
 
-char esMismaTarea(tarea t1, tarea t2){
-  return ((t1.indiceGdt == t2.indiceGdt) && (t1.cr3Actual == t2.cr3Actual));
+char esMismaTarea(tarea* t1, tarea* t2){
+  return ((t1->indiceGdt == t2->indiceGdt) && (t1->cr3Actual == t2->cr3Actual));
 }
 
 tupla* posTareaActual(){
-  return &(tareaActual.posicion);
+  return &(tareaActual->posicion);
 }
 
 void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss, unsigned int cr3){
@@ -104,5 +104,5 @@ void inicializar_scheduler(){
   tareaIdle.posicion.y = y;
   tareaIdle.indiceGdt = posGdtIdle;
   tareaIdle.presente = 1;
-  tareaActual= tareaIdle; //idle
+  tareaActual = &tareaIdle; //idle
 }
