@@ -35,6 +35,8 @@ void game_donde(unsigned int* pos);
 
 void game_mover_cursor(int jugador, direccion dir);
 
+void pintarTareaActual();
+
 void pintarPuntajeRojo();
 void pintarPuntajeAzul();
 void volverDeExcepcion();

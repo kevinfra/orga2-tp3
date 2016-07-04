@@ -101,7 +101,7 @@ void atenderdebug()
 		print("WALLYYYYYYYYYYYYYYY",26,10,C_FG_RED);
 		print("WALLYYYYYYYYYYYYYYY",26,11,C_FG_RED);
 		print("WALLYYYYYYYYYYYYYYY",26,12,C_FG_RED);
-	
+
 
 	}
 
@@ -134,7 +134,7 @@ void iniciarGame(){
   print_int(vidasAzul, 48, 63, (C_BG_BLACK | C_FG_WHITE));
 	print("TAREAS", 68, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 	print("TAREAS", 34, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	print_int(0, 48, 72, (C_BG_BLACK | C_FG_WHITE));
+	print_int(0, 48, 70, (C_BG_BLACK | C_FG_WHITE));
 	print_int(0, 48, 36, (C_BG_BLACK | C_FG_WHITE));
   print_int(0, 47, 51, (C_BG_RED | C_FG_WHITE));
   print_int(0, 47, 57, (C_BG_BLUE | C_FG_WHITE));
@@ -270,16 +270,17 @@ void game_lanzar(unsigned int jugador) {
       inicializar_tss(0x12000, X_B, Y_B);
       pintarTarea(X_B, Y_B, 1);
       vidasAzul--;
-			print_int((5 - tareasEnJuego[jugador]), 48, 72, (C_BG_BLACK | C_FG_WHITE));
+			sumarTareaLanzada(jugador);
+			print_int((tareasEnJuego[jugador]), 48, 70, (C_BG_BLACK | C_FG_WHITE));
       print_int(vidasAzul, 48, 63, (C_BG_BLACK | C_FG_WHITE));
     }else if(jugador == 0 && vidasRojas > 0){
       inicializar_tss(0x11000, X_A, Y_A);
       pintarTarea(X_A, Y_A, 0);
       vidasRojas--;
-			print_int((5 - tareasEnJuego[jugador]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
+			sumarTareaLanzada(jugador);
+			print_int((tareasEnJuego[jugador]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
       print_int(vidasRojas, 48, 44, (C_BG_BLACK | C_FG_WHITE));
     }
-    sumarTareaLanzada(jugador);
   }
 }
 
@@ -298,8 +299,14 @@ void game_mapear(int x, int y) {
   unsigned int cr3 = rcr3();
   unsigned int dirAMapear = (x + y*80)*4096 + 400000;
   mmu_mapear_pagina(tareaAMapear, cr3, dirAMapear);
+	//0 = A, 1=B 2=H
+}
+
+void pintarTareaActual(){
+	int x = tareaActual->posicion.x;
+	int y = tareaActual->posicion.y;
 	int player = tareaActual->dueno;
-	pintarTarea(x, y, player); //0 = A, 1=B 2=H
+	pintarTarea(x, y, player);
 }
 
 
@@ -317,7 +324,7 @@ void pintarPuntajeAzul(){
 
 
 void volverDeExcepcion(){
-  //breakpoint();
+	//breakpoint();
     short colaDeTareaMuerta = (colaActual - 1) % 3;
     int indiceTareaABorrar;
     switch (colaActual) {
@@ -325,6 +332,7 @@ void volverDeExcepcion(){
         indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta]);
         jugadores[colaJugadorB][indiceTareaABorrar].presente = 0;
         tareasEnJuego[1] -= 1;
+				print_int((tareasEnJuego[1]), 48, 70, (C_BG_BLACK | C_FG_WHITE));
         break;
       case 1:
         indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta]);
@@ -334,6 +342,7 @@ void volverDeExcepcion(){
         indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta]);
         jugadores[colaJugadorA][indiceTareaABorrar].presente = 0;
         tareasEnJuego[0] -= 1;
+				print_int((tareasEnJuego[0]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
         break;
     }
     gdt[tareaActual->indiceGdt].p = 0;

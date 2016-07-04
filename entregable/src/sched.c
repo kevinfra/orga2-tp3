@@ -51,6 +51,8 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
           jugadores[colaJugadorA][proximoColaA].indiceGdt = posTss;
           jugadores[colaJugadorA][proximoColaA].presente = 1;
           jugadores[colaJugadorA][proximoColaA].cr3Actual = cr3;
+          jugadores[colaJugadorA][proximoColaA].dueno = 0;
+          proximoColaA = (proximoColaA + 1) % 5;
           i = 6;
         }else{
           proximoColaA = (proximoColaA + 1) % 5;
@@ -65,6 +67,8 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
           jugadores[colaJugadorB][proximoColaB].indiceGdt = posTss;
           jugadores[colaJugadorB][proximoColaB].presente = 1;
           jugadores[colaJugadorB][proximoColaB].cr3Actual = cr3;
+          jugadores[colaJugadorB][proximoColaB].dueno = 1;
+          proximoColaB = (proximoColaB + 1) % 5;
           i = 6;
         }else{
           proximoColaB = (proximoColaB + 1) % 5;
@@ -79,6 +83,8 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
           jugadores[colaNadie][proximoColaNadie].indiceGdt = posTss;
           jugadores[colaNadie][proximoColaNadie].presente = 1;
           jugadores[colaNadie][proximoColaNadie].cr3Actual = cr3;
+          jugadores[colaNadie][proximoColaNadie].dueno = 2;
+          proximoColaNadie = (proximoColaNadie + 1) % 15;
           i = 15;
         }else{
           proximoColaNadie = (proximoColaNadie + 1) % 15;
@@ -105,4 +111,5 @@ void inicializar_scheduler(){
   tareaIdle.indiceGdt = posGdtIdle;
   tareaIdle.presente = 1;
   tareaActual = &tareaIdle; //idle
+  breakpoint();
 }

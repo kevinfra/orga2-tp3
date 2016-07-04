@@ -186,8 +186,8 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
 
 void tss_inicializar_tareas_h(){
   unsigned int i = 0;
-  for(i = 0; i < 15; i++){
+  for(i = 1; i < 16; i++){
     inicializar_tss(0x13000, i, i);
-    pintarTarea(i+i+1, i+1, 2);
+    pintarTarea(i, i, 2);
   }
 }

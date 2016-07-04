@@ -27,6 +27,7 @@ extern game_lanzar
 extern pintarPuntajeAzul
 extern pintarPuntajeRojo
 extern print_hex
+extern pintarTareaActual
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -187,14 +188,14 @@ add eax , 4
 mov dword [EAX] , EDX
 add eax , 4
 mov dword [EAX], ESI
-add eax , 4 
+add eax , 4
 mov dword [EAX] , EDI
 add eax , 4
 mov dword [EAX] , EBP
 add eax , 4
 mov dword [EAX] , ESP
 add eax , 4
-mov dword [EAX] , EBX ; Aca iria EIP pero ni idea como hacerlo 
+mov dword [EAX] , EBX ; Aca iria EIP pero ni idea como hacerlo
 add eax , 4
 mov [EAX] , CS
 add eax , 4
@@ -207,8 +208,8 @@ add eax , 4
 mov [EAX] , SS
 add eax , 4
 ;pushfd ; Pusheo EFlags
-;pop ebx ; Levanto EFLAGS em EBX ; Las Flags se pushean ? 
-mov dword [EAX] , EBX ; Aca iria EFLAGS , 
+;pop ebx ; Levanto EFLAGS em EBX ; Las Flags se pushean ?
+mov dword [EAX] , EBX ; Aca iria EFLAGS ,
 add eax , 4 ; Faltan los CR
 mov ebx , CR0
 mov dword [EAX] , EBX ; CR0
@@ -228,7 +229,7 @@ add eax , 4
 mov ebx , eax ; Ahora ebx tiene el puntero
 sub ebx , 76d ; 19 * 4 ; Hice 19 add si no manquee al contar
 pop eax
-mov [EBX] , EAX 
+mov [EBX] , EAX
 ;Queda EIP de la tarea cuando exploto , creo que eso se pushea a la pila , sera [EBP+X]
 ret
 
@@ -244,6 +245,8 @@ _isr32:
 
     mov [selector], ax
     jmp far [offset]
+
+    call pintarTareaActual
 
     popfd
     popad
