@@ -9,6 +9,7 @@
 #include "gdt.h"
 #include "sched.h"
 
+
 int debugActivado;
 int X_A;
 int Y_A;
@@ -20,25 +21,20 @@ int juegoEstaIniciado = 0;
 int tareasEnJuego[2];
 int vidasAzul;
 int vidasRojas;
-char pila[4320];
-short second[2160];
+char pila[2000]; // Mi idea es usar este registro como pila de la pantalla
+unsigned int ack[25]; // Mi Idea es usar este registro como pila para los valores de debug
 
-char dameflag()
+
+unsigned int dameack()
 {
-	return (unsigned int) debugActivado;
+
+	return (unsigned int) &ack;
 }
 
-unsigned int damepila()
-{
-	return (unsigned int) &pila;
-}
-
-void atenderdebug()
-{
-	char * video = (char*) 0xB800;
-	if (debugActivado==0) // A Activar...
-	{
-		int pos = 0 ;
+void copiar()
+{ //Quiero que esta funcion copie el buffer del video
+	char * video = (char*) 0xB8000;
+	int pos = 0 ;
 
 		//video +=1280;
 		//pila[0] = *video;
@@ -48,29 +44,23 @@ void atenderdebug()
 			int j = 25;
 			for (j = 25; j < 55; ++j)
 			{
+				//*(video+(160*i)+(2*j))=pila[pos];
 				pila[pos]=*(video+(160*i)+(2*j));
 				pos ++;
+				//*(video+(160*i)+(2*j)+1)=pila[pos];
 				pila[pos]=*((video+1)+(160*i)+(2*j));
 				pos++;
 			}
-			debugActivado=1;
+
 		}
-		//A modificar la pantalla
-		//*(base+offset)
-		print("WALLYYYYYYYYYYYYYYY",26,8,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,9,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,10,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,11,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,12,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,13,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,14,C_FG_RED);
 
-	}
+}
 
 
-	else // Hay que desactivar
-	{
-		int pos = 0 ;
+void pegar()
+{
+	char * video = (char*) 0xB8000;
+	int pos = 0 ;
 
 		//video +=1280;
 		//pila[0] = *video;
@@ -89,7 +79,36 @@ void atenderdebug()
 			}
 
 		}
+}
 
+void debug()
+{	//Tenemos que mostrar
+
+
+
+}
+
+
+void atenderdebug()
+{
+	//char * video = (char*) 0xB8000;
+	if (debugActivado==0) // A Activar...
+	{
+		copiar();
+		debugActivado=1; //Activo flag debug
+		print("WALLYYYYYYYYYYYYYYY",26,8,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,9,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,10,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,11,C_FG_RED);
+		print("WALLYYYYYYYYYYYYYYY",26,12,C_FG_RED);
+	
+
+	}
+
+
+	else // Hay que desactivar
+	{
+		pegar();
 		debugActivado = 0 ;
 	}
 
