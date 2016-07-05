@@ -45,6 +45,7 @@ void task() {
       syscall_mapear(x,y);
       for(i=0;i<1024;i++) otro[i] = yo[i];
   }
+
 }
 
 unsigned int newrand(unsigned int *val) {

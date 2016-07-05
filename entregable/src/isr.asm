@@ -13,6 +13,7 @@
 %define VIRUS_AZUL 0x325
 
 extern dameack
+extern habilitarDebug
 extern atenderdebug
 extern volverDeExcepcion
 extern iniciarGame
@@ -126,6 +127,52 @@ global _isr102
 global _isr%1
 
 _isr%1:
+    xchg bx,bx
+    push eax ; eax lo vamos a usar para pushear la informacion que hay actualmente en la pila
+    mov eax, [esp + 8] ; en esp + 8 esta el eip
+    push eax ; se pushea el eip
+    mov eax, [esp + 16] ; en esp + 16 esta el cs
+    push eax ; se pushea el cs
+    mov eax, [esp + 24] ; en esp + 24 esta el eflags
+    push eax ; se pushea el eflags
+    mov eax, [esp + 32] ;en esp + 32 esta el esp original
+    push eax ; se pushea el esp original
+    mov eax, [esp + 40] ; en esp + 40 esta el ss
+    push eax ; se pushea el ss
+    push gs
+    push fs
+    push es
+    push ds
+    push ebp
+    push edi
+    push esi
+    push edx
+    push ecx
+    push ebx
+    mov eax, cr4
+    push eax
+    mov eax, cr3
+    push eax
+    mov eax, cr2
+    push eax
+    mov eax, cr0
+    push eax
+    call atenderdebug
+    pop eax
+    pop eax
+    pop eax
+    pop eax
+    pop eax
+    pop ebx
+    pop ecx
+    pop edx
+    pop esi
+    pop edi
+    pop ebp
+    pop ds
+    pop es
+    pop fs
+    pop gs
     mov eax, %1
     call volverDeExcepcion
     call sched_proximo_indice
@@ -385,7 +432,7 @@ _isr33:
     .Y:
     cmp al , Y
     jne .Space
-    call atenderdebug
+    call habilitarDebug
     jmp .fin
     .Space:
     cmp al, 0x39
