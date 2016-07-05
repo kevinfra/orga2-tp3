@@ -33,6 +33,10 @@ void game_soy(unsigned int soy);
 
 void game_donde(unsigned int* pos);
 
+char validarXY(int x, int y);
+
+void game_mapear(int x, int y);
+
 void game_mover_cursor(int jugador, direccion dir);
 
 void pintarTareaActual();

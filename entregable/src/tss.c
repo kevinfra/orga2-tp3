@@ -184,10 +184,26 @@ unsigned int inicializar_tss(unsigned int dirFisicaTareaOriginal, unsigned int x
     return res;
 }
 
+
+#define RAND_a 1103515245
+#define RAND_c 12345
+#define RAND_m 2147483648LL
+
+unsigned int newrand(unsigned int *val) {
+  unsigned int rr = RAND_a * ((unsigned int)*val) + RAND_c;
+  *val = (unsigned int) ( rr % RAND_m);
+  return *val;
+}
+
 void tss_inicializar_tareas_h(){
   unsigned int i = 0;
+  unsigned int val;
+  unsigned int x;
+  unsigned int y;
   for(i = 1; i < 16; i++){
-    inicializar_tss(0x13000, i, i);
-    pintarTarea(i, i, 2);
+    x = newrand(&val) % 80;
+    y = newrand(&val) % 40;
+    inicializar_tss(0x13000, x, y);
+    pintarTarea(y, x, 2);
   }
 }

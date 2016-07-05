@@ -125,11 +125,14 @@ global _isr102
 %macro ISR 1
 global _isr%1
 
+
 _isr%1:
+xchg bx, bx
+xchg bx, bx
+
     mov eax, %1
     call volverDeExcepcion
     call sched_proximo_indice
-    xchg bx, bx
     shl eax, 3
     mov [selector], ax
     jmp far [offset]
@@ -240,6 +243,10 @@ _isr32:
 
     call fin_intr_pic1
     call proximo_reloj
+    ;call estaPintadoDebug
+    ;cmp eax, 1
+    ;je .salirDeReloj
+
     call sched_proximo_indice
     ;xchg bx, bx
     shl eax, 3
@@ -247,10 +254,8 @@ _isr32:
     mov [selector], ax
     jmp far [offset]
 
-    call pintarTareaActual
+    .salirDeReloj:
     call actualizarReloj
-
-
     popfd
     popad
     iret
@@ -451,7 +456,7 @@ _isr102:
       pop ecx
 
     .maiamee:
-    mov eax, 0x50 ;0x48 es la dir a tarea IDLE. Believme, i'm Fort. Ricky Fort.
+    mov eax, 0x50 ;0x50 es la dir a tarea IDLE. Believme, i'm Fort. Ricky Fort.
     mov [selector], ax
     jmp far [offset]
     popad

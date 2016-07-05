@@ -293,22 +293,29 @@ void game_soy(unsigned int yoSoy) {
 void game_donde(unsigned int* pos) {
 }
 
+char validarXY(int x, int y){
+	int k = (x >= 0 && x < 80 && y > 0 && y < 40);
+	return k;
+}
+
 void game_mapear(int x, int y) {
+	print_int(0, tareaActual->posicion.y, tareaActual->posicion.x, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
 	tareaActual->posicion.x = x;
 	tareaActual->posicion.y = y;
-  unsigned int tareaAMapear = (unsigned int) dameTarea();
-  //breakpoint();
-  unsigned int cr3 = rcr3();
-  unsigned int dirAMapear = (x + y*80)*4096 + 400000;
-  mmu_mapear_pagina(tareaAMapear, cr3, dirAMapear);
-	//0 = A, 1=B 2=H
+	unsigned int cr3 = rcr3();
+	unsigned int dirAMapear = (y + x*80)*4096 + 0x400000;
+	if(validarXY(x,y)){
+		mmu_mapear_pagina_tarea(0x08001000, cr3, dirAMapear);
+		pintarTarea(y, x, tareaActual->dueno);
+	}
 }
+
 
 void pintarTareaActual(){
 	int x = tareaActual->posicion.x;
 	int y = tareaActual->posicion.y;
 	int player = tareaActual->dueno;
-	pintarTarea(x, y, player);
+	pintarTarea(y, x, player);
 }
 
 
@@ -349,28 +356,32 @@ void actualizarReloj(){
 	tareaActual->posReloj = (tareaActual->posReloj + 1) % 4;
 }
 
-
 void volverDeExcepcion(){
 	//breakpoint();
-    short colaDeTareaMuerta = (colaActual - 1) % 3;
-    int indiceTareaABorrar;
-    switch (colaActual) {
-      case 0:
-        indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta]);
-        jugadores[colaJugadorB][indiceTareaABorrar].presente = 0;
-        tareasEnJuego[1] -= 1;
-				print_int((tareasEnJuego[1]), 48, 70, (C_BG_BLACK | C_FG_WHITE));
-        break;
-      case 1:
-        indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta]);
-        jugadores[colaNadie][indiceTareaABorrar].presente = 0;
-        break;
-      case 2:
-        indiceTareaABorrar = (siguienteIndiceDeTareaEnCola[colaDeTareaMuerta]);
-        jugadores[colaJugadorA][indiceTareaABorrar].presente = 0;
-        tareasEnJuego[0] -= 1;
-				print_int((tareasEnJuego[0]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
-        break;
+	int q = 0;
+	int indiceTareaABorrar = 0;
+	for(q = 0; q < 3; q++){
+		for(indiceTareaABorrar = 0; indiceTareaABorrar < 15; indiceTareaABorrar++){
+			if(esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
+				break;
+			}
+		}
+		if(esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
+			break;
+		}
+	}
+	jugadores[q][indiceTareaABorrar].presente = 0;
+  switch (q) {
+    case 0:
+			break;
+    case 1:
+			tareasEnJuego[0] -= 1;
+			print_int((tareasEnJuego[0]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
+			break;
+    case 2:
+			tareasEnJuego[1] -= 1;
+			print_int((tareasEnJuego[1]), 48, 70, (C_BG_BLACK | C_FG_WHITE));
+			break;
     }
     gdt[tareaActual->indiceGdt].p = 0;
     print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));

@@ -119,9 +119,6 @@ unsigned int mmu_inicializar_dir_tarea( unsigned int cr3, unsigned int dirFisica
 
   int * dirEnMapa = (int*) ((x + y*80)*4096 + 0x400000); //transforma de (x,y) a direccion de memoria
   mmu_mapear_pagina_tarea(0x08000000, (unsigned int) nuevoCR3, (unsigned int) dirEnMapa);
-  //int nuevaDirMapa = ((((x + 5) % 80) + y*80)*4096 + 0x400000);
-  mmu_mapear_pagina_tarea(0x08001000, (unsigned int) nuevoCR3, (unsigned int) dirEnMapa); //esta bien? MAIAME
-  //mmu_mapear_pagina(0x08001000, (unsigned int) nuevoCR3, nuevaDirMapa); //esto va??
   mmu_mapear_pagina((unsigned int) dirEnMapa, cr3, (unsigned int) dirEnMapa);
 
   int k = 0;

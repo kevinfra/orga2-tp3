@@ -82,7 +82,6 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaJugadorA][proximoColaA].relojPropioX = (proximoColaA + 2);
         proximoColaA = proximoALibre();
       }else{
-        breakpoint();
         proximoColaA = proximoALibre();
       }
       break;
@@ -98,7 +97,6 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaJugadorB][proximoColaB].relojPropioX = (proximoColaB + 2);
         proximoColaB = proximoBLibre();
       }else{
-        breakpoint();
         proximoColaB = proximoBLibre();
       }
       break;
