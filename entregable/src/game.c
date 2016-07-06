@@ -134,6 +134,40 @@ void pintarRecuadroDebug(){
 			print("a",19,fila,C_FG_BLACK | C_BG_BLACK );
 			print("a",58,fila,C_FG_BLACK | C_BG_BLACK );
 		}
+
+		//Ahora pintamos , el texto
+		int flag= tareaActual->dueno;
+		//tareaActul->dueno ; 0 ; 1 ; 2 Rojo ; Azul ; Verde
+		int i ;
+		if (flag==0) // Esto es para pintar rojo
+		{
+			for (i = 0; i < 38; ++i)
+			{
+				print("a",20+i,6,C_FG_RED|C_BG_RED);
+			}
+			//print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",20,6,C_FG_RED|C_BG_RED);
+			print("virus A",20,6,C_FG_WHITE|C_BG_RED);
+		}
+
+		 if (flag==1) // Esto es para pintar azul
+		{
+			for (i = 0; i < 38; ++i)
+			{
+				print("a",20+i,6,C_FG_BLUE|C_BG_BLUE);
+			}
+			//print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",20,6,C_FG_BLUE|C_BG_BLUE);
+			print("virus B",20,6,C_FG_WHITE|C_BG_BLUE);
+		}
+
+			if (flag==2) // Esto es para pintar verde
+		{
+			for (i = 0; i < 38; ++i)
+			{
+				print("a",20+i,6,C_FG_GREEN|C_BG_GREEN);
+			}
+			//print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",20,6,C_FG_GREEN|C_BG_GREEN);
+			print("Tarea Sana",20,6,C_FG_WHITE|C_BG_GREEN);
+		}
 }
 
 
@@ -144,10 +178,11 @@ void atenderdebug(unsigned int cr0, unsigned int cr2, unsigned int cr3, unsigned
 	//char * video = (char*) 0xB8000;
 	if (debugActivado==1) // Si esta activado...
 	{
-		muestraInfo = 1;
-		copiar();
+		copiar(); 
 		limipiarPantallaDebug();
 		pintarRecuadroDebug();
+		
+		muestraInfo = 1;
 		print("eax",21,8,C_FG_BLACK | C_BG_LIGHT_GREY );
 		print_hex(eax,8,29,8,C_FG_WHITE | C_BG_LIGHT_GREY);
 		print("ebx",21,10,C_FG_BLACK | C_BG_LIGHT_GREY );
