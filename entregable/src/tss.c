@@ -202,11 +202,11 @@ void tss_inicializar_tareas_h(){
   unsigned int y;
   for(i = 0; i < 15; i++){
     x = newrand(&val) % 80;
-    y = newrand(&val) % 40;
-    if(x < 2){x = 1;}
-    if(y > 40){y = 39;}
+    y = newrand(&val) % 45;
+    if(x >= 80){x = 79;}
+    if(y > 44){y = 44;}
     if(y < 2){y = 1;}
     inicializar_tss(0x13000, x, y);
-    pintarTarea(y, x, 2);
+    pintarJugador(x, y, 2);
   }
 }

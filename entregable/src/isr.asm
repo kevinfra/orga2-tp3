@@ -130,7 +130,7 @@ global _isr%1
 
 _isr%1:
 
-    xchg bx,bx
+    ;xchg bx,bx
     push eax ; eax lo vamos a usar para pushear la informacion que hay actualmente en la pila
     mov eax, [esp + 8] ; en esp + 8 esta el eip
     push eax ; se pushea el eip

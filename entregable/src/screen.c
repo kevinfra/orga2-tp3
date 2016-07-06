@@ -45,8 +45,8 @@ void print_int(unsigned int n, unsigned int x, unsigned int y, unsigned short at
     if( n > 9 ) {
       int a = n / 10;
       n -= 10 * a;
-      print_int(a,x,y-1,attr);
+      print_int(a,x-1,y,attr);
     }
-    p[x][y].c = '0'+n;
-    p[x][y].a = attr;
+    p[y][x].c = '0'+n;
+    p[y][x].a = attr;
 }

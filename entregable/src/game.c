@@ -191,8 +191,8 @@ void atenderdebug(unsigned int cr0, unsigned int cr2, unsigned int cr3, unsigned
 void iniciarGame(){
   X_A=20;
   Y_A=20;
-  X_B=20;
-  Y_B=50;
+  X_B=50;
+  Y_B=20;
   debugActivado=0; // 0 Desactivado , 1 Activado
   puntajeAzul = 0;
   puntajeRojo = 0;
@@ -201,18 +201,18 @@ void iniciarGame(){
   juegoEstaIniciado = 1;
   tareasEnJuego[0] = 0;
   tareasEnJuego[1] = 0;
-  pintarTarea(X_A,Y_A,0); // Pinta Rojo
-  pintarTarea(X_B,Y_B,1); // Pinta Azul
+  print("A", Y_A, X_A,(C_BG_RED | C_FG_WHITE)); // Pinta Rojo
+  print("B", Y_B,X_B,(C_BG_BLUE | C_FG_WHITE)); // Pinta Azul
   vidasAzul = 15;
   vidasRojas = 15;
-  print_int(vidasRojas, 48, 44, (C_BG_BLACK | C_FG_WHITE));
-  print_int(vidasAzul, 48, 63, (C_BG_BLACK | C_FG_WHITE));
+  print_int(vidasRojas, 44, 48, (C_BG_BLACK | C_FG_WHITE));
+  print_int(vidasAzul, 63, 48, (C_BG_BLACK | C_FG_WHITE));
 	print("TAREAS", 68, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 	print("TAREAS", 34, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	print_int(0, 48, 70, (C_BG_BLACK | C_FG_WHITE));
-	print_int(0, 48, 36, (C_BG_BLACK | C_FG_WHITE));
-  print_int(0, 47, 51, (C_BG_RED | C_FG_WHITE));
-  print_int(0, 47, 57, (C_BG_BLUE | C_FG_WHITE));
+	print_int(0, 70, 48, (C_BG_BLACK | C_FG_WHITE));
+	print_int(0, 36, 48, (C_BG_BLACK | C_FG_WHITE));
+  print_int(0, 51, 47, (C_BG_RED | C_FG_WHITE));
+  print_int(0, 57, 47, (C_BG_BLUE | C_FG_WHITE));
 	print("<A", 13, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 	print("B>", 20, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 }
@@ -231,6 +231,20 @@ void pintarTarea(int x, int y, int jugador){ //0 = A, 1=B 2=H
       break;
     case 2:
       print_int(0, x, y, (C_BG_GREEN | C_FG_GREEN));
+      break;
+   }
+}
+
+void pintarJugador(int x, int y, int jugador){ //0 = A, 1=B 2=H
+  switch (jugador) {
+    case 0:
+      print("A", x, y, (C_BG_RED | C_FG_WHITE));
+      break;
+    case 1:
+      print("B", x, y, (C_BG_BLUE | C_FG_WHITE));
+      break;
+    case 2:
+      print("H", x, y, (C_BG_GREEN | C_FG_WHITE));
       break;
    }
 }
@@ -254,37 +268,37 @@ void game_mover_cursor(int jugador, direccion dir) {
 		{
 			case IZQ:
 			pintarGris(X_A,Y_A);
-			Y_A--;
-			if(Y_A==-1)
+			X_A--;
+			if(X_A==-1)
 				{
-					Y_A++;
+					X_A++;
 				}
-			pintarTarea(X_A,Y_A,0);
+			pintarJugador(X_A,Y_A,0);
 			break;
 
 			case DER:
 			pintarGris(X_A,Y_A);
-			Y_A++;
-			if(Y_A==80)
+			X_A++;
+			if(X_A==80)
 				{
-					Y_A--;
+					X_A--;
 				}
-			pintarTarea(X_A,Y_A,0);
+			pintarJugador(X_A,Y_A,0);
 
 			break;
 
 			case ARB:
 			pintarGris(X_A,Y_A);
-			X_A--;
-			if(X_A==0){X_A++;}
-			pintarTarea(X_A,Y_A,0);
+			Y_A--;
+			if(Y_A==0){Y_A++;}
+			pintarJugador(X_A,Y_A,0);
 
 			break;
 			case ABA:
 			pintarGris(X_A,Y_A);
-			X_A++;
-			if(X_A==45){X_A--;}
-			pintarTarea(X_A,Y_A,0);
+			Y_A++;
+			if(Y_A==45){Y_A--;}
+			pintarJugador(X_A,Y_A,0);
 
 			break;
 		}
@@ -296,37 +310,37 @@ void game_mover_cursor(int jugador, direccion dir) {
 		{
 			case IZQ:
 			pintarGris(X_B,Y_B);
-			Y_B--;
-			if(Y_B==-1)
+			X_B--;
+			if(X_B==-1)
 				{
-					Y_B++;
+					X_B++;
 				}
-			pintarTarea(X_B,Y_B,1);
+			pintarJugador(X_B,Y_B,1);
 			break;
 
 			case DER:
 			pintarGris(X_B,Y_B);
-			Y_B++;
-			if(Y_B==80)
+			X_B++;
+			if(X_B==80)
 				{
-					Y_B--;
+					X_B--;
 				}
-			pintarTarea(X_B,Y_B,1);
+			pintarJugador(X_B,Y_B,1);
 
 			break;
 
 			case ARB:
 			pintarGris(X_B,Y_B);
-			X_B--;
-			if(X_B==0){X_B++;}
-			pintarTarea(X_B,Y_B,1);
+			Y_B--;
+			if(Y_B==0){Y_B++;}
+			pintarJugador(X_B,Y_B,1);
 
 			break;
 			case ABA:
 			pintarGris(X_B,Y_B);
-			X_B++;
-			if(X_B==44){X_B--;}
-			pintarTarea(X_B,Y_B,1);
+			Y_B++;
+			if(Y_B==45){Y_B--;}
+			pintarJugador(X_B,Y_B,1);
 
 			break;
 		}
@@ -348,15 +362,21 @@ void game_lanzar(unsigned int jugador) {
       pintarTarea(X_B, Y_B, 1);
       vidasAzul--;
 			sumarTareaLanzada(jugador);
-			print_int((tareasEnJuego[jugador]), 48, 70, (C_BG_BLACK | C_FG_WHITE));
-      print_int(vidasAzul, 48, 63, (C_BG_BLACK | C_FG_WHITE));
+			print_int((tareasEnJuego[jugador]), 70, 48, (C_BG_BLACK | C_FG_WHITE));
+      print_int(vidasAzul, 63, 48, (C_BG_BLACK | C_FG_WHITE));
+			if(vidasAzul < 10){
+				print_int(0, 62, 48, (C_BG_BLACK | C_FG_WHITE));
+			}
     }else if(jugador == 0 && vidasRojas > 0){
       inicializar_tss(0x11000, X_A, Y_A);
       pintarTarea(X_A, Y_A, 0);
       vidasRojas--;
 			sumarTareaLanzada(jugador);
-			print_int((tareasEnJuego[jugador]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
-      print_int(vidasRojas, 48, 44, (C_BG_BLACK | C_FG_WHITE));
+			print_int((tareasEnJuego[jugador]), 36, 48, (C_BG_BLACK | C_FG_WHITE));
+      print_int(vidasRojas, 44, 48, (C_BG_BLACK | C_FG_WHITE));
+			if(vidasRojas < 10){
+				print_int(0, 43, 48, (C_BG_BLACK | C_FG_WHITE));
+			}
     }
   }
 }
@@ -369,19 +389,19 @@ void game_donde(unsigned int* pos) {
 }
 
 char validarXY(int x, int y){
-	int k = (x >= 0 && x < 80 && y > 0 && y < 40);
+	int k = (x >= 0 && x < 80 && y > 0 && y < 45);
 	return k;
 }
 
 void game_mapear(int x, int y) {
-	print_int(0, tareaActual->posicion.y, tareaActual->posicion.x, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
+	print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
 	tareaActual->posicion.x = x;
 	tareaActual->posicion.y = y;
 	unsigned int cr3 = rcr3();
 	unsigned int dirAMapear = (y + x*80)*4096 + 0x400000;
 	if(validarXY(x,y)){
 		mmu_mapear_pagina_tarea(0x08001000, cr3, dirAMapear);
-		pintarTarea(y, x, tareaActual->dueno);
+		pintarTarea(x, y, tareaActual->dueno);
 	}
 }
 
@@ -390,20 +410,38 @@ void pintarTareaActual(){
 	int x = tareaActual->posicion.x;
 	int y = tareaActual->posicion.y;
 	int player = tareaActual->dueno;
-	pintarTarea(y, x, player);
+	pintarTarea(x, y, player);
 }
 
+unsigned int contadorDuenos[2][45];
+int corredorDeListaTareasLanzadas[2];
+
+char pertenece(unsigned int array[], unsigned int valor){
+	int i = 0;
+	while (i < 45 && array[i] != valor) {
+		i++;
+	}
+	return i < 45;
+}
 
 void pintarPuntajeRojo(){
-  puntajeRojo++;
-	tareaActual->dueno = 0;
-  print_int(puntajeRojo, 47, 51, (C_BG_RED | C_FG_WHITE));
+	if(!pertenece(contadorDuenos[0], tareaActual->cr3Actual)){
+		puntajeRojo++;
+		tareaActual->dueno = 0;
+		print_int(puntajeRojo, 51, 47, (C_BG_RED | C_FG_WHITE));
+		contadorDuenos[0][corredorDeListaTareasLanzadas[0]] = tareaActual->cr3Actual;
+		corredorDeListaTareasLanzadas[0] += 1;
+	}
 }
 
 void pintarPuntajeAzul(){
-  puntajeAzul++;
-	tareaActual->dueno = 1;
-  print_int(puntajeAzul, 47, 57, (C_BG_BLUE | C_FG_WHITE));
+	if(!pertenece(contadorDuenos[1], tareaActual->cr3Actual)){
+		puntajeAzul++;
+		tareaActual->dueno = 1;
+		print_int(puntajeAzul, 57, 47, (C_BG_BLUE | C_FG_WHITE));
+		contadorDuenos[1][corredorDeListaTareasLanzadas[1]] = tareaActual->cr3Actual;
+		corredorDeListaTareasLanzadas[1] += 1;
+	}
 }
 
 void actualizarReloj(){
@@ -421,9 +459,9 @@ void actualizarReloj(){
 		case 3:
 			rel = "\\";
 	}
-	if(tareaActual->dueno == 2){
+	if(tareaActual->duenoOriginal == 2){
 		print(rel, 2*tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	}else if(tareaActual->dueno == 1){
+	}else if(tareaActual->duenoOriginal == 1){
 		print(rel, 2*(9 + tareaActual->relojPropioX), 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 	}else{
 		print(rel, 2*tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
@@ -438,6 +476,7 @@ void volverDeExcepcion(){
 	for(q = 0; q < 3; q++){
 		for(indiceTareaABorrar = 0; indiceTareaABorrar < 15; indiceTareaABorrar++){
 			if(esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
+				jugadores[q][indiceTareaABorrar].presente = 0;
 				break;
 			}
 		}
@@ -445,19 +484,27 @@ void volverDeExcepcion(){
 			break;
 		}
 	}
-	jugadores[q][indiceTareaABorrar].presente = 0;
   switch (q) {
     case 0:
 			break;
     case 1:
 			tareasEnJuego[0] -= 1;
-			print_int((tareasEnJuego[0]), 48, 36, (C_BG_BLACK | C_FG_WHITE));
+			print_int((tareasEnJuego[0]), 36, 48, (C_BG_BLACK | C_FG_WHITE));
 			break;
     case 2:
 			tareasEnJuego[1] -= 1;
-			print_int((tareasEnJuego[1]), 48, 70, (C_BG_BLACK | C_FG_WHITE));
+			print_int((tareasEnJuego[1]), 70, 48, (C_BG_BLACK | C_FG_WHITE));
 			break;
     }
+
+		if(tareaActual->duenoOriginal == 2){
+			print("M", 2*tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_BLACK));
+		}else if(tareaActual->duenoOriginal == 1){
+			print("M", 2*(9 + tareaActual->relojPropioX), 46, (C_BG_BLACK | C_FG_BLACK));
+		}else{
+			print("M", 2*tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_BLACK));
+		}
+
     gdt[tareaActual->indiceGdt].p = 0;
     print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
 }

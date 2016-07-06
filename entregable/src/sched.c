@@ -45,7 +45,10 @@ int proximoALibre(){
   int k = 0;
   int res = (proximoColaA + 1) % 5;
   for(k = 0; k < 5; k++){
-    if(!jugadores[colaJugadorA][k].presente) {res = k; k = 5;}
+    if(!jugadores[colaJugadorA][k].presente){
+      res = k;
+      k = 6;
+    }
   }
   return res;
 }
@@ -71,6 +74,7 @@ int proximoHLibre(){
 void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x, unsigned int y, unsigned int posTss, unsigned int cr3){
   switch (dirTareaFisicaTareaOriginal) {
     case 0x11000:
+      proximoColaA = proximoALibre();
       if(!jugadores[colaJugadorA][proximoColaA].presente){
         jugadores[colaJugadorA][proximoColaA].posicion.x = x;
         jugadores[colaJugadorA][proximoColaA].posicion.y = y;
@@ -78,14 +82,16 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaJugadorA][proximoColaA].presente = 1;
         jugadores[colaJugadorA][proximoColaA].cr3Actual = cr3;
         jugadores[colaJugadorA][proximoColaA].dueno = 0;
+        jugadores[colaJugadorA][proximoColaA].duenoOriginal = 0;
         jugadores[colaJugadorA][proximoColaA].posReloj = 3;
         jugadores[colaJugadorA][proximoColaA].relojPropioX = (proximoColaA + 2);
         proximoColaA = proximoALibre();
       }else{
-        proximoColaA = proximoALibre();
+        print("PELOTUDOOOO", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
       }
       break;
     case 0x12000:
+      proximoColaB = proximoBLibre();
       if(!jugadores[colaJugadorB][proximoColaB].presente){
         jugadores[colaJugadorB][proximoColaB].posicion.x = x;
         jugadores[colaJugadorB][proximoColaB].posicion.y = y;
@@ -93,14 +99,16 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaJugadorB][proximoColaB].presente = 1;
         jugadores[colaJugadorB][proximoColaB].cr3Actual = cr3;
         jugadores[colaJugadorB][proximoColaB].dueno = 1;
+        jugadores[colaJugadorB][proximoColaB].duenoOriginal = 1;
         jugadores[colaJugadorB][proximoColaB].posReloj = 3;
+        proximoColaB = proximoBLibre();
         jugadores[colaJugadorB][proximoColaB].relojPropioX = (proximoColaB + 2);
-        proximoColaB = proximoBLibre();
       }else{
-        proximoColaB = proximoBLibre();
+        print("PELOTUDOOOO", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
       }
       break;
     case 0x13000:
+      proximoColaNadie = proximoHLibre();
       if(!jugadores[colaNadie][proximoColaNadie].presente){
         jugadores[colaNadie][proximoColaNadie].posicion.x = x;
         jugadores[colaNadie][proximoColaNadie].posicion.y = y;
@@ -108,11 +116,12 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaNadie][proximoColaNadie].presente = 1;
         jugadores[colaNadie][proximoColaNadie].cr3Actual = cr3;
         jugadores[colaNadie][proximoColaNadie].dueno = 2;
+        jugadores[colaNadie][proximoColaNadie].duenoOriginal = 2;
         jugadores[colaNadie][proximoColaNadie].posReloj = 3;
+        proximoColaNadie = proximoHLibre();
         jugadores[colaNadie][proximoColaNadie].relojPropioX = (proximoColaNadie + 2);
-        proximoColaNadie = proximoHLibre();
       }else{
-        proximoColaNadie = proximoHLibre();
+        print("PELOTUDOOOO", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
       }
       break;
   }

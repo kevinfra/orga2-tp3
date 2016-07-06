@@ -23,6 +23,7 @@ typedef struct str_tarea{
   char presente;
   unsigned int cr3Actual;
   int dueno;
+  int duenoOriginal;
   int relojPropioX;
   short posReloj;
 } tarea;
