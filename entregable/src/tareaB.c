@@ -49,6 +49,7 @@ void task() {
       for(i=0;i<1024;i++) otro[i] = yo[i];
   //  breakpoint();
   }
+
 }
 
 unsigned int newrand(unsigned int *val) {

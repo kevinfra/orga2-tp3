@@ -10,7 +10,8 @@
 #include "sched.h"
 
 
-int debugActivado;
+unsigned int debugActivado;
+unsigned int muestraInfo;
 int X_A;
 int Y_A;
 int X_B;
@@ -21,7 +22,7 @@ int juegoEstaIniciado = 0;
 int tareasEnJuego[2];
 int vidasAzul;
 int vidasRojas;
-char pila[2000]; // Mi idea es usar este registro como pila de la pantalla
+char pila[3040]; // Mi idea es usar este registro como pila de la pantalla
 unsigned int ack[25]; // Mi Idea es usar este registro como pila para los valores de debug
 
 
@@ -31,6 +32,7 @@ unsigned int dameack()
 	return (unsigned int) &ack;
 }
 
+
 void copiar()
 { //Quiero que esta funcion copie el buffer del video
 	char * video = (char*) 0xB8000;
@@ -39,10 +41,10 @@ void copiar()
 		//video +=1280;
 		//pila[0] = *video;
 		int i = 8;
-		for (i = 8; i < 43; ++i)
+		for (i = 5; i < 43; ++i)
 		{
-			int j = 25;
-			for (j = 25; j < 55; ++j)
+			int j = 19;
+			for (j = 19; j < 59; ++j)
 			{
 				//*(video+(160*i)+(2*j))=pila[pos];
 				pila[pos]=*(video+(160*i)+(2*j));
@@ -65,10 +67,10 @@ void pegar()
 		//video +=1280;
 		//pila[0] = *video;
 		int i = 8;
-		for (i = 8; i < 43; ++i)
+		for (i = 5; i < 43; ++i)
 		{
-			int j = 25;
-			for (j = 25; j < 55; ++j)
+			int j = 19;
+			for (j = 19; j < 59; ++j)
 			{
 				*(video+(160*i)+(2*j))=pila[pos];
 				//pila[pos]=*(video+(160*i)+(2*j));
@@ -88,30 +90,102 @@ void debug()
 
 }
 
+void habilitarDebug(){
+	if(muestraInfo == 1){
+		muestraInfo = 0;
+		pegar();
+	}
+	debugActivado = 1;
+}
 
-void atenderdebug()
+void despintarPantallaDebug(){
+	muestraInfo = 0;
+}
+
+unsigned int estaPintadoDebug(){
+	return muestraInfo;
+}
+
+void limipiarPantallaDebug(){
+	int fila;
+	for (fila = 5; fila < 43; ++fila)
+	{
+		int columna;
+		for (columna = 19; columna < 59; ++columna)
+		{
+			print("a",columna,fila,C_FG_LIGHT_GREY | C_BG_LIGHT_GREY );
+		}
+
+	}
+}
+
+void pintarRecuadroDebug(){
+
+}
+
+
+void atenderdebug(unsigned int cr0, unsigned int cr2, unsigned int cr3, unsigned int cr4, unsigned int ebx, unsigned int ecx, unsigned int edx, unsigned int esi,
+	unsigned int edi, unsigned int ebp, unsigned int ds,unsigned int es, unsigned int fs, unsigned int gs,
+	unsigned int ss, unsigned int esp, unsigned int eflags, unsigned int cs, unsigned int eip,unsigned int eax)
 {
 	//char * video = (char*) 0xB8000;
-	if (debugActivado==0) // A Activar...
+	if (debugActivado==1) // Si esta activado...
 	{
+		muestraInfo = 1;
 		copiar();
-		debugActivado=1; //Activo flag debug
-		print("WALLYYYYYYYYYYYYYYY",26,8,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,9,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,10,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,11,C_FG_RED);
-		print("WALLYYYYYYYYYYYYYYY",26,12,C_FG_RED);
-
-
+		limipiarPantallaDebug();
+		print("eax",21,8,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(eax,8,29,8,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("ebx",21,10,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(ebx,8,29,10,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("ecx",21,12,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(ecx,8,29,12,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("edx",21,14,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(edx,8,29,14,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("esi",21,16,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(esi,8,29,16,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("edi",21,18,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(edi,8,29,18,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("ebp",21,20,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(ebp,8,29,20,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("esp",21,22,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(esp,8,29,22,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("eip",21,24,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(eip,8,29,24,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("cs",21,26,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(cs,4,29,26,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("ds",21,28,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(ds,4,29,28,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("es",21,30,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(es,4,29,30,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("fs",21,32,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(fs,4,29,32,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("gs",21,34,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(gs,4,29,34,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("ss",21,36,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(ss,4,29,36,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("eflags",21,38,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(eflags,8,29,38,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("cr0",40,8,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(cr0,8,48,8,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("cr2",40,10,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(cr2,8,48,10,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("cr3",40,12,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(cr3,8,48,12,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("cr4",40,14,C_FG_BLACK | C_BG_LIGHT_GREY );
+		print_hex(cr4,8,48,14,C_FG_WHITE | C_BG_LIGHT_GREY);
+		print("stack",40,24,C_FG_BLACK | C_BG_LIGHT_GREY);
+		unsigned int* stack_element = (unsigned int *)esp;
+		print_hex(*stack_element,8,48,24,C_FG_WHITE | C_BG_LIGHT_GREY);
+		stack_element += 4;
+		print_hex(*stack_element,8,48,26,C_FG_WHITE | C_BG_LIGHT_GREY);
+		stack_element += 4;
+		print_hex(*stack_element,8,48,28,C_FG_WHITE | C_BG_LIGHT_GREY);
+		stack_element += 4;
+		print_hex(*stack_element,8,48,30,C_FG_WHITE | C_BG_LIGHT_GREY);
+		stack_element += 4;
+		print_hex(*stack_element,8,48,32,C_FG_WHITE | C_BG_LIGHT_GREY);
 	}
-
-
-	else // Hay que desactivar
-	{
-		pegar();
-		debugActivado = 0 ;
-	}
-
 }
 
 void iniciarGame(){
@@ -122,6 +196,7 @@ void iniciarGame(){
   debugActivado=0; // 0 Desactivado , 1 Activado
   puntajeAzul = 0;
   puntajeRojo = 0;
+	muestraInfo = 0;
   print("Yo no manejo el rating, yo manejo un rolls-royce", 14, 0, (C_BG_BLACK | C_FG_WHITE));
   juegoEstaIniciado = 1;
   tareasEnJuego[0] = 0;
