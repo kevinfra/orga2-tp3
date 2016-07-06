@@ -14,19 +14,25 @@ unsigned short sched_proximo_indice() {
   tarea * tareaVieja = tareaActual;
   int siguienteTarea;
   int siguienteTareaOriginal = siguienteIndiceDeTareaEnCola[colaActual];
+  int i = 0;
   while (esMismaTarea(tareaVieja, tareaActual)) {
-    siguienteTarea = siguienteIndiceDeTareaEnCola[colaActual]; //esto da una posicon del arreglo de colaActual
-    if(jugadores[colaActual][siguienteTarea].presente){ //Me fijo si esta presente
-      res = jugadores[colaActual][siguienteTarea].indiceGdt;
-      tareaActual = &jugadores[colaActual][siguienteTarea]; //cambio la tarea actual
-      siguienteIndiceDeTareaEnCola[colaActual] = (siguienteIndiceDeTareaEnCola[colaActual] + 1) % 15; //avanzo los iteradores de arreglos
-      colaActual = (colaActual + 1) % 3;
-    }else{
-      siguienteIndiceDeTareaEnCola[colaActual] = (siguienteIndiceDeTareaEnCola[colaActual] + 1) % 15;
-      if(siguienteTareaOriginal == siguienteIndiceDeTareaEnCola[colaActual]){
+    if(i < 46){ //ASSERT NO DA LA VUELTA
+      siguienteTarea = siguienteIndiceDeTareaEnCola[colaActual]; //esto da una posicon del arreglo de colaActual
+      if(jugadores[colaActual][siguienteTarea].presente){ //Me fijo si esta presente
+        res = jugadores[colaActual][siguienteTarea].indiceGdt;
+        tareaActual = &jugadores[colaActual][siguienteTarea]; //cambio la tarea actual
+        siguienteIndiceDeTareaEnCola[colaActual] = (siguienteIndiceDeTareaEnCola[colaActual] + 1) % 15; //avanzo los iteradores de arreglos
         colaActual = (colaActual + 1) % 3;
-        siguienteTareaOriginal = siguienteIndiceDeTareaEnCola[colaActual];
+      }else{
+        siguienteIndiceDeTareaEnCola[colaActual] = (siguienteIndiceDeTareaEnCola[colaActual] + 1) % 15;
+        if(siguienteTareaOriginal == siguienteIndiceDeTareaEnCola[colaActual]){
+          colaActual = (colaActual + 1) % 3;
+          siguienteTareaOriginal = siguienteIndiceDeTareaEnCola[colaActual];
+        }
       }
+      i++;
+    }else{
+      while(1){ print("JUEGO TERMINADO", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
     }
   }
   return res;
@@ -42,12 +48,20 @@ tupla* posTareaActual(){
 
 
 int proximoALibre(){
-  int k = 0;
   int res = (proximoColaA + 1) % 5;
-  for(k = 0; k < 5; k++){
-    if(!jugadores[colaJugadorA][k].presente){
-      res = k;
-      k = 6;
+  int q = 0;
+  while(jugadores[colaJugadorA][res].presente){
+    if(q < 16){
+      int k = 0;
+      for(k = 0; k < 5; k++){
+        if(!jugadores[colaJugadorA][k].presente){
+          res = k;
+          k = 6;
+        }
+      }
+      q++;
+    }else{
+      print("dio la vuelta en proximo libre cola A", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
     }
   }
   return res;
@@ -78,6 +92,8 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
       if(!jugadores[colaJugadorA][proximoColaA].presente){
         jugadores[colaJugadorA][proximoColaA].posicion.x = x;
         jugadores[colaJugadorA][proximoColaA].posicion.y = y;
+        jugadores[colaJugadorA][proximoColaA].posicionOriginal.x = x;
+        jugadores[colaJugadorA][proximoColaA].posicionOriginal.y = y;
         jugadores[colaJugadorA][proximoColaA].indiceGdt = posTss;
         jugadores[colaJugadorA][proximoColaA].presente = 1;
         jugadores[colaJugadorA][proximoColaA].cr3Actual = cr3;
@@ -87,7 +103,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaJugadorA][proximoColaA].relojPropioX = (proximoColaA + 2);
         proximoColaA = proximoALibre();
       }else{
-        print("PELOTUDOOOO", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
+        while(1){ print("proximoColaA no valido en cargarTarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
       }
       break;
     case 0x12000:
@@ -95,6 +111,8 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
       if(!jugadores[colaJugadorB][proximoColaB].presente){
         jugadores[colaJugadorB][proximoColaB].posicion.x = x;
         jugadores[colaJugadorB][proximoColaB].posicion.y = y;
+        jugadores[colaJugadorB][proximoColaB].posicionOriginal.x = x;
+        jugadores[colaJugadorB][proximoColaB].posicionOriginal.y = y;
         jugadores[colaJugadorB][proximoColaB].indiceGdt = posTss;
         jugadores[colaJugadorB][proximoColaB].presente = 1;
         jugadores[colaJugadorB][proximoColaB].cr3Actual = cr3;
@@ -104,7 +122,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         proximoColaB = proximoBLibre();
         jugadores[colaJugadorB][proximoColaB].relojPropioX = (proximoColaB + 2);
       }else{
-        print("PELOTUDOOOO", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
+        while(1){ print("proximoColaB no valido en cargarTarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
       }
       break;
     case 0x13000:
@@ -112,6 +130,8 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
       if(!jugadores[colaNadie][proximoColaNadie].presente){
         jugadores[colaNadie][proximoColaNadie].posicion.x = x;
         jugadores[colaNadie][proximoColaNadie].posicion.y = y;
+        jugadores[colaNadie][proximoColaNadie].posicionOriginal.x = x;
+        jugadores[colaNadie][proximoColaNadie].posicionOriginal.y = y;
         jugadores[colaNadie][proximoColaNadie].indiceGdt = posTss;
         jugadores[colaNadie][proximoColaNadie].presente = 1;
         jugadores[colaNadie][proximoColaNadie].cr3Actual = cr3;
@@ -121,7 +141,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         proximoColaNadie = proximoHLibre();
         jugadores[colaNadie][proximoColaNadie].relojPropioX = (proximoColaNadie + 2);
       }else{
-        print("PELOTUDOOOO", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
+        while(1){ print("proximoColaNadie no valido en cargarTarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
       }
       break;
   }

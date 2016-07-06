@@ -98,6 +98,10 @@ void habilitarDebug(){
 	debugActivado = 1;
 }
 
+unsigned int estaDebugActivado(){
+	return debugActivado;
+}
+
 void despintarPantallaDebug(){
 	muestraInfo = 0;
 }
@@ -246,8 +250,8 @@ void iniciarGame(){
   juegoEstaIniciado = 1;
   tareasEnJuego[0] = 0;
   tareasEnJuego[1] = 0;
-  print("A", Y_A, X_A,(C_BG_RED | C_FG_WHITE)); // Pinta Rojo
-  print("B", Y_B,X_B,(C_BG_BLUE | C_FG_WHITE)); // Pinta Azul
+  pintarJugador(X_A, Y_A, 0); // Pinta Rojo
+  pintarJugador(X_B, Y_B, 1); // Pinta Azul
   vidasAzul = 15;
   vidasRojas = 15;
   print_int(vidasRojas, 44, 48, (C_BG_BLACK | C_FG_WHITE));
@@ -267,36 +271,65 @@ int juegoIniciado(){
 }
 
 void pintarTarea(int x, int y, int jugador){ //0 = A, 1=B 2=H
-  switch (jugador) {
-    case 0:
-      print_int(0, x, y, (C_BG_RED | C_FG_RED));
-      break;
-    case 1:
-      print_int(0, x, y, (C_BG_BLUE | C_FG_BLUE));
-      break;
-    case 2:
-      print_int(0, x, y, (C_BG_GREEN | C_FG_GREEN));
-      break;
-   }
+	if(!validarXY(x,y)){
+		while(1){ print("X,Y no valido en pintarTarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
+	}else{
+	  switch (jugador) {
+	    case 0:
+	      print_int(0, x, y, (C_BG_RED | C_FG_RED));
+	      break;
+	    case 1:
+	      print_int(0, x, y, (C_BG_BLUE | C_FG_BLUE));
+	      break;
+	    case 2:
+	      print_int(0, x, y, (C_BG_GREEN | C_FG_GREEN));
+	      break;
+	   }
+	}
+}
+
+void pintarTareaMadre(int x, int y, int jugador){ //0 = A, 1=B 2=H
+	if(!validarXY(x,y)){
+		while(1){ print("X,Y no valido en pintarTareaMadre", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
+	}else{
+		switch (jugador) {
+	    case 0:
+	      print("A", x, y, (C_BG_RED | C_FG_WHITE));
+	      break;
+	    case 1:
+	      print("B", x, y, (C_BG_BLUE | C_FG_WHITE));
+	      break;
+	    case 2:
+	      print("H", x, y, (C_BG_GREEN | C_FG_WHITE));
+	      break;
+	   }
+	}
 }
 
 void pintarJugador(int x, int y, int jugador){ //0 = A, 1=B 2=H
-  switch (jugador) {
-    case 0:
-      print("A", x, y, (C_BG_RED | C_FG_WHITE));
-      break;
-    case 1:
-      print("B", x, y, (C_BG_BLUE | C_FG_WHITE));
-      break;
-    case 2:
-      print("H", x, y, (C_BG_GREEN | C_FG_WHITE));
-      break;
-   }
+	if(!validarXY(x,y)){
+		while(1){ print("X,Y no valido en pintarJugador", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
+	}else{
+	  switch (jugador) {
+	    case 0:
+	      print("*", x, y, (C_BG_RED | C_FG_WHITE));
+	      break;
+	    case 1:
+	      print("*", x, y, (C_BG_BLUE | C_FG_WHITE));
+	      break;
+	    case 2:
+	      print("H", x, y, (C_BG_GREEN | C_FG_WHITE));
+	      break;
+	   }
+	}
 }
 
-void pintarGris(int x, int y)
-{
-	print_int(0,x,y,C_FG_LIGHT_GREY | C_BG_LIGHT_GREY);
+void pintarGris(int x, int y){
+	if(validarXY(x,y)){
+		print_int(0,x,y,C_FG_LIGHT_GREY | C_BG_LIGHT_GREY);
+	}else{
+		while(1){ print("X,Y no valido en pintar gris", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
+	}
 }
 
 
@@ -306,7 +339,6 @@ unsigned short dameTarea(){
 
 
 void game_mover_cursor(int jugador, direccion dir) {
-
 	if (jugador==0) // Jugador A
 	{
 		switch(dir)
@@ -439,23 +471,24 @@ char validarXY(int x, int y){
 }
 
 void game_mapear(int x, int y) {
-	print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
-	tareaActual->posicion.x = x;
-	tareaActual->posicion.y = y;
-	unsigned int cr3 = rcr3();
-	unsigned int dirAMapear = (y + x*80)*4096 + 0x400000;
 	if(validarXY(x,y)){
+		print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
+		tareaActual->posicion.x = x;
+		tareaActual->posicion.y = y;
+		pintarTareaActual();
+		unsigned int cr3 = rcr3();
+		unsigned int dirAMapear = (y + x*80)*4096 + 0x400000;
 		mmu_mapear_pagina_tarea(0x08001000, cr3, dirAMapear);
-		pintarTarea(x, y, tareaActual->dueno);
+	}else{
+		while(1){ print("X,Y no valido en game_mapear", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
 	}
 }
 
 
 void pintarTareaActual(){
-	int x = tareaActual->posicion.x;
-	int y = tareaActual->posicion.y;
 	int player = tareaActual->dueno;
-	pintarTarea(x, y, player);
+	pintarTareaMadre(tareaActual->posicionOriginal.x, tareaActual->posicionOriginal.y, tareaActual->duenoOriginal);
+	pintarTarea(tareaActual->posicion.x, tareaActual->posicion.y, player);
 }
 
 unsigned int contadorDuenos[2][45];
@@ -508,8 +541,10 @@ void actualizarReloj(){
 		print(rel, 2*tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_LIGHT_GREY));
 	}else if(tareaActual->duenoOriginal == 1){
 		print(rel, 2*(9 + tareaActual->relojPropioX), 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	}else{
+	}else if(tareaActual->duenoOriginal == 0){
 		print(rel, 2*tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	}else{
+		while(1){ print("quien te conoce duenoOriginal en actualizarReloj", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
 	}
 	tareaActual->posReloj = (tareaActual->posReloj + 1) % 4;
 }
@@ -528,6 +563,9 @@ void volverDeExcepcion(){
 		if(esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
 			break;
 		}
+	}
+	if(!esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
+		while(1){print("No es misma tarea en volverDeExcepcion", 20, 20, (C_BG_RED | C_FG_WHITE));}
 	}
   switch (q) {
     case 0:
@@ -550,6 +588,12 @@ void volverDeExcepcion(){
 			print("M", 2*tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_BLACK));
 		}
 
-    gdt[tareaActual->indiceGdt].p = 0;
+    //gdt[tareaActual->indiceGdt].p = 0;
     print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
+}
+
+void bastaChicos(){
+	while(1){
+		print("BASTA CHICOS", 20, 20, (C_BG_RED | C_FG_WHITE));
+	}
 }

@@ -7,7 +7,7 @@
 
 #include "mmu.h"
 #include "i386.h"
-//extern tlbflush();
+#include "game.h"
 #define PDE_INDEX(virtual) (virtual >> 22)
 #define PTE_INDEX(virtual) ((virtual & 0x003FF000) >> 12)
 #define ALIGN(dir) ???
@@ -100,6 +100,9 @@ void mmu_inicializar_dir_kernel(){
 
 
 unsigned int mmu_inicializar_dir_tarea( unsigned int cr3, unsigned int dirFisicaTarea, int x, int y){
+  if(!validarXY(x,y)){
+    while(1){ print("X,Y no valida en iniciar dir tarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
+  }
   unsigned int* pageDirectory = (unsigned int*) mmu_proxima_pagina_fisica_libre();
   unsigned int* nuevoCR3 = pageDirectory;
   unsigned int* pageTable = (unsigned int*) mmu_proxima_pagina_fisica_libre();

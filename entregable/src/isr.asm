@@ -31,6 +31,8 @@ extern print_hex
 extern pintarTareaActual
 extern actualizarReloj
 extern estaPintadoDebug
+extern estaDebugActivado
+extern bastaChicos
 
 msj0: db'Divide Error!'
 msj0_len equ $ - msj0
@@ -130,7 +132,9 @@ global _isr%1
 
 _isr%1:
 
-    ;xchg bx,bx
+    call estaDebugActivado
+    cmp eax, 0
+    je .noPushear
     push eax ; eax lo vamos a usar para pushear la informacion que hay actualmente en la pila
     mov eax, [esp + 8] ; en esp + 8 esta el eip
     push eax ; se pushea el eip
@@ -176,13 +180,14 @@ _isr%1:
     pop es
     pop fs
     pop gs
+    .noPushear:
     mov eax, %1
     call volverDeExcepcion
-    call sched_proximo_indice
-    shl eax, 3
-    mov [selector], ax
+    mov eax, 0x50
+    mov [selector], eax
     jmp far [offset]
-    jmp $
+    ;call bastaChicos
+    jmp -4
 
 %endmacro
 
@@ -315,6 +320,16 @@ _isr33:
     xor eax, eax                        ; El int 1 corresponde al jugador B
     xor ebx, ebx                        ;
     in al, 0x60 ; en AL tengo el caracter pulsado
+    push eax
+    call juegoIniciado
+    cmp eax, 0
+    pop eax
+    je .Space
+    push eax
+    call estaPintadoDebug
+    cmp eax, 1
+    pop eax
+    je .teclaY
     ;Convertir_scanCode_Letra_Imprimir eax
     ;ACA EMPIEZA EL PLAYER A
     .ArbA:
@@ -423,7 +438,7 @@ _isr33:
 
     .LanzarB:
     cmp al, rShift
-    jne .Y
+    jne .teclaY
               mov ebx ,"R"
               Palpatine ebx, 0x9
               push 1
@@ -433,7 +448,7 @@ _isr33:
               jmp .fin
     ; Me queda hacer la interrupcion de la y, el modo debug mencionado en la sec 3.4
     ; Si llego aca es que se apreto alguna tecla no valida
-    .Y:
+    .teclaY:
     cmp al , Y
     jne .Space
     call habilitarDebug
