@@ -17,6 +17,7 @@
 
 typedef enum direccion_e { IZQ = 0xAAA, DER = 0x441, ARB = 0xA33, ABA = 0x883  } direccion;
 
+unsigned int estaDebugActivado();
 void iniciarGame();
 int juegoIniciado();
 void pintarTarea(int, int, int);
@@ -46,6 +47,7 @@ void pintarPuntajeRojo();
 void pintarPuntajeAzul();
 void actualizarReloj();
 void volverDeExcepcion();
+void bastaChicos();
 
 
 

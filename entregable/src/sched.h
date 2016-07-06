@@ -19,6 +19,7 @@ typedef struct str_tupla{
 
 typedef struct str_tarea{
   tupla posicion;
+  tupla posicionOriginal;
   unsigned short indiceGdt;
   char presente;
   unsigned int cr3Actual;
