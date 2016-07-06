@@ -120,7 +120,16 @@ void limipiarPantallaDebug(){
 }
 
 void pintarRecuadroDebug(){
-
+		int columna;
+		for (columna = 19; columna < 59 ; columna++) {
+			print("a",columna,5,C_FG_BLACK | C_BG_BLACK );
+			print("a",columna,42,C_FG_BLACK | C_BG_BLACK );
+		}
+		int fila;
+		for (fila = 5; fila < 43 ; fila++) {
+			print("a",19,fila,C_FG_BLACK | C_BG_BLACK );
+			print("a",58,fila,C_FG_BLACK | C_BG_BLACK );
+		}
 }
 
 
@@ -134,6 +143,7 @@ void atenderdebug(unsigned int cr0, unsigned int cr2, unsigned int cr3, unsigned
 		muestraInfo = 1;
 		copiar();
 		limipiarPantallaDebug();
+		pintarRecuadroDebug();
 		print("eax",21,8,C_FG_BLACK | C_BG_LIGHT_GREY );
 		print_hex(eax,8,29,8,C_FG_WHITE | C_BG_LIGHT_GREY);
 		print("ebx",21,10,C_FG_BLACK | C_BG_LIGHT_GREY );
