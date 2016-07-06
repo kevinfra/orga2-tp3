@@ -55,7 +55,6 @@ start:
 
     ;De Aca en Adelante se fue modificando el codigo
     ; Habilitar A20
-  ;  xchg bx , bx
     call habilitar_A20
     ; Cargar la GDT
     lgdt [GDT_DESC]
@@ -72,16 +71,13 @@ start:
 
  BITS 32 ; Esto es para decirle al ensamblador que a partir de ahora las instrucciones son de 32 bits
     ; Establecer selectores de segmentos
-    ; xchg bx , xchang en la realidad es un swap pero para bochs es un Magic Breakpoint
     mp:
-  ;  xchg bx , bx
     xor eax , eax
     mov ax , 0x30 ; 48 en Hexa
     mov ds , ax ; AX tiene el indice de datos de nivel 0 shifteado 3 indices a la izquierda
     mov es , ax ;   MIAMII
     mov gs , ax ;
     mov fs , ax ; Segmento de Video ; C
-  ;  xchg bx , bx ; Magic Breakpoints
     ; Establecer la base y tope de la pila de la pila
     mov esp , 0x27000 ;  MIAMIII
     mov ebp , 0x27000 ; MIAMIII
@@ -96,11 +92,9 @@ start:
     lidt [IDT_DESC]
     ; sti
     ; Imprimir mensaje de bienvenida
-    ;xchg bx , bx
     imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 2, 0
     ; nop
     ; nop
-    ; xchg bx , bx
 
     ; Inicializar pantalla
 
@@ -152,7 +146,6 @@ start:
     sti
 
     ; Saltar a la primera tarea: Idle
-    xchg bx, bx
     pop eax
     mov [selector], ax
     jmp far [offset] ;dir_tarea_idle

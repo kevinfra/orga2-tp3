@@ -428,6 +428,11 @@ void game_soy(unsigned int yoSoy) {
 }
 
 void game_donde(unsigned int* pos) {
+	tupla* posiciones = posTareaActual();
+	unsigned short posx = posiciones->x;
+	unsigned short posy = posiciones->y;
+	pos[0] = (unsigned int) posx;
+	pos[1] = (unsigned int) posy;
 }
 
 char validarXY(int x, int y){

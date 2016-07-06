@@ -21,7 +21,7 @@ extern juegoIniciado
 extern dameTarea
 extern tareaActual
 extern sched_proximo_indice
-extern posTareaActual
+extern game_donde
 extern game_mapear
 extern game_mover_cursor
 extern game_lanzar
@@ -483,12 +483,8 @@ _isr102:
     .donde:
     ;xchg bx, bx
       push ebx
-      call posTareaActual
+      call game_donde
       pop ebx
-      mov edx, [eax] ;accedo a tupla.x
-      mov ecx, [eax + 2] ;son 2 unsigned short, así que accedo a la variable .y
-      mov [ebx], edx
-      mov [ebx + 2], ecx
       jmp .maiamee
 
     .soy:

@@ -51,7 +51,7 @@ int proximoALibre(){
   int res = (proximoColaA + 1) % 5;
   int q = 0;
   while(jugadores[colaJugadorA][res].presente){
-    if(q < 16){
+    if(q < 17){
       int k = 0;
       for(k = 0; k < 5; k++){
         if(!jugadores[colaJugadorA][k].presente){
@@ -165,5 +165,4 @@ void inicializar_scheduler(){
   tareaIdle.indiceGdt = posGdtIdle;
   tareaIdle.presente = 1;
   tareaActual = &tareaIdle; //idle
-  breakpoint();
 }
