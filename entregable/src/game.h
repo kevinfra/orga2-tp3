@@ -31,8 +31,6 @@ unsigned short dameTarea();
 
 void game_lanzar(unsigned int jugador);
 
-void game_soy(unsigned int soy);
-
 void game_donde(unsigned int* pos);
 
 char validarXY(int x, int y);

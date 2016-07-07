@@ -454,10 +454,6 @@ void game_lanzar(unsigned int jugador) {
   }
 }
 
-void game_soy(unsigned int yoSoy) {
-
-}
-
 void game_donde(unsigned int* pos) {
 	tupla* posiciones = posTareaActual();
 	unsigned short posx = posiciones->x;
@@ -486,6 +482,15 @@ void game_mapear(int x, int y) {
 	}
 }
 
+void pintarTareasH(){
+	tupla posXY = tareaActual->posicion;
+	int soyH = tareaActual->duenoOriginal;
+	if(soyH == 2 && juegoEstaIniciado){
+		pintarTareaMadre(posXY.x, posXY.y, tareaActual->dueno, soyH);
+		pintarJugador(X_A, Y_A, 0);
+		pintarJugador(X_B, Y_B, 1);
+	}
+}
 
 void pintarTareaActual(){
 	int player = tareaActual->dueno;

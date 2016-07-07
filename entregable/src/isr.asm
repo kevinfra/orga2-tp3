@@ -27,6 +27,7 @@ extern game_mover_cursor
 extern game_lanzar
 extern pintarPuntajeAzul
 extern pintarPuntajeRojo
+extern pintarTareasH
 extern print_hex
 extern pintarTareaActual
 extern actualizarReloj
@@ -297,7 +298,7 @@ _isr32:
     call estaPintadoDebug
     cmp eax, 1
     je .salirDeReloj
-
+    call pintarTareasH
     call sched_proximo_indice
     ;xchg bx, bx
     shl eax, 3
