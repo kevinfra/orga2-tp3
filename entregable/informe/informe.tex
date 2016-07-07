@@ -129,11 +129,11 @@
 
 
 \section{Resolucion}
-\subsection{GDT Parte 1 }
+\subsection{GDT}
 %Nota al margen, soy un boludo, deberian ser 5, me falta agregar el segmento de video
-En este ejercicicio, se completa la GDT con 4 segmentos, dos para datos y codigo para el kernel y otros dos para usuario. Por restricciones del TP, el primer indice a utilizar en la GDT es el 4, contando desde 0 y los segmentos deben direccionar los primeros 878 MB de memoria.
-Para pasar a modo protegido, lo que hicimos fue, cargar el registro GDTR mediante la instruccion LGDT, habilitar el bit de PE de CR0 y hacer un far jump usando el segmentos de codigo de nivel 0 de la GDT, posteriormente se cargan los registros CS , DS , GS , FS y SS y se establece el ESP y EBP del kernel.
-Para este ejercicio, se modificaron los archivos gdt.c, gdt.c, defines.h y kernel.asm
+La GDT tiene 6 segmentos , el nulo , dos para kernel , dos para usuario y el otro para el selector de videos . Dejamos varis slots libres para cargar las TSS de las  tareas que se usaran mas adelante.
+El segmento nulo tiene todos sus atributos en 0 . Los demas segmentos exceptuando el de video arrancan en la posicion 0 y tienen como limite 878MB(Requerido por el enunciado) , respecto a los demas atributos
+-Los segmentos de kernel tienen DPL = 0 , para que no sean accesibles desde el modo usuario 
 
 
 \subsection{Excepciones}
@@ -151,6 +151,7 @@ El codigo de las interrupciones se encuentra en isr.asm
 \subsection{El retorno de la GDT y la aparicion de la TSS}
 
 \subsection{El Scheduler}
+Para realizar el scheduler, decidimos crear un struct tarea que contiene la posicion en el mapa,su indice en la GDT, su cr3, si tiene prendido el bit de presente en la GDT
 
 \section{Conclusiones y trabajo futuro}
 
