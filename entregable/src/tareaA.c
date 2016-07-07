@@ -35,10 +35,9 @@ void task() {
   unsigned int* yo = (unsigned int*)(0x08000000);
   unsigned int* otro = (unsigned int*)(0x08000000+0x1000);
   while(1) {
-    for(y=0;y<40;y++) {
-      for(x=0;x<80;x++) {
+    for(y=pos[1];y<46;y++) {
+      for(x=pos[0];x<80;x++) {
           syscall_soy(0x841);
-          if(y < 2){ y = 1; }else{ y = (y % 80);}
           syscall_mapear(x,y);
           for(i=0;i<1024;i++) otro[i] = yo[i];
       }

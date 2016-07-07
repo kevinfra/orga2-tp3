@@ -48,30 +48,28 @@ tupla* posTareaActual(){
 
 
 int proximoALibre(){
-  int res = (proximoColaA + 1) % 5;
-  int q = 0;
-  while(jugadores[colaJugadorA][res].presente){
-    if(q < 17){
-      int k = 0;
-      for(k = 0; k < 5; k++){
-        if(!jugadores[colaJugadorA][k].presente){
-          res = k;
-          k = 6;
-        }
-      }
-      q++;
-    }else{
-      print("dio la vuelta en proximo libre cola A", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));
+  int res;
+  int k = 0;
+  for (k = 0; k < 5; k++) {
+    if(!jugadores[colaJugadorA][k].presente){
+      res = k;
+      k = 6;
     }
+  }
+  if(k == 6){
+    while(1){print("dio la vuelta en proximo libre cola A", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY));}
   }
   return res;
 }
 
 int proximoBLibre(){
+  int res;
   int k = 0;
-  int res = (proximoColaB + 1) % 5;
   for(k=0; k < 5; k++){
-    if(!jugadores[colaJugadorB][k].presente){ res = k; k = 5;}
+    if(!jugadores[colaJugadorB][k].presente){ res = k; k = 6;}
+  }
+  if(k == 6){
+    while(1){print("dio la vuelta en proximo libre cola B", 20, 20, (C_BG_BLUE | C_FG_LIGHT_GREY));}
   }
   return res;
 }
@@ -100,8 +98,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaJugadorA][proximoColaA].dueno = 0;
         jugadores[colaJugadorA][proximoColaA].duenoOriginal = 0;
         jugadores[colaJugadorA][proximoColaA].posReloj = 3;
-        jugadores[colaJugadorA][proximoColaA].relojPropioX = (proximoColaA + 2);
-        proximoColaA = proximoALibre();
+        jugadores[colaJugadorA][proximoColaA].relojPropioX = 2*(proximoColaA + 2);
       }else{
         while(1){ print("proximoColaA no valido en cargarTarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
       }
@@ -119,8 +116,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaJugadorB][proximoColaB].dueno = 1;
         jugadores[colaJugadorB][proximoColaB].duenoOriginal = 1;
         jugadores[colaJugadorB][proximoColaB].posReloj = 3;
-        proximoColaB = proximoBLibre();
-        jugadores[colaJugadorB][proximoColaB].relojPropioX = (proximoColaB + 2);
+        jugadores[colaJugadorB][proximoColaB].relojPropioX = 2*(proximoColaB + 12);
       }else{
         while(1){ print("proximoColaB no valido en cargarTarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
       }
@@ -138,8 +134,7 @@ void cargarTareaEnCola(unsigned int dirTareaFisicaTareaOriginal, unsigned int x,
         jugadores[colaNadie][proximoColaNadie].dueno = 2;
         jugadores[colaNadie][proximoColaNadie].duenoOriginal = 2;
         jugadores[colaNadie][proximoColaNadie].posReloj = 3;
-        proximoColaNadie = proximoHLibre();
-        jugadores[colaNadie][proximoColaNadie].relojPropioX = (proximoColaNadie + 2);
+        jugadores[colaNadie][proximoColaNadie].relojPropioX = 2*(proximoColaNadie + 2);
       }else{
         while(1){ print("proximoColaNadie no valido en cargarTarea", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
       }

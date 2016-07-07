@@ -186,7 +186,7 @@ _isr%1:
     mov eax, 0x50
     mov [selector], eax
     jmp far [offset]
-    ;call bastaChicos
+    call bastaChicos
     jmp -4
 
 %endmacro

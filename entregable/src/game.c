@@ -83,13 +83,6 @@ void pegar()
 		}
 }
 
-void debug()
-{	//Tenemos que mostrar
-
-
-
-}
-
 void habilitarDebug(){
 	if(muestraInfo == 1){
 		muestraInfo = 0;
@@ -178,10 +171,10 @@ void atenderdebug(unsigned int cr0, unsigned int cr2, unsigned int cr3, unsigned
 	//char * video = (char*) 0xB8000;
 	if (debugActivado==1) // Si esta activado...
 	{
-		copiar(); 
+		copiar();
 		limipiarPantallaDebug();
 		pintarRecuadroDebug();
-		
+
 		muestraInfo = 1;
 		print("eax",21,8,C_FG_BLACK | C_BG_LIGHT_GREY );
 		print_hex(eax,8,29,8,C_FG_WHITE | C_BG_LIGHT_GREY);
@@ -288,19 +281,22 @@ void pintarTarea(int x, int y, int jugador){ //0 = A, 1=B 2=H
 	}
 }
 
-void pintarTareaMadre(int x, int y, int jugador){ //0 = A, 1=B 2=H
+void pintarTareaMadre(int x, int y, int duenoActual, int duenoOriginal){ //0 = A, 1=B 2=H
 	if(!validarXY(x,y)){
 		while(1){ print("X,Y no valido en pintarTareaMadre", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
 	}else{
-		switch (jugador) {
+		int bg;
+		bg = duenoActual == 0 ? C_BG_RED : (duenoActual == 1 ? C_BG_BLUE : C_BG_GREEN);
+
+		switch (duenoOriginal) {
 	    case 0:
-	      print("A", x, y, (C_BG_RED | C_FG_WHITE));
+	      print("A", x, y, (bg | C_FG_WHITE));
 	      break;
 	    case 1:
-	      print("B", x, y, (C_BG_BLUE | C_FG_WHITE));
+	      print("B", x, y, (bg | C_FG_WHITE));
 	      break;
 	    case 2:
-	      print("H", x, y, (C_BG_GREEN | C_FG_WHITE));
+	      print("H", x, y, (bg | C_FG_WHITE));
 	      break;
 	   }
 	}
@@ -482,9 +478,10 @@ void game_mapear(int x, int y) {
 		tareaActual->posicion.y = y;
 		pintarTareaActual();
 		unsigned int cr3 = rcr3();
-		unsigned int dirAMapear = (y + x*80)*4096 + 0x400000;
+		unsigned int dirAMapear = (x + y*80)*4096 + 0x400000;
 		mmu_mapear_pagina_tarea(0x08001000, cr3, dirAMapear);
 	}else{
+		return;
 		while(1){ print("X,Y no valido en game_mapear", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
 	}
 }
@@ -492,7 +489,7 @@ void game_mapear(int x, int y) {
 
 void pintarTareaActual(){
 	int player = tareaActual->dueno;
-	pintarTareaMadre(tareaActual->posicionOriginal.x, tareaActual->posicionOriginal.y, tareaActual->duenoOriginal);
+	pintarTareaMadre(tareaActual->posicionOriginal.x, tareaActual->posicionOriginal.y, player, tareaActual->duenoOriginal);
 	pintarTarea(tareaActual->posicion.x, tareaActual->posicion.y, player);
 }
 
@@ -528,72 +525,78 @@ void pintarPuntajeAzul(){
 }
 
 void actualizarReloj(){
-	char * rel;
-	switch (tareaActual->posReloj) {
-		case 0:
-			rel = "|";
-			break;
-		case 1:
-			rel = "/";
-			break;
-		case 2:
-			rel = "-";
-			break;
-		case 3:
-			rel = "\\";
+	if(tareaActual->presente == 1){
+		char * rel;
+		switch (tareaActual->posReloj) {
+			case 0:
+				rel = "|";
+				break;
+			case 1:
+				rel = "/";
+				break;
+			case 2:
+				rel = "-";
+				break;
+			case 3:
+				rel = "\\";
+		}
+		if(tareaActual->duenoOriginal == 2){
+			print(rel, tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_LIGHT_GREY));
+		}else if(tareaActual->duenoOriginal == 1){
+			print(rel, tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+		}else if(tareaActual->duenoOriginal == 0){
+			print(rel, tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+		}else{
+			while(1){ print("quien te conoce duenoOriginal en actualizarReloj", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
+		}
+		tareaActual->posReloj = (tareaActual->posReloj + 1) % 4;
 	}
-	if(tareaActual->duenoOriginal == 2){
-		print(rel, 2*tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	}else if(tareaActual->duenoOriginal == 1){
-		print(rel, 2*(9 + tareaActual->relojPropioX), 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	}else if(tareaActual->duenoOriginal == 0){
-		print(rel, 2*tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	}else{
-		while(1){ print("quien te conoce duenoOriginal en actualizarReloj", 20, 20, (C_BG_RED | C_FG_LIGHT_GREY)); }
-	}
-	tareaActual->posReloj = (tareaActual->posReloj + 1) % 4;
 }
 
 void volverDeExcepcion(){
 	//breakpoint();
-	int q = 0;
-	int indiceTareaABorrar = 0;
-	for(q = 0; q < 3; q++){
+	int selectorArray = -1;
+	int indiceTareaABorrar;
+	char encontreTarea = 0;
+	while(selectorArray < 3 && !encontreTarea){
+		selectorArray++;
 		for(indiceTareaABorrar = 0; indiceTareaABorrar < 15; indiceTareaABorrar++){
-			if(esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
-				jugadores[q][indiceTareaABorrar].presente = 0;
+			if(esMismaTarea(&jugadores[selectorArray][indiceTareaABorrar], tareaActual)){
+				encontreTarea = 1;
+				jugadores[selectorArray][indiceTareaABorrar].presente = 0;
 				break;
 			}
 		}
-		if(esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
-			break;
-		}
 	}
-	if(!esMismaTarea(&jugadores[q][indiceTareaABorrar], tareaActual)){
+
+	if(!esMismaTarea(&jugadores[selectorArray][indiceTareaABorrar], tareaActual)){
 		while(1){print("No es misma tarea en volverDeExcepcion", 20, 20, (C_BG_RED | C_FG_WHITE));}
 	}
-  switch (q) {
-    case 0:
+	if(jugadores[selectorArray][indiceTareaABorrar].presente == 1){
+		while(1){print("No borro la tarea en volverDeExcepcion", 20, 20, (C_BG_RED | C_FG_WHITE));}
+	}
+
+  switch (selectorArray) {
+    case colaNadie:
 			break;
-    case 1:
+    case colaJugadorA:
 			tareasEnJuego[0] -= 1;
 			print_int((tareasEnJuego[0]), 36, 48, (C_BG_BLACK | C_FG_WHITE));
 			break;
-    case 2:
+    case colaJugadorB:
 			tareasEnJuego[1] -= 1;
 			print_int((tareasEnJuego[1]), 70, 48, (C_BG_BLACK | C_FG_WHITE));
 			break;
     }
 
 		if(tareaActual->duenoOriginal == 2){
-			print("M", 2*tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_BLACK));
+			print("M", tareaActual->relojPropioX, 48, (C_BG_BLACK | C_FG_BLACK));
 		}else if(tareaActual->duenoOriginal == 1){
-			print("M", 2*(9 + tareaActual->relojPropioX), 46, (C_BG_BLACK | C_FG_BLACK));
+			print("M", tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_BLACK));
 		}else{
-			print("M", 2*tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_BLACK));
+			print("M", tareaActual->relojPropioX, 46, (C_BG_BLACK | C_FG_BLACK));
 		}
-
-    //gdt[tareaActual->indiceGdt].p = 0;
+    gdt[tareaActual->indiceGdt].p = 0;
     print_int(0, tareaActual->posicion.x, tareaActual->posicion.y, (C_BG_LIGHT_GREY | C_FG_LIGHT_GREY));
 }
 
