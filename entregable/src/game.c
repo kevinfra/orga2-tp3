@@ -256,7 +256,7 @@ void iniciarGame(){
   print_int(0, 51, 47, (C_BG_RED | C_FG_WHITE));
   print_int(0, 57, 47, (C_BG_BLUE | C_FG_WHITE));
 	print("<A", 13, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	print("B>", 20, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+	print("B>", 22, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 }
 
 int juegoIniciado(){

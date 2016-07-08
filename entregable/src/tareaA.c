@@ -39,6 +39,9 @@ void task() {
       for(x=pos[0];x<80;x++) {
           syscall_soy(0x841);
           syscall_mapear(x,y);
+        //  syscall_mapear(x*2 % 80,y*2 % 45);
+        //  syscall_mapear(x*5 % 80,y*7 % 45);
+        //  syscall_mapear(x*9 % 80,y*2 % 45);
           for(i=0;i<1024;i++) otro[i] = yo[i];
       }
     }
