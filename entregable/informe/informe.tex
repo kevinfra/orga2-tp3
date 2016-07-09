@@ -134,7 +134,7 @@
 
 a) En este primera parte se empezó a completar la GDT, que contiene los descriptores globales del sistema. El archivo modificado fue el gtd.c que contiene el código de implementación de la GDT. Por normas de Intel, la primera entrada en la GDT tiene que ser nula, por lo que la misma se completó con todos sus valores en 0. Posteriormente se agregaron 4 segmentos requeridos por el enunciado: un segmento para código de nivel 0 (kernel), en el cual se configuró el atributo dpl (privilegio) en 0 para que sólo pueda ser usado por el Kernel, otro segmento para datos también de nivel 0 para el Kernel, un segmento de código de nivel 3 (usuario con dpl 3) y otro segmento de datos de nivel 3. Por requerimiento del enunciado todos estos selectores de segmento fueron configurados para que direccionen los primeros 878 MB de memoria, por lo que los atributos de límite y base son iguales para todos. Las diferencias que presentan son los atributos de dpl antes mencionados y del tipo de selector que fue cargado con 8 para código y 2 para datos.
 
-b) En este punto del ejercicio se implementó el cambio de modo real a protegido y se seteó la pila del kernel en la dirección 0x27000. Este cambio fue realizado en el archivo kernel.asm que contiene el código asm que corresponde al kernel. El código del mismo comienza inhabilitando las interrupciones (mediante la instrucción cli) y cambiando el modo de video a 80 x 50. El código que se agregó para cumplir con el requerimiento en este punto fue habilitar A20, para lo cual sólo fue necesaria llamar mediante a un call a una función externa que ya estaba implementada y se encarga de dicha tarea y cargar el registro GTDR que contiene la direccción física en donde se encuentra la GDT. Para ello se utilizó la instrucción lgdt a la cual se le pasó como argumento la dirección de la gdt. Posteriormente fue necesario habilitar el modo protegido para lo cual era necesario que el bit de PE (que indica si el modo protegido está habilitado o no) del registro de control CR0 sea seteado en 1. Como no está permitido operar directamente con el registro CR0 se copió su valor al registro de propósito general eax mediante la instrucción MOV y posteriormente se realizó una operación OR del registro eax con el inmediatio de destino en 1, para que el último bit sea seteado en 1. Finalmente se copió el valor actualizado de eax en CR0 y se cambió el modo a protegido realizando un jump far. La instrucción utilizada fue jmp 0x20:mp donde 0x20 representa el selector de código de nivel 0. El cálculo realizado fue el siguiente: índice de código de nivel 0 (que es el 4) multiplicado por 8, es decir shifteado 3 lugares a la izuiqerda. El mp es una etiqueta definida en la próxima instrucción a ejecutar justo inmediatamente despúes del jump, en donde comienza el código que a partir de ese momento se va ejecutar en modo protegido. Las primeras instrucciones que se ejecutan en este punto se encargan de cargar los selectores de segmento que tienen que estar cargados porque es requerimiento del modo protegido. Se cargaron entonces los registros ds, es, gs, fs y ss con el índice de datos de nivel 0 de la GDT (segmentación flat). El cs (code segment no fue necesario cargarlo debido a que la instrucción jmp lo cargó. Se cargaron además los registros esp y ebp de la pila con el valor 0x27000 que es la dirección que indicaba el enunciado en donde está la pila del Kernel (MOV esp, 0x27000 y MOV ebp, 0x27000).
+b) En este punto del ejercicio se implementó el cambio de modo real a protegido y se seteó la pila del kernel en la dirección 0x27000. Este cambio fue realizado en el archivo kernel.asm que contiene el código asm que corresponde al kernel. El código del mismo comienza inhabilitando las interrupciones (mediante la instrucción cli) y cambiando el modo de video a 80 x 50. El código que se agregó para cumplir con el requerimiento en este punto fue habilitar A20, para lo cual sólo fue necesaria llamar mediante a un call a una función externa que ya estaba implementada y se encarga de dicha tarea; y cargar el registro GTDR que contiene la direccción física en donde se encuentra la GDT. Para ello se utilizó la instrucción lgdt a la cual se le pasó como argumento la dirección de la gdt. Posteriormente fue necesario habilitar el modo protegido para lo cual era necesario que el bit de PE (que indica si el modo protegido está habilitado o no) del registro de control CR0 sea seteado en 1. Como no está permitido operar directamente con el registro CR0 se copió su valor al registro de propósito general eax mediante la instrucción MOV y posteriormente se realizó una operación OR del registro eax con el inmediatio de destino en 1, para que el último bit sea seteado en 1. Finalmente se copió el valor actualizado de eax en CR0 y se cambió el modo a protegido realizando un jump far. La instrucción utilizada fue jmp 0x20:mp donde 0x20 representa el selector de código de nivel 0. El cálculo realizado fue el siguiente: índice de código de nivel 0 (que es el 4) multiplicado por 8, es decir shifteado 3 lugares a la izuiqerda. El mp es una etiqueta definida en la próxima instrucción a ejecutar justo inmediatamente despúes del jump, en donde comienza el código que a partir de ese momento se va ejecutar en modo protegido. Las primeras instrucciones que se ejecutan en este punto se encargan de cargar los selectores de segmento que tienen que estar cargados porque es requerimiento del modo protegido. Se cargaron entonces los registros ds, es, gs, fs y ss con el índice de datos de nivel 0 de la GDT (segmentación flat). El cs (code segment no fue necesario cargarlo debido a que la instrucción jmp lo cargó. Se cargaron además los registros esp y ebp de la pila con el valor 0x27000 que es la dirección que indicaba el enunciado en donde está la pila del Kernel (MOV esp, 0x27000 y MOV ebp, 0x27000).
 
 c) Se agregó un segmento adicional en la gdt, que describe el área de la pantalla en memoria que va a ser utilizada solamente por el kernel. El segmento que se agregó por lo tanto fue configurado con el dpl en 0 y es de tipo 2. La GDT entonces pasa a tener en este punto 6 segmentos (teniendo en cuenta al primer segmento nulo).
 
@@ -191,11 +191,41 @@ El mismo produjo una exepción de dividir por cero, con lo que pudimos probar em
 
 
 
-\subsection{Video y MMU}
-%Paginacion y sarasa
+\subsection{Ejercicio 3}
+
+a) En este punto se pide implementar una rutina que limpie el buffer de video y lo pinte como indica el enunciado. Para esto, se realizó una macro definida en el archivo imprimir.mac cuyo propósito es pintar la pantalla como indica el enunciado. Dentro de esta macro se utiliza la otra macro previamente definida de pintarPantalla.
+
+b) En este punto se tuvo que realizar una de las partes más importantes e interesantes del sistema, en la cual se escribieron las rutinas que inicializan el directorio y las tablas de páginas del kernel. El archivo modificado fue el mmu.c. Se implementó la función mmu_inicializar_dir_kernel cuyo código es el siguiente: 
+
+\begin{verbatim}
+void mmu_inicializar_dir_kernel(){
+  unsigned int * pageTable = (unsigned int *) 0x28000;
+  unsigned int * tableDeDirecciones = (unsigned int *) 0x27000;
+  *tableDeDirecciones = (unsigned int) pageTable | 3;
+  tableDeDirecciones++;
+  int i = 1 ;
+  for(i = 1; i < 1024; i++){
+    *tableDeDirecciones = 0;
+    tableDeDirecciones++;
+  }
+  int j = 0 ;
+  for(j = 0; j < 1024; j++){
+    *pageTable = j*4096 | 3;
+    pageTable++;
+  }
+}
+\end{verbatim}
+
+Básicamente lo que se realizó es inicializr una PDE (directorio de páginas) en la dirección 0x27000 y completar su primera entrada con la dirección de una PTE (tabla de páginas) y con los atributos necesarios de supervisor para que sólo pueda ser accedida por el kernel. El resto de las 1024 entradas de la PDE fue completada con ceros ya que no van a ser utilizadas. La PTE fue completada para que mapee con identity mapping páginas de 4 KB, por lo que se completaron cada una de ellas con una dirección base múltiplo de 4096 y nuevamente con los atributos necesarios para que sólo puedan ser accedidas por el Kernel.
+La función mmu_inicializar_dir_kernel es llamada desde kernel.asm mediante un call.
+
+c) Este otro punto es otro de los más importantes para el funcionamiento del sistema. Desde el kernel lo que se hizo fue inicializar el registro de control CR3. Como no es posible trabajar con el registro CR3 directamente, se copia en eax, el valor 0x27000 que es donde se definió en el punto anterior la PDE. Se copia el valor del registro eax a CR3 y se activa la paginación seteando el bit correspondiente en CR0 con un procedimiento similar al anterior. Para completar el proceso se hace un call a la función mmu_inicializar definida en mmu.c cuyo único propósito es setear una variable global que define la próxima página libre que puede ser utilizada por el sistema.
+
+d) Ejercicio muy similar al de pintar pantalla sólo que además de un color se copian a memoria los valores ASCII del texto correspondiente al nombre de nuestro grupo.
+
 
 \subsection{Interrupciones}
-En esta parte, se completaron las interrupciones del reloj , la del teclado y la 0x66 que posteriomente sera usada en el juego
+En esta parte, se completaron las interrupones del reloj , la del teclado y la 0x66 que posteriomente sera usada en el juego
 %(En el mundo de Star Wars, la orden 66 es la que usa el canciller Palpatine para iniciar la purga de los Jedi, creo deberiamos tener algun easter egg de SW en el tp) 
 dado que la interrupcion del reloj la genera la CPU cada cierta cantidad tiempo, recien en este momento se habilitan las interrupciones mediante la instruccion STI.
 El codigo de las interrupciones se encuentra en isr.asm 
