@@ -73,7 +73,7 @@
 
 \fancyhf{}
 
-\fancyhead[LO]{Sección \rightmark} % \thesection\ 
+\fancyhead[LO]{Sección \rightmark} % \thesection\
 \fancyfoot[LO]{\small{Luis Enrique Badell Porto, Nicolas Bukovits, Kevin Frachtenberg}}
 \fancyfoot[RO]{\thepage}
 \renewcommand{\headrulewidth}{0.5pt}
@@ -138,7 +138,7 @@ b) En este punto del ejercicio se implementó el cambio de modo real a protegido
 
 c) Se agregó un segmento adicional en la gdt, que describe el área de la pantalla en memoria que va a ser utilizada solamente por el kernel. El segmento que se agregó por lo tanto fue configurado con el dpl en 0 y es de tipo 2. La GDT entonces pasa a tener en este punto 6 segmentos (teniendo en cuenta al primer segmento nulo).
 
-d) El enunciado solicita que se pinte el área del mapa en un fondo de color. Se implementó una macro en el archivo imprimir.mac denominada pintarPantalla la cual se encarga de pintar el fondo del mapa de color gris. El código de la misma es muy simple ya que se trata de un ciclo que copia a memoria en las posiciones del mapa, en los bytes de atributos de cada pixel, el valor correspondiente al color de fondo de gris. El código de la rutina es el siguiente: 
+d) El enunciado solicita que se pinte el área del mapa en un fondo de color. Se implementó una macro en el archivo imprimir.mac denominada pintarPantalla la cual se encarga de pintar el fondo del mapa de color gris. El código de la misma es muy simple ya que se trata de un ciclo que copia a memoria en las posiciones del mapa, en los bytes de atributos de cada pixel, el valor correspondiente al color de fondo de gris. El código de la rutina es el siguiente:
 
 \begin{verbatim}
 %macro pintarPantalla 0
@@ -149,7 +149,7 @@ d) El enunciado solicita que se pinte el área del mapa en un fondo de color. Se
     mov ecx , 4000
     xor edi , edi
     %%cicloGris:
-        mov word [edi*2 + 0x000B8000] , 0x7700  ; 
+        mov word [edi*2 + 0x000B8000] , 0x7700  ;
         inc edi
         loop %%cicloGris
 
@@ -161,7 +161,7 @@ d) El enunciado solicita que se pinte el área del mapa en un fondo de color. Se
 
 \subsection{Ejercicio 2}
 
-a) En esta parte de la implementación se tuvo que completar las entradas en la IDT (que contiene los descriptores de las interrupciones) para asociar diferentes rutinas a las exepciones del procesador. Los archivos modificados fueron el idt.c y el isr.asm. Se implementó la función idt_inicializar() en idt.c la cual se encarga de inicializar las excepciones. Las excepciones configuradas en este punto fueron las contenidas en el rango 0-19 y para configuraralas se definió una macro llamada IDT_ENTRY(numero) cuya implementación es la siguiente: 
+a) En esta parte de la implementación se tuvo que completar las entradas en la IDT (que contiene los descriptores de las interrupciones) para asociar diferentes rutinas a las exepciones del procesador. Los archivos modificados fueron el idt.c y el isr.asm. Se implementó la función idt_inicializar() en idt.c la cual se encarga de inicializar las excepciones. Las excepciones configuradas en este punto fueron las contenidas en el rango 0-19 y para configuraralas se definió una macro llamada IDT_ENTRY(numero) cuya implementación es la siguiente:
 
 \begin{verbatim}
 #define IDT_ENTRY(numero)                                                                                        \
@@ -187,18 +187,22 @@ xor eax, eax
 div eax
 \end{verbatim}
 
-El mismo produjo una exepción de dividir por cero, con lo que pudimos probar empíricamente que las exepciones estaban siendo manejadas y funcionaban correctamente. Dichas líneas de código fueron comentadas luego de que se corroboró que funcionaba para que no se produzca la exepción y el kernel siga ejecutando normalmente, y si eventualmente en algún momento se deseaba volver a verificar su funcionalidad sólo se tengan que descomentar. Además nos sirvió como documentación y registro de lo que se fue implementando. 
+El mismo produjo una exepción de dividir por cero, con lo que pudimos probar empíricamente que las exepciones estaban siendo manejadas y funcionaban correctamente. Dichas líneas de código fueron comentadas luego de que se corroboró que funcionaba para que no se produzca la exepción y el kernel siga ejecutando normalmente, y si eventualmente en algún momento se deseaba volver a verificar su funcionalidad sólo se tengan que descomentar. Además nos sirvió como documentación y registro de lo que se fue implementando.
 
 
 
-\subsection{Video y MMU}
+\subsection{Ejericio 5}
+
+a) Para este ejericio se agregaron tres entradas en la IDT. Una para la interrupción de reloj, otra para la de teclado y una para la interrupción 0x66, o 102 en decimal (que es con el nombre con el cual quedó configurado).
+Esto se realizó en los archivos correspondientes a la idt, es decir, idt.h e idt.c.
+Luego, en la implementación de la misma, lo único que se hizo fue hacer que escriba un valor en el registro eax.
 %Paginacion y sarasa
 
 \subsection{Interrupciones}
 En esta parte, se completaron las interrupciones del reloj , la del teclado y la 0x66 que posteriomente sera usada en el juego
-%(En el mundo de Star Wars, la orden 66 es la que usa el canciller Palpatine para iniciar la purga de los Jedi, creo deberiamos tener algun easter egg de SW en el tp) 
+%(En el mundo de Star Wars, la orden 66 es la que usa el canciller Palpatine para iniciar la purga de los Jedi, creo deberiamos tener algun easter egg de SW en el tp)
 dado que la interrupcion del reloj la genera la CPU cada cierta cantidad tiempo, recien en este momento se habilitan las interrupciones mediante la instruccion STI.
-El codigo de las interrupciones se encuentra en isr.asm 
+El codigo de las interrupciones se encuentra en isr.asm
 
 \subsection{El retorno de la GDT y la aparicion de la TSS}
 
@@ -221,4 +225,3 @@ Para realizar el scheduler, decidimos crear un struct tarea que contiene la posi
 %\end{codesnippet}
 
 \end{document}
-
