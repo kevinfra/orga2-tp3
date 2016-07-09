@@ -195,14 +195,22 @@ El mismo produjo una exepción de dividir por cero, con lo que pudimos probar em
 
 a) Para este ejericio se agregaron tres entradas en la IDT. Una para la interrupción de reloj, otra para la de teclado y una para la interrupción 0x66, o 102 en decimal (que es con el nombre con el cual quedó configurado).
 Esto se realizó en los archivos correspondientes a la idt, es decir, idt.h e idt.c.
-Luego, en la implementación de la misma, lo único que se hizo fue hacer que escriba un valor en el registro eax.
+
+b) En la rutina de atención de interrupción de reloj se implementó solamente una base que solamente se encargaba de llamar a la función screen_proximo_reloj la
+cual ya estaba implementada por la cátedra y se encargaba de dibujar en pantalla cómo iba avanzando el reloj.
+
+c) En la rutina de atención de interrupción de teclado se implementó en ASM el detector de teclas presionadas en las cuales imprimiría en pantalla en la esquina
+superior qué tecla fue y el color representando al jugador que le pertenece esa tecla en los casos de que la misma sea una que deba realizar alguna acción en el juego
+(tales como w, a, s, d o Lshift). Además, se agregó que el juego no iniciaría hasta que se presione la barra espaciadora, la cual indica el comienzo del juego una vez presionada
+y en la RAI para esa tecla se llaman a las funciones correspondientes que inicializan el juego.
+
+d) Tal como se pedía en el enunciado, la primera versión de la rutina de atención de la interrupción 0x66 lo único que hacía era escribir el valor 0x42 en el registro eax.
+
 %Paginacion y sarasa
 
-\subsection{Interrupciones}
-En esta parte, se completaron las interrupciones del reloj , la del teclado y la 0x66 que posteriomente sera usada en el juego
-%(En el mundo de Star Wars, la orden 66 es la que usa el canciller Palpatine para iniciar la purga de los Jedi, creo deberiamos tener algun easter egg de SW en el tp)
-dado que la interrupcion del reloj la genera la CPU cada cierta cantidad tiempo, recien en este momento se habilitan las interrupciones mediante la instruccion STI.
-El codigo de las interrupciones se encuentra en isr.asm
+\subsection{Ejercicio 6}
+
+
 
 \subsection{El retorno de la GDT y la aparicion de la TSS}
 
