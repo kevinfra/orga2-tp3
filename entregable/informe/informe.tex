@@ -253,6 +253,52 @@ d) Tal como se pedía en el enunciado, la primera versión de la rutina de atenc
 
 \subsection{Ejercicio 6}
 
+a) En este ejercicio, se agregaron 47 entradas en la GDT definidas como TSS. La primera para la tarea inicial,
+la segunda para la tarea Idle y las otras 45 se repartieron 15 por cada jugador, es decir 15 para el jugador A,
+15 para el B y 15 para las tareas sanas. Esto se decidió así ya que si bien cada jugador puede lanzar 5 tareas
+a la vez, en total podría lanzar un máximo de 15, y sería más fácil luego encontrar la próxima entrada libre.
+Esto sería simplemente tener una variable que se inicialice en 9 (ya que las primeras 4 entradas son nulas, las siguientes
+ 4 entradas son para la segmentación explicada en este mismo informe y las entradas 7 y 8 eran para las tareas mencionadas)
+y cada vez que se pida la próxima entrada libre, es simplemente dar el valor actual de esa variable y actualizarla sumándole 1.
+
+b) Al inicializar la tss de la tarea idle se agregó la inicialización de la variable que indicará cuál es la próxima entrada libre de la gdt, de la tarea inicial y
+de una variable que indica cuál es la próxima estructura de tss libre (esto se explica en detalle en el siguiente inciso).
+En cuanto a la información de la tarea idle, primero se cargó la tss y luego la entrada de la gdt de su respectivo descriptor.
+En la TSS, se cargaron los segmentos (excepto el de código) con el selector de segmento de gdt 0x30, el cual indica el segmento de datos de nivel 3, mientras que el
+segmento de código se cargó con 0x20, o sea el segmento de código de nivel 3. En cuanto a la pila, se indicó la dirección que se solicitó en el enunciado (0x27000).
+Para el cr3, nuevamente como indicaba el enunciado, se cargó el cr3 del kernel. Por último, para el eip, se colocó también la dirección informada en el enunciado (0x10000).
+En la GDT se configuró el selector de TSS con la dirección y tamaño de la tss correspondiente, el dpl se colocó en 0 (el rpl en la tss se cargó en 0) y al ocupar
+un tamaño menor a 1mb (la tss), se colocó el bit de G en 0.
+
+c) Para la función solicitada en este ejercicio, se reciben por parametros la dirección física original de la tarea, un \textit{x} y un \textit{y}, que son las posiciones que ocuparán
+en el 'mapa', y devuelve el número de entrada de la gdt que ocupa el descriptor de tss de la nueva tarea.
+Para poder tener una tss diferente en cada tarea, se crearon 45 tss distintas al principio del archivo tss.c y luego se colocaron en un Array de 45 posiciones, las cuales cada una tiene
+la dirección de memoria donde está cada tss. De esta forma, se puede obtener una nueva tss cada vez que se la solicite, ya que es cosa de ver la siguiente posicion en el Array y así obtener la dirección
+de memoria de la nueva tss.
+De la misma forma que para la tarea Idle, se carga la gdt con el descriptor de tss correspondiente a una tarea de nivel 3, y se inicializa su tss. La TSS queda cargada de la siguiente forma:
+\begin{verbatim}
+	nueva_tss->cs = | + 3;
+	nueva_tss->es = GDT_OFF_IDX_DESC_DATA3 + 3;
+	nueva_tss->ss = GDT_OFF_IDX_DESC_DATA3 + 3;
+	nueva_tss->ds = GDT_OFF_IDX_DESC_DATA3 + 3;
+	nueva_tss->fs = GDT_OFF_IDX_DESC_DATA3 + 3;
+	nueva_tss->gs = GDT_OFF_IDX_DESC_DATA3 + 3;
+	nueva_tss->esp = 0x08000000 + 0xfff;
+	nueva_tss->ebp = 0x08000000 + 0xfff;
+	nueva_tss->eflags = 0x202;
+	nueva_tss->eip = 0x08000000;
+	unsigned int nuevaCR3 = mmu_inicializar_dir_tarea(cr3, dirFisicaTareaOriginal, x, y);
+	nueva_tss->cr3 = nuevaCR3;
+	nueva_tss->esp0 = mmu_proxima_pagina_fisica_libre();
+	nueva_tss->ss0 = GDT_OFF_IDX_DESC_DATA0;
+	nueva_tss->iomap = 0xFFFF;
+\end{verbatim}
+Donde nueva_tss es el puntero a la dirección de memoria de la nueva tss. GDT_OFF_IDX_DESC_CODE3 es el selector de segmento de datos de nivel 3, y se le suma 3 cuando corresponde
+para setear el RPL en 3. esp y ebp se cargan con esa dirección ya que es donde debe estar mapeada la tarea y se le suma 0xfff por ser la pila de la misma. Por la misma razón que esp y ebp, eip se coloca 0x08000000
+pero no se le suma 0xfff por no ser la pila sino el instruction pointer. para el cr3 se llama a la función mmu_inicializar_dir_tarea explicada con anterioridad en este informe.
+mmu_proxima_pagina_fisica_libre() se utiliza para obtener una nueva pila y GDT_OFF_IDX_DESC_DATA0 es el selector de segmento de datos de nivel 0.
+
+d) Este punto se realizó en la función que inicializa la tss de idle. 
 
 
 
