@@ -264,8 +264,8 @@ y cada vez que se pida la próxima entrada libre, es simplemente dar el valor ac
 b) Al inicializar la tss de la tarea idle se agregó la inicialización de la variable que indicará cuál es la próxima entrada libre de la gdt, de la tarea inicial y
 de una variable que indica cuál es la próxima estructura de tss libre (esto se explica en detalle en el siguiente inciso).
 En cuanto a la información de la tarea idle, primero se cargó la tss y luego la entrada de la gdt de su respectivo descriptor.
-En la TSS, se cargaron los segmentos (excepto el de código) con el selector de segmento de gdt 0x30, el cual indica el segmento de datos de nivel 3, mientras que el
-segmento de código se cargó con 0x20, o sea el segmento de código de nivel 3. En cuanto a la pila, se indicó la dirección que se solicitó en el enunciado (0x27000).
+En la TSS, se cargaron los segmentos (excepto el de código) con el selector de segmento de gdt 0x30, el cual indica el segmento de datos de nivel 0, mientras que el
+segmento de código se cargó con 0x20, o sea el segmento de código de nivel 0. En cuanto a la pila, se indicó la dirección que se solicitó en el enunciado (0x27000).
 Para el cr3, nuevamente como indicaba el enunciado, se cargó el cr3 del kernel. Por último, para el eip, se colocó también la dirección informada en el enunciado (0x10000).
 En la GDT se configuró el selector de TSS con la dirección y tamaño de la tss correspondiente, el dpl se colocó en 0 (el rpl en la tss se cargó en 0) y al ocupar
 un tamaño menor a 1mb (la tss), se colocó el bit de G en 0.
@@ -297,12 +297,13 @@ Donde nueva_tss es el puntero a la dirección de memoria de la nueva tss. GDT_OF
 para setear el RPL en 3. esp y ebp se cargan con esa dirección ya que es donde debe estar mapeada la tarea y se le suma 0xfff por ser la pila de la misma. Por la misma razón que esp y ebp, eip se coloca 0x08000000
 pero no se le suma 0xfff por no ser la pila sino el instruction pointer. para el cr3 se llama a la función mmu_inicializar_dir_tarea explicada con anterioridad en este informe.
 mmu_proxima_pagina_fisica_libre() se utiliza para obtener una nueva pila y GDT_OFF_IDX_DESC_DATA0 es el selector de segmento de datos de nivel 0.
+Además, al llamar a esta función, se agregó que se llame a la función cargarTareaEnCola la cual se encarga de cargarla en el scheduler (más información de esta tarea en el ejercicio 7).
 
 d) Este punto se realizó en la función que inicializa la tss de idle. La misma fue cargada con la misma información que para la tss de idle pero con la tss de la tarea inicial.
 
-e) Descripto en el inciso (c)
+e) Descripto en el inciso (b)
 
-f) Al inicializar las tss y la gdt para las tareas idle e inicial, somo se mencionó en el inciso (c) se obtiene el selector de segmento de la gdt que, en este caso, es el de
+f) Al inicializar las tss y la gdt para las tareas idle e inicial, somo se mencionó en el inciso (b) se obtiene el selector de segmento de la gdt que, en este caso, es el de
 la TSS de la tarea inicial. Por lo tanto, luego de llamar a la funcion que se encarga de inicializar a esas dos tareas, tenemos en eax el selector mencionado y se carga en el Task Register mediante la instrucción ltr.
 Para saltar a la tarea Idle, se le suma 8 a eax (para obtener el siguiente selector) y se pushea el registro
 para usarlo luego de inicializar las otras estructuras necesarias. Para hacer el salto, dejamos en eax el selector de segmento de la TSS de Idle, y se realizan las siguientes instrucciones:
@@ -314,10 +315,41 @@ siendo [selector] y [offset] espacios definidos en memoria mediante el uso de dw
 
 \subsection{Ejercicio 7}
 
-a)
+a)	La inicialización del scheduler se encarga de setear las variable correspondientes que serán funcionales al juego. Estas son 3 int (proximoColaA, proximoColaB y proximoColaNadie)
+que indicarán la próxima posicion del arreglo de tareas de cada jugador en la cual se almacena mediante el struct Tarea información sobre la misma. Este arreglo es en realidad una matriz
+de 3 x 15, en la cual en cada fila está el arreglo de 15 posiciones de Tareas. Cada una de ellas representa el arreglo de 15 posiciones de tarea de cada jugador. Para el caso del jugador A y B,
+nos ocupamos de que no se escriba ninguna tarea más allá de la posicion 5 ya que cada jugador solo puede tener hasta 5 tareas al mismo tiempo. Se setea también la variable
+colaActual, que indica cual de los 3 arreglos de la matriz es al que se deberá acceder para buscar la siguiente tarea. El puntero a Tarea, tareaActual, apunta a la estructura Tarea
+en la matriz jugadores que contiene la información de la tarea que se está ejecutando en ese momento. Por último, siguienteIndiceDeTareaEnCola contiene el próximo índice a seleccionar de cada arreglo de la matriz jugadores,
+teniendo en comun que cada número de posicion del arreglo siguienteIndiceDeTareaEnCola equivale al número de posicion del arreglo en la matriz.
+El struct Tarea está compuesto de la siguiente forma:
+\begin{verbatim}
+	typedef struct str_tarea{
+	  tupla posicion;
+	  tupla posicionOriginal;
+	  unsigned short indiceGdt;
+	  char presente;
+	  unsigned int cr3Actual;
+	  int dueno;
+	  int duenoOriginal;
+	  int relojPropioX;
+	  short posReloj;
+	} tarea;
+\end{verbatim}
+donde el struct tupla está conformado así:
+\begin{verbatim}
+	typedef struct str_tupla{
+	  unsigned short x;
+	  unsigned short y;
+	} tupla;
+\end{verbatim}
+En el struct tarea, posicion representa la posicion actual de la tarea. posicionOriginal la posición deonde se lanzó originalmente (para el caso de las tareas sanas, el lugar donde se inicializó).
+indiceGdt es lo que el nombre indica. el char presente es para indicar si está presente en el scheduler o no (se setea en 0 cuando se desaloja la tarea). cr3Actual es el cr3 que utiliza la tarea.
+dueno es el número que representa al jugador que le pertenece la tarea, que tanto para este como para duenoOriginal es 0 si es el jugador A, 1 jugador B y 2 tarea sana.
+duenoOriginal es el jugador que lanzó originalmente la tarea (este valor no cambia una vez que se setea para cada tarea). relojPropioX es la posición en X en la que se va a dibujar
+el reloj de esa tarea. posReloj es el número que indica cual es el siguiente dibujo que representa al reloj a imprimir en pantalla.
 
-
-
+b) 
 
 \subsection{El retorno de la GDT y la aparicion de la TSS}
 
