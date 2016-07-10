@@ -351,6 +351,8 @@ el reloj de esa tarea. posReloj es el número que indica cual es el siguiente di
 
 b) 
 
+f) En este punto se solicita implementar la funcionalidad de debugging. Lo que se realizó fue modificar el código de la interrupción del reloj para que se fije si está habilitado el debug y está pintada la pantalla no se salte entre tareas. Se agregaron dos variables globales, una que indica si el debug está habilitado o no y otra que indica si la pantala de debug está pintada o no. En todas las rutinas de atención de interrupciones lo que se hizo es hacer un call a una función que devuelve cero si el debug no está activado, en cuyo caso continua con la ejecución de la atención de la rutina, y si devuelve 1 (significa que el debug está activado) lo que hace es pushear todos los registros que se deben mostrar en pantalla cuando ocurre una excepción, algunos de los cuales son extraídos de la pila del handler de exepción y llama a una función atenderDebug cuyo propósito es mostrar por pantalla la información del debug.
+
 \subsection{El retorno de la GDT y la aparicion de la TSS}
 
 \subsection{El Scheduler}
