@@ -374,26 +374,5 @@ El shift se realiza ya que sched_proximo_indice solo da el número de índice de
 e) La rutina de atencion de excepciones fue modificada para que en lugar de imprimir el error por pantalla, elimine a la tarea del scheduler seteando en 0 el bit de presente
 en tareaActual, setee el bit de presente en 0 en la entrada de la gdt correspondiente, y actualice la cantidad de tareas lanzadas, el reloj de la tarea en pantalla y que desaparezca visualmente del mapa.
 
-
-
-\subsection{El retorno de la GDT y la aparicion de la TSS}
-
-\subsection{El Scheduler}
-Para realizar el scheduler, decidimos crear un struct tarea que contiene la posicion en el mapa,su indice en la GDT, su cr3, si tiene prendido el bit de presente en la GDT
-
-\section{Conclusiones y trabajo futuro}
-
-
-%\begin{codesnippet}
-%\begin{verbatim}
-
-%struct Pepe {
-
- %   ...
-
-%};
-
-%\end{verbatim}
-%\end{codesnippet}
-
+f) En este punto se solicita implementar la funcionalidad de debugging. Lo que se realizó fue modificar el código de la interrupción del reloj para que se fije si está habilitado el debug y está pintada la pantalla no se salte entre tareas. Se agregaron dos variables globales, una que indica si el debug está habilitado o no y otra que indica si la pantala de debug está pintada o no. En todas las rutinas de atención de interrupciones lo que se hizo es hacer un call a una función que devuelve cero si el debug no está activado, en cuyo caso continua con la ejecución de la atención de la rutina, y si devuelve 1 (significa que el debug está activado) lo que hace es pushear todos los registros que se deben mostrar en pantalla cuando ocurre una excepción, algunos de los cuales son extraídos de la pila del handler de exepción y llama a una función atenderDebug cuyo propósito es mostrar por pantalla la información del debug.
 \end{document}
