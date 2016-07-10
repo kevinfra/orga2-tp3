@@ -277,7 +277,7 @@ la dirección de memoria donde está cada tss. De esta forma, se puede obtener u
 de memoria de la nueva tss.
 De la misma forma que para la tarea Idle, se carga la gdt con el descriptor de tss correspondiente a una tarea de nivel 3, y se inicializa su tss. La TSS queda cargada de la siguiente forma:
 \begin{verbatim}
-	nueva_tss->cs = | + 3;
+	nueva_tss->cs = GDT_OFF_IDX_DESC_CODE3 + 3;
 	nueva_tss->es = GDT_OFF_IDX_DESC_DATA3 + 3;
 	nueva_tss->ss = GDT_OFF_IDX_DESC_DATA3 + 3;
 	nueva_tss->ds = GDT_OFF_IDX_DESC_DATA3 + 3;
@@ -294,8 +294,8 @@ De la misma forma que para la tarea Idle, se carga la gdt con el descriptor de t
 	nueva_tss->iomap = 0xFFFF;
 \end{verbatim}
 Donde nueva_tss es el puntero a la dirección de memoria de la nueva tss. GDT_OFF_IDX_DESC_CODE3 es el selector de segmento de datos de nivel 3, y se le suma 3 cuando corresponde
-para setear el RPL en 3. esp y ebp se cargan con esa dirección ya que es donde debe estar mapeada la tarea y se le suma 0xfff por ser la pila de la misma. Por la misma razón que esp y ebp, eip se coloca 0x08000000
-pero no se le suma 0xfff por no ser la pila sino el instruction pointer. para el cr3 se llama a la función mmu_inicializar_dir_tarea explicada con anterioridad en este informe.
+para setear el RPL en 3. Esp y ebp se cargan con esa dirección ya que es donde debe estar mapeada la tarea y se le suma 0xfff por ser la pila de la misma. Por la misma razón que esp y ebp, eip se coloca 0x08000000
+pero no se le suma 0xfff por no ser la pila sino el instruction pointer. Para el cr3 se llama a la función mmu_inicializar_dir_tarea explicada con anterioridad en este informe.
 mmu_proxima_pagina_fisica_libre() se utiliza para obtener una nueva pila y GDT_OFF_IDX_DESC_DATA0 es el selector de segmento de datos de nivel 0.
 
 d) Este punto se realizó en la función que inicializa la tss de idle. 
