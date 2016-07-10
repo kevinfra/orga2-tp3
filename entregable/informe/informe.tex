@@ -225,13 +225,16 @@ c) Este otro punto es otro de los más importantes para el funcionamiento del si
 d) Ejercicio muy similar al de pintar pantalla sólo que además de un color se copian a memoria los valores ASCII del texto correspondiente al nombre de nuestro grupo.
 
 
-\subsection{Interrupciones}
-En esta parte, se completaron las interrupones del reloj , la del teclado y la 0x66 que posteriomente sera usada en el juego
-%(En el mundo de Star Wars, la orden 66 es la que usa el canciller Palpatine para iniciar la purga de los Jedi, creo deberiamos tener algun easter egg de SW en el tp) 
-dado que la interrupcion del reloj la genera la CPU cada cierta cantidad tiempo, recien en este momento se habilitan las interrupciones mediante la instruccion STI.
-El codigo de las interrupciones se encuentra en isr.asm 
+\subsection{Ejercicio 4}
+a) La rutina de inicializar la mmu fue realizada en el punto anterior.
 
-\subsection{Ejericio 5}
+b) En este punto se solicita que se desarrolle una rutina que inicialice el directorio de páginas y la tabla de páginas para una tarea. Cada tarea en este sistema tiene su directorio y tabla de páginas. Se solicita además que la rutina copie el código de la tarea a su área asignada dentro del mapa. Se implementó para cumplir con lo requerido por el enunciado la función mmu_inicializar_dir_tarea la cual recibe como parámetros el CR3, la dirección física de la tarea, y las coordenadas x e y de la posición de la tarea en el mapa. Se valida que la posición sea válida. Luego se obtiene una página nueva llamando a la función mmu_proxima_pagina_fisica_libre para la PDE de la tarea y otra para la PTE de la tarea. La primera entrada de la PDE es la única que se va a usar en la tarea por lo cual se la configura con los atributos correspondientes. El resto de las entradas se completan con cero. Las 1024 entradas de la PTE se completan primero con identity mapping. Luego se llaman a las funciones de mapear pagina tarea y mapear pagina que serán explicadas en el punto que sigue. La función retorna un nuevo CR3 que es simplemente la dirección de la PDE creada anteriormente.
+
+c) Se pide realizar dos rutinas, una que realice el mapeo de páginas y otra el desmapeo de páginas. La función mmu_mapear_pagina implementada recibe como parámetros una dirección virtual, un cr3 y una dirección física. Lo primero que realiza es descomper la virtual para obtener el índice en la PDE y el índice de la PTE. Obtiene la dirección efectiva de la PDE usando el valor base contenido en el cr3 con el offset del indice de la PDE. Si la pagina no está presente, es decir, no hay cargado nada en dicha entrada en la PDE, se crea una nueva página y se setea la misma con permisos de lectura-escritura. El resto de las entradas se deja en cero en caso de haber sido creada la primera entrada en el PDE. Finalmente se obtiene la PTE usando la dirección base de la entrada de la PDE (sólo utiliza los 20 bits más significativos) con el offset del indice de la PTE. En dicha página se carga la dirección física con los atributos de lectura-escritura y el bit de presente.
+La función mmu_unmapear_pagina implementada recibe como parámetros una dirección virtual y un cr3. La misma hace un procedimiento similar al mapear pagina: descompone la dirección virtual y obtiene los índices de PDE y PTE. Obtiene la PDE usando la dirección base del registro cr3 y el offset del índice del PDE. Luego con los 20 bits más significativos de la dirección base contenida en la entrada de la PDE y el offset del índice de la PTE se recupera la PTE y en la misma se le configura el bit de presente en cero. Finalmente se llama a la función tblflush() que se encarga de limpiar el caché de traducciones para que el cambio sea actualizado en la tlb. 
+
+d)
+\subsection{Ejercicio 5}
 
 a) Para este ejericio se agregaron tres entradas en la IDT. Una para la interrupción de reloj, otra para la de teclado y una para la interrupción 0x66, o 102 en decimal (que es con el nombre con el cual quedó configurado).
 Esto se realizó en los archivos correspondientes a la idt, es decir, idt.h e idt.c.
