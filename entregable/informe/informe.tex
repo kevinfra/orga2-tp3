@@ -245,7 +245,8 @@ cual ya estaba implementada por la cátedra y se encargaba de dibujar en pantall
 c) En la rutina de atención de interrupción de teclado se implementó en ASM el detector de teclas presionadas en las cuales imprimiría en pantalla en la esquina
 superior qué tecla fue y el color representando al jugador que le pertenece esa tecla en los casos de que la misma sea una que deba realizar alguna acción en el juego
 (tales como w, a, s, d o Lshift). Además, se agregó que el juego no iniciaría hasta que se presione la barra espaciadora, la cual indica el comienzo del juego una vez presionada
-y en la RAI para esa tecla se llaman a las funciones correspondientes que inicializan el juego.
+y en la RAI para esa tecla se llaman a las funciones correspondientes que inicializan el juego. También se agregó la funcionalidad de lanzar tareas, la cual se activa al presionar las
+teclas shift si el juego está iniciado. Esto produce que se reste una vida al jugador que la lanzó, se pinte la tarea en pantalla, inicie el reloj de la tarea en pantalla y cargue la tarea en el scheduler.
 
 d) Tal como se pedía en el enunciado, la primera versión de la rutina de atención de la interrupción 0x66 lo único que hacía era escribir el valor 0x42 en el registro eax.
 
@@ -369,6 +370,11 @@ d) Para este punto solamente se agregó en la interrupción de reloj el siguient
 	jmp far [offset]
 \end{verbatim}
 El shift se realiza ya que sched_proximo_indice solo da el número de índice de la gdt, pero es necesario shiftearlo 3 para que funcione como selector.
+
+e) La rutina de atencion de excepciones fue modificada para que en lugar de imprimir el error por pantalla, elimine a la tarea del scheduler seteando en 0 el bit de presente
+en tareaActual, setee el bit de presente en 0 en la entrada de la gdt correspondiente, y actualice la cantidad de tareas lanzadas, el reloj de la tarea en pantalla y que desaparezca visualmente del mapa.
+
+
 
 \subsection{El retorno de la GDT y la aparicion de la TSS}
 
