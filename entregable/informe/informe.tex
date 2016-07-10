@@ -349,7 +349,26 @@ dueno es el número que representa al jugador que le pertenece la tarea, que tan
 duenoOriginal es el jugador que lanzó originalmente la tarea (este valor no cambia una vez que se setea para cada tarea). relojPropioX es la posición en X en la que se va a dibujar
 el reloj de esa tarea. posReloj es el número que indica cual es el siguiente dibujo que representa al reloj a imprimir en pantalla.
 
-b) 
+b) Para la realización de la funcion sched_proximo_indice() se utilizaron las estructuras mencionadas en el inciso anterior de la siguiente manera:
+Primero se guada el puntero de tareaActual en una variable local. Luego se guarda en otra variable local siguienteIndiceDeTareaEnCola[colaActual] que se consultará en cada interación de la búsqueda del
+siguiente índice para ver si es necesario cambiar la cola de tareas a ejecutar entre jugadores. Una vez hecho eso, se comienza con el ciclo que termina cuando se encuentra
+la siguiente tarea a ejecutar, la cual cumple lo estipulado en el enunciado. Esto se realiza chequeando que la tarea que se espera que sea la proxima tiene el bit de presente
+activado en su estructura Tarea. En caso de ser así, se cambia el valor de tareaActual por la nueva tarea, se actualiza colaActual y siguienteIndiceDeTareaEnCola, y se guarda en una variable local res
+el indice de la gdt de la tarea. En caso contrario, se avanza siguienteIndiceDeTareaEnCola pero manteniendo colaActual y se hace la verificacion descripta.
+
+c) La rutina de atención de la interrupcion 0x66 fue modificada en asm paa que chequee cuál de las tres syscalls debía realizar. Para el caso de la syscall SOY, se resuelve en asm llamando en el medio a las funciones
+que se encargan de actualizar los puntajes de cada jugador. En cuanto a las syscalls donde y mapear, se hace un call a funciones en C que realizan lo necesario segun cada syscall. Para
+la primera, simplemente escribe en memoria la posición de la tarea actual, que esta guardada en la estructura que apunta tareaActual. La segunda, se encarga de actualizar la posicion visual de lo que lanza cada tarea,
+la posicion actual de la tarea, y de llamar a mmu_mapear_pagina_tarea con la nueva dirección del mapa.
+
+d) Para este punto solamente se agregó en la interrupción de reloj el siguiente código:
+\begin{verbatim}
+	call sched_proximo_indice
+	shl eax, 3
+	mov [selector], ax
+	jmp far [offset]
+\end{verbatim}
+El shift se realiza ya que sched_proximo_indice solo da el número de índice de la gdt, pero es necesario shiftearlo 3 para que funcione como selector.
 
 f) En este punto se solicita implementar la funcionalidad de debugging. Lo que se realizó fue modificar el código de la interrupción del reloj para que se fije si está habilitado el debug y está pintada la pantalla no se salte entre tareas. Se agregaron dos variables globales, una que indica si el debug está habilitado o no y otra que indica si la pantala de debug está pintada o no. En todas las rutinas de atención de interrupciones lo que se hizo es hacer un call a una función que devuelve cero si el debug no está activado, en cuyo caso continua con la ejecución de la atención de la rutina, y si devuelve 1 (significa que el debug está activado) lo que hace es pushear todos los registros que se deben mostrar en pantalla cuando ocurre una excepción, algunos de los cuales son extraídos de la pila del handler de exepción y llama a una función atenderDebug cuyo propósito es mostrar por pantalla la información del debug.
 
