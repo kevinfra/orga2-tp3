@@ -343,7 +343,7 @@ donde el struct tupla está conformado así:
 	  unsigned short y;
 	} tupla;
 \end{verbatim}
-En el struct tarea, posicion representa la posicion actual de la tarea. posicionOriginal la posición deonde se lanzó originalmente (para el caso de las tareas sanas, el lugar donde se inicializó).
+En el struct tarea, posicion representa la posicion actual de la tarea. posicionOriginal la posición donde se lanzó originalmente (para el caso de las tareas sanas, el lugar donde se inicializó).
 indiceGdt es lo que el nombre indica. el char presente es para indicar si está presente en el scheduler o no (se setea en 0 cuando se desaloja la tarea). cr3Actual es el cr3 que utiliza la tarea.
 dueno es el número que representa al jugador que le pertenece la tarea, que tanto para este como para duenoOriginal es 0 si es el jugador A, 1 jugador B y 2 tarea sana.
 duenoOriginal es el jugador que lanzó originalmente la tarea (este valor no cambia una vez que se setea para cada tarea). relojPropioX es la posición en X en la que se va a dibujar
