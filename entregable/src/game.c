@@ -22,34 +22,26 @@ int juegoEstaIniciado = 0;
 int tareasEnJuego[2];
 int vidasAzul;
 int vidasRojas;
-char pila[3040]; // Mi idea es usar este registro como pila de la pantalla
-unsigned int ack[25]; // Mi Idea es usar este registro como pila para los valores de debug
+char pila[3040];
 
 
-unsigned int dameack()
-{
-
-	return (unsigned int) &ack;
-}
 
 
 void copiar()
-{ //Quiero que esta funcion copie el buffer del video
+{ /*Lo que hace esta fumcion, es guardar en el array pila la parte de la pantalla
+  que se pisa cuando cae una excepcion en el modo debug*/
 	char * video = (char*) 0xB8000;
 	int pos = 0 ;
 
-		//video +=1280;
-		//pila[0] = *video;
+		
 		int i = 8;
 		for (i = 5; i < 43; ++i)
 		{
 			int j = 19;
 			for (j = 19; j < 59; ++j)
 			{
-				//*(video+(160*i)+(2*j))=pila[pos];
 				pila[pos]=*(video+(160*i)+(2*j));
 				pos ++;
-				//*(video+(160*i)+(2*j)+1)=pila[pos];
 				pila[pos]=*((video+1)+(160*i)+(2*j));
 				pos++;
 			}
@@ -60,12 +52,10 @@ void copiar()
 
 
 void pegar()
-{
+{ /*Esta funcion deja la pantalla como estaba antes de que salga una excepcion  */
 	char * video = (char*) 0xB8000;
 	int pos = 0 ;
 
-		//video +=1280;
-		//pila[0] = *video;
 		int i = 8;
 		for (i = 5; i < 43; ++i)
 		{
@@ -73,10 +63,8 @@ void pegar()
 			for (j = 19; j < 59; ++j)
 			{
 				*(video+(160*i)+(2*j))=pila[pos];
-				//pila[pos]=*(video+(160*i)+(2*j));
 				pos ++;
 				*(video+(160*i)+(2*j)+1)=pila[pos];
-				//pila[pos]=*((video+1)+(160*i)+(2*j));
 				pos++;
 			}
 
@@ -128,9 +116,8 @@ void pintarRecuadroDebug(){
 			print("a",58,fila,C_FG_BLACK | C_BG_BLACK );
 		}
 
-		//Ahora pintamos , el texto
+		//Ahora pintamos el texto 
 		int flag= tareaActual->dueno;
-		//tareaActul->dueno ; 0 ; 1 ; 2 Rojo ; Azul ; Verde
 		int i ;
 		if (flag==0) // Esto es para pintar rojo
 		{
@@ -168,7 +155,6 @@ void atenderdebug(unsigned int cr0, unsigned int cr2, unsigned int cr3, unsigned
 	unsigned int edi, unsigned int ebp, unsigned int ds,unsigned int es, unsigned int fs, unsigned int gs,
 	unsigned int ss, unsigned int esp, unsigned int eflags, unsigned int cs, unsigned int eip,unsigned int eax)
 {
-	//char * video = (char*) 0xB8000;
 	if (debugActivado==1) // Si esta activado...
 	{
 		copiar();
@@ -238,7 +224,7 @@ void iniciarGame(){
   debugActivado=0; // 0 Desactivado , 1 Activado
   puntajeAzul = 0;
   puntajeRojo = 0;
-	muestraInfo = 0;
+  muestraInfo = 0;
   print("Yo no manejo el rating, yo manejo un rolls-royce", 14, 0, (C_BG_BLACK | C_FG_WHITE));
   juegoEstaIniciado = 1;
   tareasEnJuego[0] = 0;
@@ -249,14 +235,14 @@ void iniciarGame(){
   vidasRojas = 15;
   print_int(vidasRojas, 44, 48, (C_BG_BLACK | C_FG_WHITE));
   print_int(vidasAzul, 63, 48, (C_BG_BLACK | C_FG_WHITE));
-	print("TAREAS", 68, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	print("TAREAS", 34, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	print_int(0, 70, 48, (C_BG_BLACK | C_FG_WHITE));
-	print_int(0, 36, 48, (C_BG_BLACK | C_FG_WHITE));
+  print("TAREAS", 68, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+  print("TAREAS", 34, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+  print_int(0, 70, 48, (C_BG_BLACK | C_FG_WHITE));
+  print_int(0, 36, 48, (C_BG_BLACK | C_FG_WHITE));
   print_int(0, 51, 47, (C_BG_RED | C_FG_WHITE));
   print_int(0, 57, 47, (C_BG_BLUE | C_FG_WHITE));
-	print("<A", 13, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
-	print("B>", 22, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+  print("<A", 13, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
+  print("B>", 22, 46, (C_BG_BLACK | C_FG_LIGHT_GREY));
 }
 
 int juegoIniciado(){
