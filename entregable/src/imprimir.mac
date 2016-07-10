@@ -18,9 +18,9 @@ pop eax ; EAX = Caracter
 pop ebx ; EBX = Atributos
 mov ecx , 0x000B8000 ; ECX = Donde Arranca Buffer Video
 add ecx , 158 ; Offset para la ultima columna de la primera fila
-mov byte [ECX] , AL
+mov [ECX] , AL
 inc ecx
-mov byte [ECX] , BL
+mov [ECX] , BL
 popad
 %endmacro
 
