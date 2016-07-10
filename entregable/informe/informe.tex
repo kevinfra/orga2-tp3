@@ -298,7 +298,24 @@ para setear el RPL en 3. Esp y ebp se cargan con esa dirección ya que es donde 
 pero no se le suma 0xfff por no ser la pila sino el instruction pointer. Para el cr3 se llama a la función mmu_inicializar_dir_tarea explicada con anterioridad en este informe.
 mmu_proxima_pagina_fisica_libre() se utiliza para obtener una nueva pila y GDT_OFF_IDX_DESC_DATA0 es el selector de segmento de datos de nivel 0.
 
-d) Este punto se realizó en la función que inicializa la tss de idle. 
+d) Este punto se realizó en la función que inicializa la tss de idle. La misma fue cargada con la misma información que para la tss de idle pero con la tss de la tarea inicial.
+
+e) Descripto en el inciso (c)
+
+f) Al inicializar las tss y la gdt para las tareas idle e inicial, somo se mencionó en el inciso (c) se obtiene el selector de segmento de la gdt que, en este caso, es el de
+la TSS de la tarea inicial. Por lo tanto, luego de llamar a la funcion que se encarga de inicializar a esas dos tareas, tenemos en eax el selector mencionado y se carga en el Task Register mediante la instrucción ltr.
+Para saltar a la tarea Idle, se le suma 8 a eax (para obtener el siguiente selector) y se pushea el registro
+para usarlo luego de inicializar las otras estructuras necesarias. Para hacer el salto, dejamos en eax el selector de segmento de la TSS de Idle, y se realizan las siguientes instrucciones:
+\begin{verbatim}
+	mov [selector], ax
+	jmp far [offset]
+\end{verbatim}
+siendo [selector] y [offset] espacios definidos en memoria mediante el uso de dw y dd respectivamente.
+
+\subsection{Ejercicio 7}
+
+a)
+
 
 
 
